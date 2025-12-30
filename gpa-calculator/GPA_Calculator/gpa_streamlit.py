@@ -232,11 +232,58 @@ with main_tabs[1]:
 with main_tabs[2]:
     st.subheader("Quiz & Practice Problems")
 
-    # Create sub-tabs for each subject (organized like MS/HS tabs)
-    quiz_subjects = ["Spanish", "Math", "Science", "GT / AP World History", "Computer Science", "Other"]
+    # Create sub-tabs for each subject
+    quiz_subjects = ["Spanish", "Math"]
     quiz_tabs = st.tabs(quiz_subjects)
 
-    for i, subject in enumerate(quiz_subjects):
-        with quiz_tabs[i]:
-            st.write(f"Practice quizzes and problems for **{subject}** will appear here.")
-            st.info("This section is under development. Soon you will be able to take quizzes, practice problems, and see your results!")
+    # =============================
+    # SPANISH QUIZ
+    # =============================
+    with quiz_tabs[0]:
+        st.header("Spanish Quiz")
+        spanish_level = st.selectbox("Select your Spanish level:",
+                                     ["Spanish 1", "Spanish 2", "Spanish 3", "Spanish 4 AP"])
+
+        if spanish_level == "Spanish 1":
+            q1 = st.radio("Select the correct translation: 'I eat an apple.'",
+                          ["Yo como una manzana", "Yo comer una manzana", "Yo comí una manzana"])
+            q2 = st.radio("Select the correct verb conjugation: 'Tú (hablar) español.'", ["hablas", "hablo", "habla"])
+        elif spanish_level == "Spanish 2":
+            q1 = st.radio("Select the correct past tense: 'He ate lunch.'",
+                          ["Él comió almuerzo", "Él comer almuerzo", "Él comía almuerzo"])
+            q2 = st.radio("Choose correct subjunctive: 'Es importante que tú (estudiar) para el examen.'",
+                          ["estudies", "estudias", "estudiar"])
+        elif spanish_level == "Spanish 3":
+            q1 = st.radio("Choose the correct conditional: 'I would travel to Spain.'",
+                          ["Yo viajaría a España", "Yo viajaré a España", "Yo viajo a España"])
+            q2 = st.radio("Select correct past perfect: 'I had eaten before school.'",
+                          ["Había comido antes de la escuela", "He comido antes de la escuela",
+                           "Comí antes de la escuela"])
+        else:
+            q1 = st.radio("Select the correct subjunctive past: 'It was necessary that he had finished.'",
+                          ["Era necesario que él hubiera terminado", "Era necesario que él terminó",
+                           "Era necesario que él había terminado"])
+            q2 = st.radio("Select correct idiomatic expression: 'To be over the moon.'",
+                          ["Estar en la luna", "Estar en el cielo", "Tener la luna"])
+        st.success("Spanish quiz section loaded. Answers are not yet auto-graded.")
+
+    # =============================
+    # MATH QUIZ
+    # =============================
+    with quiz_tabs[1]:
+        st.header("Math Quiz")
+        math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
+
+        if math_level == "Algebra 1":
+            q1 = st.radio("Solve for x: 2x + 5 = 13", ["x = 3", "x = 4", "x = 5"])
+            q2 = st.radio("Simplify: 3(x + 4) - 2", ["3x + 10", "3x + 12", "3x + 2"])
+        elif math_level == "Geometry":
+            q1 = st.radio("The sum of angles in a triangle is?", ["180°", "360°", "90°"])
+            q2 = st.radio("Find the area of a rectangle: length=5, width=3", ["15", "8", "10"])
+        elif math_level == "Algebra 2":
+            q1 = st.radio("Factor: x^2 + 5x + 6", ["(x+2)(x+3)", "(x+1)(x+6)", "(x+3)(x+4)"])
+            q2 = st.radio("Solve: 2x - 7 = 5", ["x = 6", "x = 5", "x = 4"])
+        else:
+            q1 = st.radio("Find the derivative of f(x)=3x^2", ["6x", "3x", "9x"])
+            q2 = st.radio("Evaluate: sin(π/2)", ["1", "0", "-1"])
+        st.success("Math quiz section loaded. Answers are not yet auto-graded.")
