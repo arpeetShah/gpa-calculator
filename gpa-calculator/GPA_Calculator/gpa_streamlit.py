@@ -1,5 +1,6 @@
 import streamlit as st
 import sqlite3
+import hashlib
 
 # =============================
 # PAGE CONFIG
@@ -11,7 +12,7 @@ st.set_page_config(
 )
 
 # =============================
-# STYLES
+# STYLES (UNCHANGED)
 # =============================
 st.markdown("""
 <style>
@@ -47,6 +48,7 @@ c = conn.cursor()
 
 c.execute("""
 CREATE TABLE IF NOT EXISTS grades (
+    username TEXT,
     course TEXT,
     section TEXT,
     s1 REAL,
@@ -55,34 +57,12 @@ CREATE TABLE IF NOT EXISTS grades (
     q2 REAL,
     q3 REAL,
     q4 REAL,
-    year TEXT,
-    PRIMARY KEY (course, section)
+    gt_year TEXT,
+    taken INTEGER,
+    PRIMARY KEY (username, course, section)
 )
 """)
 conn.commit()
-
-# =============================
-# COURSES AND WEIGHTAGES
-# =============================
-courses = {
-    "Spanish 1": 5.0,
-    "Spanish 2": 5.0,
-    "Spanish 3": 5.5,
-    "Spanish 4 AP": 6.0,
-    "Algebra 1": 5.5,
-    "Geometry": 5.5,
-    "Algebra 2": 5.5,
-    "AP Precalculus": 6.0,
-    "GT / AP World History": None,  # year will be asked
-    "Biology": 5.5,
-    "Chemistry": 5.5,
-    "AP Human Geography": 6.0,
-    "Sports": 5.0,
-    "Health": 5.0,
-    "Computer Science": 5.5,
-    "AP Computer Science": 6.0,
-    "Instruments": 5.0
-}
 
 # =============================
 # HELPERS
@@ -98,138 +78,146 @@ def unweighted_gpa(avg):
     return 0
 
 # =============================
-# MAIN TABS
+# COURSES
 # =============================
-# Create the main tabs at the top
+courses = {
+    "Spanish 1": 5.0,
+    "Spanish 2": 5.0,
+    "Spanish 3": 5.5,
+    "Spanish 4 AP": 6.0,
+    "Algebra 1": 5.5,
+    "Geometry": 5.5,
+    "Algebra 2": 5.5,
+    "AP Precalculus": 6.0,
+    "GT / AP World History": 6.0,
+    "Biology": 5.5,
+    "Chemistry": 5.5,
+    "AP Human Geography": 6.0,
+    "Sports": 5.0,
+    "Health": 5.0,
+    "Computer Science": 5.5,
+    "AP Computer Science": 6.0,
+    "Instruments": 5.0
+}
+
+# =============================
+# SESSION
+# =============================
+if "user" not in st.session_state:
+    st.session_state.user = "default_user"  # Temporary for testing without login
+
+# =============================
+# MAIN TOP-LEVEL TABS
+# =============================
 main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
-
-# Welcome Tab
-with main_tabs[0]:
-    st.header("Welcome to EduSphere!")
-    st.image("https://images.unsplash.com/photo-1596496056730-3b7162c14d1c?auto=format&fit=crop&w=1200&q=80", use_column_width=True)
-    st.write("Track your GPA, get insights, and practice quizzes all in one place.")
-
-# GPA Tab
-with main_tabs[1]:
-    # Your GPA subtabs and existing code go here
-    pass
-
-# Quiz Tab
-with main_tabs[2]:
-    # Your quiz code goes here
-    pass
 
 # =============================
 # WELCOME TAB
 # =============================
-with tabs[0]:
+with main_tabs[0]:
     st.header("Welcome to EduSphere!")
-    st.image("https://i.imgur.com/Z7d1XJu.png", use_column_width=True)
+    st.image(
+        "https://images.unsplash.com/photo-1596496056730-3b7162c14d1c?auto=format&fit=crop&w=1200&q=80",
+        use_column_width=True
+    )
     st.write("Track your GPA, get insights, and practice quizzes all in one place.")
 
 # =============================
 # GPA TAB
 # =============================
-with tabs[1]:
-    st.subheader("Middle School Grades")
-    ms_selected = st.multiselect(
-        "Select the courses you took (MS)",
-        options=list(courses.keys()),
-        default=[],
-        key="ms_courses"
-    )
-    ms_grades = {}
-    for course in ms_selected:
-        s1 = st.number_input(f"{course} – Semester 1 (MS)", 0.0, 100.0, 90.0, key=f"ms_s1_{course}")
-        s2 = st.number_input(f"{course} – Semester 2 (MS)", 0.0, 100.0, 90.0, key=f"ms_s2_{course}")
-        if course == "GT / AP World History":
-            year = st.selectbox(f"{course} Year (MS)", options=["6th", "7th", "8th"], key=f"ms_year_{course}")
-        else:
-            year = None
-        ms_grades[course] = {"s1": s1, "s2": s2, "year": year}
-        # Save to DB
-        c.execute("""
-            INSERT OR REPLACE INTO grades
-            VALUES (?,?,?,?,?,?,?,?,?)
-        """, (course, "MS", s1, s2, None, None, None, None, year))
-    conn.commit()
+with main_tabs[1]:
+    gpa_subtabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
-    st.subheader("High School Grades")
-    hs_selected = st.multiselect(
-        "Select the courses you took (HS)",
-        options=list(courses.keys()),
-        default=[],
-        key="hs_courses"
-    )
-    hs_grades = {}
-    quarters = st.slider("Quarters Completed", 1, 4, 2)
-    for course in hs_selected:
-        q_vals = []
-        for i in range(quarters):
-            q = st.number_input(f"{course} – Quarter {i+1} (HS)", 0.0, 100.0, 90.0, key=f"hs_q_{course}_{i}")
-            q_vals.append(q)
-        if course == "GT / AP World History":
-            year = st.selectbox(f"{course} Year (HS)", options=["9th", "10th", "11th", "12th"], key=f"hs_year_{course}")
-        else:
-            year = None
-        padded = q_vals + [None]*(4 - len(q_vals))
-        hs_grades[course] = {"q": padded, "year": year}
-        # Save to DB
-        c.execute("""
-            INSERT OR REPLACE INTO grades
-            VALUES (?,?,?,?,?,?,?,?,?)
-        """, (course, "HS", None, None, *padded, year))
-    conn.commit()
+    # -----------------------------
+    # MIDDLE SCHOOL
+    # -----------------------------
+    with gpa_subtabs[0]:
+        st.header("Middle School Grades")
+        ms_selected = st.multiselect(
+            "Select the courses you took",
+            options=list(courses.keys()),
+            default=[]
+        )
 
-    st.subheader("GPA & Analytics")
-    if st.button("🎯 Calculate GPA"):
-        weighted, unweighted = [], []
         ms_course_gpas = {}
+        for course in ms_selected:
+            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, 90.0, key=f"ms_s1_{course}")
+            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, 90.0, key=f"ms_s2_{course}")
+            avg = (s1 + s2) / 2
+            ms_course_gpas[course] = avg
+
+    # -----------------------------
+    # HIGH SCHOOL
+    # -----------------------------
+    with gpa_subtabs[1]:
+        st.header("High School Grades")
+        quarters = st.slider("Quarters Completed", 1, 4, 2)
+        hs_selected = st.multiselect(
+            "Select the courses you took",
+            options=list(courses.keys()),
+            default=[]
+        )
+
         hs_course_gpas = {}
+        hs_gt_years = {}
+        for course in hs_selected:
+            grades = []
+            for i in range(quarters):
+                grades.append(
+                    st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, 90.0, key=f"hs_q_{course}_{i}")
+                )
+            padded = grades + [None] * (4 - len(grades))
+            avg = sum([x for x in padded if x is not None]) / quarters
+            hs_course_gpas[course] = avg
 
-        # MS GPA
-        for course, data in ms_grades.items():
-            avg = (data["s1"] + data["s2"])/2
-            if courses[course] is not None:
-                g = weighted_gpa(avg, courses[course])
+            if "GT / AP World History" in course:
+                year = st.text_input(f"{course} Year Taken", key=f"gt_year_{course}")
+                hs_gt_years[course] = year
+
+    # -----------------------------
+    # GPA & ANALYTICS
+    # -----------------------------
+    with gpa_subtabs[2]:
+        st.header("GPA Results & Analytics")
+        if st.button("🎯 Calculate GPA"):
+            weighted_list, unweighted_list = [], []
+
+            for course, weight in courses.items():
+                if course in hs_course_gpas:
+                    avg = hs_course_gpas[course]
+                    weighted_list.append(weighted_gpa(avg, weight))
+                    unweighted_list.append(unweighted_gpa(avg))
+                elif course in ms_course_gpas:
+                    avg = ms_course_gpas[course]
+                    weighted_list.append(weighted_gpa(avg, weight))
+                    unweighted_list.append(unweighted_gpa(avg))
+
+            if not weighted_list:
+                st.warning("No courses selected.")
             else:
-                g = avg  # for GT / AP World
-            ms_course_gpas[course] = g
-            if courses[course] is not None:
-                weighted.append(g)
-                unweighted.append(unweighted_gpa(avg))
+                weighted_final = round(sum(weighted_list) / len(weighted_list), 2)
+                unweighted_final = round(sum(unweighted_list) / len(unweighted_list), 2)
 
-        # HS GPA
-        for course, data in hs_grades.items():
-            valid = [x for x in data["q"] if x is not None]
-            if valid:
-                avg = sum(valid)/len(valid)
-                if courses[course] is not None:
-                    g = weighted_gpa(avg, courses[course])
-                else:
-                    g = avg
-                hs_course_gpas[course] = g
-                if courses[course] is not None:
-                    weighted.append(g)
-                    unweighted.append(unweighted_gpa(avg))
+                st.success(f"🎓 Weighted GPA: {weighted_final}")
+                st.success(f"📘 Unweighted GPA: {unweighted_final}")
 
-        if weighted:
-            w = round(sum(weighted)/len(weighted), 2)
-            uw = round(sum(unweighted)/len(unweighted), 2)
-            st.success(f"🎓 Weighted GPA: {w}")
-            st.success(f"📘 Unweighted GPA: {uw}")
-            st.subheader("📊 Course Analysis")
-            st.table({**ms_course_gpas, **hs_course_gpas})
-            best = max({**ms_course_gpas, **hs_course_gpas}, key=lambda k: {**ms_course_gpas, **hs_course_gpas}[k])
-            worst = min({**ms_course_gpas, **hs_course_gpas}, key=lambda k: {**ms_course_gpas, **hs_course_gpas}[k])
-            st.write(f"✅ Most Boosting: {best}")
-            st.write(f"⚠️ Most Dragging: {worst}")
-        else:
-            st.warning("No courses selected to calculate GPA.")
+                # Table of course GPAs
+                st.subheader("Course GPAs")
+                st.table({
+                    "Middle School": ms_course_gpas,
+                    "High School": hs_course_gpas
+                })
+
+                # Courses helping most and pulling down
+                if weighted_list:
+                    max_course = max(hs_course_gpas, key=lambda x: hs_course_gpas[x]) if hs_course_gpas else None
+                    min_course = min(hs_course_gpas, key=lambda x: hs_course_gpas[x]) if hs_course_gpas else None
+                    st.write(f"📈 Course helping GPA the most: {max_course}")
+                    st.write(f"📉 Course bringing GPA down the most: {min_course}")
 
 # =============================
-# QUIZ & PRACTICE TAB
+# QUIZ TAB
 # =============================
-with tabs[2]:
-    st.header("Coming Soon: Quiz & Practice Problems!")
-    st.write("This section will let you practice questions and track your scores.")
+with main_tabs[2]:
+    st.header("Quiz & Practice Problems")
+    st.write("Here you can add quizzes, practice problems, or any interactive content for learning.")
