@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # =============================
-# STYLES
+# STYLES (UNCHANGED)
 # =============================
 st.markdown("""
 <style>
@@ -107,8 +107,7 @@ courses = {
     "Survey of Business Marketing Finance": 5.0,
     "Health": 5.0,
     "Computer Science": 5.5,
-    "Instruments": 5.0,
-    "GT Humanities / AP World": None
+    "Instruments": 5.0
 }
 
 # =============================
@@ -166,29 +165,33 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    ms_courses = st.multiselect("Select Middle School Courses", list(courses.keys()), key="ms_select")
-
-    for course in ms_courses:
+    for course in courses:
         c.execute("""
         SELECT s1, s2, taken, gt_year FROM grades
         WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 0, None)
+        row = c.fetchone() or (0.0, 0.0, 0, None)
 
-        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+        taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
 
-        gt_year = None
-        if course == "GT Humanities / AP World":
-            gt_year = st.radio("GT Humanities / AP World Year", [1, 2], index=0, key=f"gt_{course}", horizontal=True)
+        if taken:
+            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+
+            if course == "GT Humanities / AP World":
+                gt_year = st.radio("GT/AP World Year", [1, 2], index=row[3]-1 if row[3] else 0, key="gt_year")
+            else:
+                gt_year = None
+        else:
+            s1, s2, gt_year = 0.0, 0.0, None
 
         c.execute("""
         INSERT OR REPLACE INTO grades
         VALUES (?,?,?,?,?,?,?,?,?,?,?)
         """, (
             st.session_state.user, course, "MS",
-            s1, s2, None, None, None, None,
-            1, gt_year
+            s1, s2, 0.0, 0.0, 0.0, 0.0, int(taken),
+            gt_year
         ))
     conn.commit()
 
@@ -199,31 +202,30 @@ with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
 
-    hs_courses = st.multiselect("Select High School Courses", list(courses.keys()), key="hs_select")
-
-    for course in hs_courses:
+    for course in courses:
         c.execute("""
-        SELECT q1, q2, q3, q4, taken FROM grades
+        SELECT q1, q2, q3, q4, taken, gt_year FROM grades
         WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0)
+        row = c.fetchone() or (0.0, 0.0, 0.0, 0.0, 0, None)
+
+        taken = st.checkbox(course, value=bool(row[4]), key=f"hs_take_{course}")
 
         grades = []
-        for i in range(quarters):
-            grades.append(
-                st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}")
-            )
+        if taken:
+            for i in range(quarters):
+                grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}"))
 
-        padded = grades + [None] * (4 - len(grades))
+        padded = grades + [0.0] * (4 - len(grades))
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
         """, (
             st.session_state.user, course, "HS",
-            None, None,
+            0.0, 0.0,
             *padded,
-            1 if hs_courses else 0,
+            int(taken),
             None
         ))
     conn.commit()
@@ -246,6 +248,7 @@ with tabs[2]:
 
             if row and row[4]:
                 valid = [x for x in row[:4] if x is not None]
+
                 if valid:
                     avg = sum(valid) / len(valid)
                     weighted.append(weighted_gpa(avg, weight))
