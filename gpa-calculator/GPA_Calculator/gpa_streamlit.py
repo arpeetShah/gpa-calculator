@@ -1,6 +1,8 @@
 import streamlit as st
 import sqlite3
 import hashlib
+import pandas as pd
+import datetime
 
 # =============================
 # PAGE CONFIG
@@ -12,7 +14,7 @@ st.set_page_config(
 )
 
 # =============================
-# STYLES (UNCHANGED)
+# STYLES
 # =============================
 st.markdown("""
 <style>
@@ -101,8 +103,7 @@ courses = {
     "AP Precalculus": 6.0,
     "Biology": 5.5,
     "Chemistry": 5.5,
-    "AP Human Geography": 6.0,
-    "GT Humanities / AP World": 5.5
+    "AP Human Geography": 6.0
 }
 
 # =============================
@@ -145,7 +146,6 @@ if not st.session_state.user:
                 st.experimental_rerun()
             else:
                 st.error("Invalid credentials")
-
     st.stop()
 
 # =============================
@@ -159,26 +159,18 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 # =============================
 with tabs[0]:
     st.header("Middle School Grades")
+    ms_selected = st.multiselect("Select your Middle School courses", list(courses.keys()))
+    gt_year = st.number_input("GT / AP World Year", min_value=1, max_value=2, value=1, step=1, key="gt_year_ms")
 
-    selected_ms = st.multiselect(
-        "Select your Middle School courses:",
-        list(courses.keys()),
-        key="ms_multiselect"
-    )
-
-    for course in selected_ms:
+    for course in ms_selected:
         c.execute("""
-        SELECT s1, s2, gt_year, taken FROM grades
+        SELECT s1, s2, taken, gt_year FROM grades
         WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, None, 1)
+        row = c.fetchone() or (90.0, 90.0, 0, gt_year)
 
-        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
-
-        gt_year = row[2]
-        if course == "GT Humanities / AP World":
-            gt_year = st.radio(f"{course} – Year", [1, 2], index=(gt_year-1 if gt_year else 0), key=f"ms_gt_year")
+        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, value=row[0], key=f"ms_s1_{course}")
+        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, value=row[1], key=f"ms_s2_{course}")
 
         c.execute("""
         INSERT OR REPLACE INTO grades
@@ -186,8 +178,7 @@ with tabs[0]:
         """, (
             st.session_state.user, course, "MS",
             s1, s2, None, None, None, None,
-            gt_year,
-            1
+            1  # taken
         ))
     conn.commit()
 
@@ -197,34 +188,24 @@ with tabs[0]:
 with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
+    hs_selected = st.multiselect("Select your High School courses", list(courses.keys()))
 
-    selected_hs = st.multiselect(
-        "Select your High School courses:",
-        list(courses.keys()),
-        key="hs_multiselect"
-    )
-
-    for course in selected_hs:
+    for course in hs_selected:
         c.execute("""
-        SELECT q1, q2, q3, q4, gt_year, taken FROM grades
+        SELECT q1, q2, q3, q4, taken FROM grades
         WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, None, 1)
+        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0)
 
         grades = []
         for i in range(quarters):
             grades.append(
                 st.number_input(
                     f"{course} – Quarter {i+1}",
-                    0.0, 100.0, row[i],
+                    0.0, 100.0, value=row[i],
                     key=f"hs_q_{course}_{i}"
                 )
             )
-
-        gt_year = row[4]
-        if course == "GT Humanities / AP World":
-            gt_year = st.radio(f"{course} – Year", [1, 2], index=(gt_year-1 if gt_year else 0), key=f"hs_gt_year")
-
         padded = grades + [None] * (4 - len(grades))
 
         c.execute("""
@@ -234,8 +215,7 @@ with tabs[1]:
             st.session_state.user, course, "HS",
             None, None,
             *padded,
-            gt_year,
-            1
+            1  # taken
         ))
     conn.commit()
 
@@ -244,37 +224,73 @@ with tabs[1]:
 # =============================
 with tabs[2]:
     st.header("GPA Results & Analytics")
-
     if st.button("🎯 Calculate GPA"):
-        weighted, unweighted = [], []
 
-        for course, weight in courses.items():
+        # Combine MS and HS for chart
+        gpa_history = []
+
+        # Middle School GPA
+        ms_weighted, ms_unweighted = [], []
+        for course in ms_selected:
             c.execute("""
-            SELECT q1, q2, q3, q4, taken FROM grades
+            SELECT s1, s2, gt_year FROM grades
+            WHERE username=? AND course=? AND section='MS'
+            """, (st.session_state.user, course))
+            row = c.fetchone()
+            if row:
+                avg = (row[0] + row[1]) / 2
+                ms_weighted.append(weighted_gpa(avg, courses[course]))
+                ms_unweighted.append(unweighted_gpa(avg))
+                gpa_history.append({'Term': f"MS {course} Sem1", 'Weighted': weighted_gpa(row[0], courses[course]), 'Unweighted': unweighted_gpa(row[0])})
+                gpa_history.append({'Term': f"MS {course} Sem2", 'Weighted': weighted_gpa(row[1], courses[course]), 'Unweighted': unweighted_gpa(row[1])})
+
+        # High School GPA
+        hs_weighted, hs_unweighted = [], []
+        for course in hs_selected:
+            c.execute("""
+            SELECT q1, q2, q3, q4 FROM grades
             WHERE username=? AND course=? AND section='HS'
             """, (st.session_state.user, course))
             row = c.fetchone()
+            if row:
+                valid = [x for x in row if x is not None]
+                avg = sum(valid) / len(valid)
+                hs_weighted.append(weighted_gpa(avg, courses[course]))
+                hs_unweighted.append(unweighted_gpa(avg))
+                for i, grade in enumerate(valid):
+                    gpa_history.append({'Term': f"HS {course} Q{i+1}", 'Weighted': weighted_gpa(grade, courses[course]), 'Unweighted': unweighted_gpa(grade)})
 
-            if row and row[4]:
-                valid = [x for x in row[:4] if x is not None]
-                if valid:
-                    avg = sum(valid) / len(valid)
-                    weighted.append(weighted_gpa(avg, weight))
-                    unweighted.append(unweighted_gpa(avg))
+        # Final GPA
+        all_weighted = ms_weighted + hs_weighted
+        all_unweighted = ms_unweighted + hs_unweighted
 
-        if not weighted:
-            st.warning("No high school courses selected.")
-        else:
-            w = round(sum(weighted) / len(weighted), 2)
-            uw = round(sum(unweighted) / len(unweighted), 2)
+        if all_weighted:
+            w_final = round(sum(all_weighted)/len(all_weighted), 2)
+            uw_final = round(sum(all_unweighted)/len(all_unweighted), 2)
+            st.success(f"🎓 Weighted GPA: {w_final}")
+            st.success(f"📘 Unweighted GPA: {uw_final}")
 
-            st.success(f"🎓 **Weighted GPA:** {w}")
-            st.success(f"📘 **Unweighted GPA:** {uw}")
+            # Chart
+            df = pd.DataFrame(gpa_history)
+            st.subheader("📈 GPA Over Time")
+            st.line_chart(df.set_index("Term")[["Weighted", "Unweighted"]])
 
+            # Feedback
             st.subheader("📊 GPA Insight")
-            if w >= 5.5:
-                st.write("Your GPA is being boosted by strong performance in weighted courses.")
-            elif w >= 4.5:
-                st.write("Your GPA is solid, but higher-weight classes have the biggest impact.")
+            if w_final >= 5.5:
+                st.write("Your GPA is strong and being boosted by weighted courses!")
+            elif w_final >= 4.5:
+                st.write("Your GPA is solid. Weighted courses have the biggest impact.")
             else:
-                st.write("Lower performance in GPA-heavy courses is pulling your GPA down.")
+                st.write("Your GPA is lower; focus on key courses to improve!")
+
+            # Export
+            csv = df.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                "⬇️ Download GPA Report",
+                csv,
+                "gpa_report.csv",
+                "text/csv"
+            )
+        else:
+            st.warning("No courses selected to calculate GPA.")
