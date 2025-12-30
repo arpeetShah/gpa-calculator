@@ -273,48 +273,110 @@ with main_tabs[2]:
     with quiz_tabs[1]:
         st.header("AP Precalculus Quiz")
 
-        # Step 1: Choose Math course
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
 
         if math_level == "AP Precalculus":
-            # Step 2: Select Unit
             unit = st.selectbox("Select the Unit you want to practice:",
                                 ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
-
-            # Step 3: Select Difficulty
             difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
 
-            # Step 4: Show Questions button
             if st.button("Show Questions"):
-                # Define questions per unit and difficulty
                 questions = {
-                    "Unit 1": {  # Polynomial & Rational Functions
+                    "Unit 1": {
                         "Easy": [
                             {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
                              "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
-                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"}
+                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
+                            {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": ["x-3", "x+3", "x^2+3"],
+                             "answer": "x-3"},
+                            {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
+                             "answer": "maximum"},
+                            {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"],
+                             "answer": "7"},
+                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
+                             "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                            {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
+                             "answer": "7"},
+                            {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
+                             "answer": "(x-2)(x-2)(x+3)"},
+                            {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
+                             "options": ["3", "-2", "5"], "answer": "3"},
+                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
+                             "answer": "x<-2 or x>0 and x!=2"}
                         ],
                         "Medium": [],
                         "Hard": []
                     },
-                    "Unit 2": {  # Exponential & Logarithmic Functions
-                        "Easy": [],
+                    "Unit 2": {
+                        "Easy": [
+                            {"type": "mcq", "question": "Simplify: log10(100)", "options": ["2", "10", "100"],
+                             "answer": "2"},
+                            {"type": "text", "question": "Evaluate: 2^3", "answer": "8"},
+                            {"type": "mcq", "question": "Which of these is exponential growth?",
+                             "options": ["Population increasing by 5% each year", "Height of a triangle",
+                                         "Sum of numbers"], "answer": "Population increasing by 5% each year"},
+                            {"type": "text", "question": "Solve for x: 3^x = 9", "answer": "2"},
+                            {"type": "mcq", "question": "ln(e^5) equals:", "options": ["5", "1", "e^5"], "answer": "5"},
+                            {"type": "text", "question": "Solve for x: 2^(x+1)=16", "answer": "3"},
+                            {"type": "mcq", "question": "Condense: log(a)+log(b)",
+                             "options": ["log(ab)", "log(a+b)", "log(a-b)"], "answer": "log(ab)"},
+                            {"type": "text", "question": "Solve for x: log2(x)=5", "answer": "32"},
+                            {"type": "mcq", "question": "Domain of f(x)=ln(x-3)?", "options": ["x>3", "x<3", "x≥0"],
+                             "answer": "x>3"},
+                            {"type": "text", "question": "Determine x: e^(2x)=7", "answer": "ln(7)/2"}
+                        ],
                         "Medium": [],
                         "Hard": []
                     },
-                    "Unit 3": {  # Trigonometric & Polar Functions
-                        "Easy": [],
+                    "Unit 3": {
+                        "Easy": [
+                            {"type": "mcq", "question": "sin(π/2)=?", "options": ["1", "0", "-1"], "answer": "1"},
+                            {"type": "text", "question": "Find cos(0)", "answer": "1"},
+                            {"type": "mcq", "question": "Which function is periodic?",
+                             "options": ["sin(x)", "x^2+1", "x^3-2"], "answer": "sin(x)"},
+                            {"type": "text", "question": "Evaluate tan(π/4)", "answer": "1"},
+                            {"type": "mcq", "question": "Amplitude of f(x)=2sin(x)?", "options": ["2", "1", "0"],
+                             "answer": "2"},
+                            {"type": "text", "question": "Solve for x: 2sin(x)-1=0, x in [0,2π]", "answer": "π/6,5π/6"},
+                            {"type": "mcq", "question": "cos(θ)=1/2, θ in [0,2π]?",
+                             "options": ["π/3 or 5π/3", "π/2 or π", "π/4 or 3π/4"], "answer": "π/3 or 5π/3"},
+                            {"type": "text", "question": "Convert polar coordinates (2, π/2) to rectangular",
+                             "answer": "(0,2)"},
+                            {"type": "mcq", "question": "Period of sin(3x)?", "options": ["2π/3", "2π", "3π"],
+                             "answer": "2π/3"},
+                            {"type": "text", "question": "Find sin(2θ) if sin(θ)=1/2", "answer": "√3/2"}
+                        ],
                         "Medium": [],
                         "Hard": []
                     },
-                    "Unit 4": {  # Parameters, Vectors, Matrices
-                        "Easy": [],
+                    "Unit 4": {
+                        "Easy": [
+                            {"type": "text", "question": "Evaluate the vector: v = <3,4>, find ||v||", "answer": "5"},
+                            {"type": "mcq", "question": "If r=<2,3> and s=<1,0>, r+s=?",
+                             "options": ["<3,3>", "<1,3>", "<2,0>"], "answer": "<3,3>"},
+                            {"type": "text", "question": "Multiply matrices: [[1,2],[3,4]] * [[1,0],[0,1]]",
+                             "answer": "[[1,2],[3,4]]"},
+                            {"type": "mcq", "question": "Which of these is a parametric equation?",
+                             "options": ["x=t^2,y=t", "y=x^2+3", "f(x)=3x+1"], "answer": "x=t^2,y=t"},
+                            {"type": "text", "question": "Find the vector projection of <3,4> onto <1,0>",
+                             "answer": "<3,0>"},
+                            {"type": "mcq", "question": "Determinant of [[2,1],[3,4]]", "options": ["5", "8", "1"],
+                             "answer": "5"},
+                            {"type": "text", "question": "Solve for t: x=2t+1, y=3t-2", "answer": "1"},
+                            {"type": "mcq", "question": "Which operation rotates a vector 90° clockwise?",
+                             "options": ["Matrix multiplication", "Dot product", "Cross product"],
+                             "answer": "Matrix multiplication"},
+                            {"type": "text", "question": "Find the inverse of [[1,2],[3,4]]",
+                             "answer": "[[-2,1],[3/2,-1/2]]"},
+                            {"type": "mcq", "question": "Parametric curve: x=cos(t),y=sin(t) is a:",
+                             "options": ["Circle", "Line", "Parabola"], "answer": "Circle"}
+                        ],
                         "Medium": [],
                         "Hard": []
                     }
                 }
 
-                # Display questions for the selected unit and difficulty
+                # Check existence before rendering
                 if unit in questions and difficulty in questions[unit] and questions[unit][difficulty]:
                     st.subheader(f"{unit} Questions ({difficulty} level)")
                     user_answers = {}
@@ -328,8 +390,8 @@ with main_tabs[2]:
                     if st.button("Submit Answers"):
                         score = 0
                         for i, q in enumerate(questions[unit][difficulty], 1):
-                            ans = user_answers[i].strip().lower()
-                            correct = q["answer"].strip().lower()
+                            ans = str(user_answers[i]).strip().lower()
+                            correct = str(q["answer"]).strip().lower()
                             if ans == correct:
                                 score += 1
                         st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
