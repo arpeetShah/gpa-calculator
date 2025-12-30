@@ -109,7 +109,7 @@ main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
 with main_tabs[0]:
     st.subheader("Welcome to EduSphere!")
     st.write(
-        "Hey! I created this app/website for YOU to have a convenitent way to track your educational path. There is not platform(until now) which allows you to get your CUMMALITIVE GPA and that was the inspiration of this. Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning!")
+        "Hey! I created this app/website for YOU to have a convenitent way to track your educational path. There is not platform(until now) which allows you to get your CUMMALITIVE GPA and that was the inspiration of this. Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! Addtitionally, you do not need to give any personal credentials as you just manually input all of your grades and no one (including me) will have access to your personal information and grades")
     st.image(
         "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80",
         use_column_width=True
