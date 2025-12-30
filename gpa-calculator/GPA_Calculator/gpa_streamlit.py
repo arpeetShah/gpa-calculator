@@ -11,8 +11,37 @@ st.set_page_config(
     layout="centered"
 )
 
-st.title("📘 GPA Calculator")
-student_name = st.text_input("Your Name (optional)")
+# -----------------------------
+# SIMPLE LOGIN SYSTEM
+# -----------------------------
+st.title("📘 GPA Calculator Login")
+
+# Example credentials (username:password)
+credentials = {
+    "student1": "mypassword123",
+    "student2": "password456"
+}
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+    st.session_state.user = None
+
+if not st.session_state.logged_in:
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if username in credentials and credentials[username] == password:
+            st.session_state.logged_in = True
+            st.session_state.user = username
+            st.success(f"Welcome {username}!")
+        else:
+            st.error("Incorrect username or password")
+    st.stop()  # Stop execution if not logged in
+
+# -----------------------------
+# USER IS LOGGED IN
+# -----------------------------
+st.title(f"📘 GPA Calculator ({st.session_state.user})")
 
 # -----------------------------
 # COURSE LIST + WEIGHTS
@@ -55,13 +84,13 @@ def unweighted_gpa(avg):
 
 
 # -----------------------------
-# SESSION STATE FOR HISTORY AND MIDDLE SCHOOL
+# SESSION STATE
 # -----------------------------
 if "history" not in st.session_state:
     st.session_state.history = []
 
 if "ms_grades" not in st.session_state:
-    st.session_state.ms_grades = {}  # Saved middle school grades
+    st.session_state.ms_grades = {}  # Save Middle School grades
 
 # -----------------------------
 # TABS
@@ -82,12 +111,11 @@ with tab1:
         num = int(item.split(".")[0])
         name, base_weight = courses[num]
 
-        # If grades already exist, prefill them
         if num in st.session_state.ms_grades:
-            sem1 = st.number_input(f"{name} Semester 1 grade", 0.0, 100.0,
+            sem1 = st.number_input(f"{name} Semester 1 grade",
                                    value=st.session_state.ms_grades[num]["sem1"],
                                    key=f"ms_{num}_1")
-            sem2 = st.number_input(f"{name} Semester 2 grade", 0.0, 100.0,
+            sem2 = st.number_input(f"{name} Semester 2 grade",
                                    value=st.session_state.ms_grades[num]["sem2"],
                                    key=f"ms_{num}_2")
         else:
@@ -109,7 +137,6 @@ with tab2:
     )
 
     quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
-
     gt_year = None
     hs_grades = {}
 
@@ -174,7 +201,7 @@ if st.button("📊 Calculate GPA", use_container_width=True):
 
         # Save history
         record = {
-            "Name": student_name or "Anonymous",
+            "User": st.session_state.user,
             "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
             "Weighted GPA": weighted_final,
             "Unweighted GPA": unweighted_final
