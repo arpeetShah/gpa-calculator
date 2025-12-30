@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # =============================
-# STYLES (UNCHANGED)
+# STYLES (UNCHANGED + BUBBLE DROPDOWN)
 # =============================
 st.markdown("""
 <style>
@@ -36,6 +36,16 @@ body {
     background: linear-gradient(135deg, #4f46e5, #9333ea);
     color: white;
     font-weight: bold;
+}
+/* Bubbly multiselect tags */
+.stMultiSelect [data-baseweb="select"] {
+    border-radius: 25px;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+.stMultiSelect [data-baseweb="option"] {
+    border-radius: 25px;
+    background: rgba(255,255,255,0.08);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -107,7 +117,8 @@ courses = {
     "Survey of Business Marketing Finance": 5.0,
     "Health": 5.0,
     "Computer Science": 5.5,
-    "Instruments": 5.0
+    "Instruments": 5.0,
+    "GT Humanities / AP World": 5.5
 }
 
 # =============================
@@ -150,7 +161,6 @@ if not st.session_state.user:
                 st.experimental_rerun()
             else:
                 st.error("Invalid credentials")
-
     st.stop()
 
 # =============================
@@ -165,32 +175,27 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    for course in courses:
+    ms_courses = st.multiselect("Select Middle School Courses Taken", list(courses.keys()), key="ms_multiselect")
+    for course in ms_courses:
         c.execute("""
         SELECT s1, s2, taken, gt_year FROM grades
         WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
         row = c.fetchone() or (0.0, 0.0, 0, None)
 
-        taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
+        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
 
-        if taken:
-            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
-
-            if course == "GT Humanities / AP World":
-                gt_year = st.radio("GT/AP World Year", [1, 2], index=row[3]-1 if row[3] else 0, key="gt_year")
-            else:
-                gt_year = None
-        else:
-            s1, s2, gt_year = 0.0, 0.0, None
+        gt_year = None
+        if course == "GT Humanities / AP World":
+            gt_year = st.radio("GT/AP World Year", [1, 2], index=row[3]-1 if row[3] else 0, key=f"gt_year")
 
         c.execute("""
         INSERT OR REPLACE INTO grades
         VALUES (?,?,?,?,?,?,?,?,?,?,?)
         """, (
             st.session_state.user, course, "MS",
-            s1, s2, 0.0, 0.0, 0.0, 0.0, int(taken),
+            s1, s2, 0.0, 0.0, 0.0, 0.0, 1,
             gt_year
         ))
     conn.commit()
@@ -202,19 +207,17 @@ with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
 
-    for course in courses:
+    hs_courses = st.multiselect("Select High School Courses Taken", list(courses.keys()), key="hs_multiselect")
+    for course in hs_courses:
         c.execute("""
-        SELECT q1, q2, q3, q4, taken, gt_year FROM grades
+        SELECT q1, q2, q3, q4, taken FROM grades
         WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (0.0, 0.0, 0.0, 0.0, 0, None)
-
-        taken = st.checkbox(course, value=bool(row[4]), key=f"hs_take_{course}")
+        row = c.fetchone() or (0.0, 0.0, 0.0, 0.0, 0)
 
         grades = []
-        if taken:
-            for i in range(quarters):
-                grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}"))
+        for i in range(quarters):
+            grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}"))
 
         padded = grades + [0.0] * (4 - len(grades))
 
@@ -225,7 +228,7 @@ with tabs[1]:
             st.session_state.user, course, "HS",
             0.0, 0.0,
             *padded,
-            int(taken),
+            1,
             None
         ))
     conn.commit()
