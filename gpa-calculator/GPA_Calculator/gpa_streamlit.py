@@ -58,10 +58,12 @@ CREATE TABLE IF NOT EXISTS grades (
     username TEXT,
     course TEXT,
     section TEXT,
-    p1 REAL,
-    p2 REAL,
-    p3 REAL,
-    p4 REAL,
+    s1 REAL,
+    s2 REAL,
+    q1 REAL,
+    q2 REAL,
+    q3 REAL,
+    q4 REAL,
     taken INTEGER,
     PRIMARY KEY (username, course, section)
 )
@@ -124,13 +126,18 @@ if not st.session_state.user:
             if c.fetchone():
                 st.error("Username already exists")
             else:
-                c.execute("INSERT INTO users VALUES (?,?)", (username, hash_pw(password)))
+                c.execute(
+                    "INSERT INTO users VALUES (?,?)",
+                    (username, hash_pw(password))
+                )
                 conn.commit()
                 st.success("Account created! Please login.")
     else:
         if st.button("Login"):
-            c.execute("SELECT * FROM users WHERE username=? AND password=?",
-                      (username, hash_pw(password)))
+            c.execute(
+                "SELECT * FROM users WHERE username=? AND password=?",
+                (username, hash_pw(password))
+            )
             if c.fetchone():
                 st.session_state.user = username
                 st.experimental_rerun()
@@ -140,7 +147,7 @@ if not st.session_state.user:
     st.stop()
 
 # =============================
-# MAIN
+# MAIN APP
 # =============================
 st.title(f"👋 Welcome, {st.session_state.user}")
 tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
@@ -153,22 +160,33 @@ with tabs[0]:
 
     for course in courses:
         c.execute("""
-        SELECT p1, p2, taken FROM grades
-        WHERE username=? AND course=? AND section="MS"
+        SELECT s1, s2, taken FROM grades
+        WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
         row = c.fetchone() or (90.0, 90.0, 0)
 
-        taken = st.checkbox(f"{course}", value=bool(row[2]), key=f"ms_take_{course}")
+        taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
 
         if taken:
-            sem1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms1_{course}")
-            sem2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms2_{course}")
+            s1 = st.number_input(
+                f"{course} – Semester 1",
+                0.0, 100.0, row[0], key=f"ms_s1_{course}"
+            )
+            s2 = st.number_input(
+                f"{course} – Semester 2",
+                0.0, 100.0, row[1], key=f"ms_s2_{course}"
+            )
         else:
-            sem1, sem2 = None, None
+            s1, s2 = None, None
 
         c.execute("""
-        INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?)
-        """, (st.session_state.user, course, "MS", sem1, sem2, None, None, int(taken)))
+        INSERT OR REPLACE INTO grades
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        """, (
+            st.session_state.user, course, "MS",
+            s1, s2, None, None, None, None,
+            int(taken)
+        ))
     conn.commit()
 
 # =============================
@@ -180,12 +198,12 @@ with tabs[1]:
 
     for course in courses:
         c.execute("""
-        SELECT p1, p2, p3, p4, taken FROM grades
-        WHERE username=? AND course=? AND section="HS"
+        SELECT q1, q2, q3, q4, taken FROM grades
+        WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
         row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0)
 
-        taken = st.checkbox(f"{course}", value=bool(row[4]), key=f"hs_take_{course}")
+        taken = st.checkbox(course, value=bool(row[4]), key=f"hs_take_{course}")
 
         grades = []
         if taken:
@@ -194,18 +212,25 @@ with tabs[1]:
                     st.number_input(
                         f"{course} – Quarter {i+1}",
                         0.0, 100.0, row[i],
-                        key=f"hs_{course}_{i}"
+                        key=f"hs_q_{course}_{i}"
                     )
                 )
 
         padded = grades + [None] * (4 - len(grades))
+
         c.execute("""
-        INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?)
-        """, (st.session_state.user, course, "HS", *padded, int(taken)))
+        INSERT OR REPLACE INTO grades
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        """, (
+            st.session_state.user, course, "HS",
+            None, None,
+            *padded,
+            int(taken)
+        ))
     conn.commit()
 
 # =============================
-# GPA
+# GPA & ANALYTICS
 # =============================
 with tabs[2]:
     st.header("GPA Results & Analytics")
@@ -215,10 +240,32 @@ with tabs[2]:
 
         for course, weight in courses.items():
             c.execute("""
-            SELECT p1, p2, p3, p4, taken FROM grades
-            WHERE username=? AND course=? AND section="HS"
+            SELECT q1, q2, q3, q4, taken FROM grades
+            WHERE username=? AND course=? AND section='HS'
             """, (st.session_state.user, course))
             row = c.fetchone()
 
             if row and row[4]:
-                valid = [x for x in row[:4] if x is not
+                valid = [x for x in row[:4] if x is not None]
+
+                if valid:
+                    avg = sum(valid) / len(valid)
+                    weighted.append(weighted_gpa(avg, weight))
+                    unweighted.append(unweighted_gpa(avg))
+
+        if not weighted:
+            st.warning("No high school courses selected.")
+        else:
+            w = round(sum(weighted) / len(weighted), 2)
+            uw = round(sum(unweighted) / len(unweighted), 2)
+
+            st.success(f"🎓 **Weighted GPA:** {w}")
+            st.success(f"📘 **Unweighted GPA:** {uw}")
+
+            st.subheader("📊 GPA Insight")
+            if w >= 5.5:
+                st.write("Your GPA is being boosted by strong performance in weighted courses.")
+            elif w >= 4.5:
+                st.write("Your GPA is solid, but higher-weight classes have the biggest impact.")
+            else:
+                st.write("Lower performance in GPA-heavy courses is pulling your GPA down.")
