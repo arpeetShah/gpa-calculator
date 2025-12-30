@@ -1,46 +1,70 @@
+# redeploy trigger
+
 import streamlit as st
-import sqlite3
 import pandas as pd
 import datetime
+import sqlite3
+import hashlib
 
 # -----------------------------
 # PAGE CONFIG
 # -----------------------------
 st.set_page_config(
-    page_title="GPA Calculator",
+    page_title="EduGenius GPA Tracker",
     page_icon="📘",
-    layout="wide"
+    layout="wide",
 )
 
 # -----------------------------
-# DATABASE SETUP
+# STYLING
 # -----------------------------
-conn = sqlite3.connect('gpa_users.db', check_same_thread=False)
+st.markdown("""
+    <style>
+    .stApp {
+        background: linear-gradient(to right, #1e3c72, #2a5298, #6a3093);
+        color: #fff;
+    }
+    .tab-button {
+        border-radius: 20px !important;
+        padding: 10px 20px;
+        font-weight: bold;
+        margin-right: 5px;
+        background-color: rgba(255,255,255,0.2);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# -----------------------------
+# DATABASE
+# -----------------------------
+conn = sqlite3.connect("gpa_users.db")
 c = conn.cursor()
 
-# Create users table
 c.execute('''
-CREATE TABLE IF NOT EXISTS users (
-    username TEXT PRIMARY KEY,
-    password TEXT
-)
+    CREATE TABLE IF NOT EXISTS users (
+        username TEXT PRIMARY KEY,
+        password TEXT
+    )
 ''')
 
-# Create grades table
 c.execute('''
-CREATE TABLE IF NOT EXISTS grades (
-    username TEXT,
-    course TEXT,
-    section TEXT,
-    quarter INTEGER,
-    grade REAL,
-    PRIMARY KEY(username, course, section, quarter)
-)
+    CREATE TABLE IF NOT EXISTS grades (
+        username TEXT,
+        course TEXT,
+        section TEXT,
+        sem1 REAL,
+        sem2 REAL,
+        q1 REAL,
+        q2 REAL,
+        q3 REAL,
+        q4 REAL,
+        PRIMARY KEY(username, course, section)
+    )
 ''')
 conn.commit()
 
 # -----------------------------
-# COURSES & WEIGHTS
+# COURSE LIST + WEIGHTS
 # -----------------------------
 courses = {
     1: ("Spanish 1", 5.0),
@@ -63,11 +87,13 @@ courses = {
     18: ("Instruments", 5.0)
 }
 
+
 # -----------------------------
 # GPA FUNCTIONS
 # -----------------------------
 def weighted_gpa(avg, weight):
     return max(weight - ((100 - avg) * 0.1), 0)
+
 
 def unweighted_gpa(avg):
     if avg >= 90: return 4
@@ -76,107 +102,110 @@ def unweighted_gpa(avg):
     if avg >= 60: return 1
     return 0
 
-# -----------------------------
-# LOGIN & SIGNUP
-# -----------------------------
-def signup():
-    st.subheader("Sign Up")
-    new_user = st.text_input("Username", key="signup_user")
-    new_pass = st.text_input("Password", type="password", key="signup_pass")
-    if st.button("Create Account"):
-        if new_user and new_pass:
-            try:
-                c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (new_user, new_pass))
-                conn.commit()
-                st.success("Account created! Please login.")
-            except:
-                st.error("Username already exists!")
 
-def login():
-    st.subheader("Login")
-    user = st.text_input("Username", key="login_user")
-    pw = st.text_input("Password", type="password", key="login_pass")
-    if st.button("Login"):
-        c.execute("SELECT * FROM users WHERE username=? AND password=?", (user, pw))
-        if c.fetchone():
-            st.session_state.logged_in = True
-            st.session_state.username = user
-        else:
-            st.error("Invalid credentials")
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+
+# -----------------------------
+# LOGIN / SIGNUP
+# -----------------------------
+st.title("📘 EduGenius GPA Tracker")
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-    st.session_state.username = None
+if "username" not in st.session_state:
+    st.session_state.username = ""
 
-if not st.session_state.logged_in:
-    choice = st.radio("Select Option", ["Login", "Sign Up"])
-    if choice == "Sign Up":
-        signup()
+auth_choice = st.radio("Login or Signup?", ["Login", "Signup"], horizontal=True)
+
+username_input = st.text_input("Username")
+password_input = st.text_input("Password", type="password")
+
+if auth_choice == "Signup" and st.button("Create Account"):
+    c.execute("SELECT * FROM users WHERE username=?", (username_input,))
+    if c.fetchone():
+        st.error("Username already exists!")
     else:
-        login()
-    st.stop()
+        c.execute("INSERT INTO users (username, password) VALUES (?, ?)",
+                  (username_input, hash_password(password_input)))
+        conn.commit()
+        st.success("Account created! Please login.")
+elif auth_choice == "Login" and st.button("Login"):
+    c.execute("SELECT password FROM users WHERE username=?", (username_input,))
+    record = c.fetchone()
+    if record and record[0] == hash_password(password_input):
+        st.session_state.logged_in = True
+        st.session_state.username = username_input
+        st.success(f"Welcome, {username_input}!")
+    else:
+        st.error("Invalid credentials.")
 
 # -----------------------------
-# GPA CALCULATOR TABS
+# MAIN APP
 # -----------------------------
-st.title(f"Welcome, {st.session_state.username}!")
+if st.session_state.logged_in:
+    tab = st.selectbox("Choose tab", ["Middle School", "High School GPA"], index=0)
 
-tab1, tab2 = st.tabs(["Middle School Grades", "High School Grades"])
+    username = st.session_state.username
 
-# -----------------------------
-# MIDDLE SCHOOL TAB
-# -----------------------------
-with tab1:
-    st.header("Middle School Grades")
-    ms_selected = st.multiselect("Select your Middle School courses", [v[0] for k,v in courses.items()])
-    ms_data = {}
-    for course in ms_selected:
-        grade = st.number_input(f"{course} Semester Average", 0.0, 100.0, key=f"ms_{course}")
-        ms_data[course] = grade
-        # Save to DB
-        c.execute("INSERT OR REPLACE INTO grades (username, course, section, quarter, grade) VALUES (?, ?, ?, ?, ?)",
-                  (st.session_state.username, course, "MS", 1, grade))
-    conn.commit()
+    if tab == "Middle School":
+        st.header("📝 Middle School Grades")
+        ms_grades = {}
+        for num, (name, base_weight) in courses.items():
+            c.execute('SELECT sem1, sem2 FROM grades WHERE username=? AND course=? AND section="MS"', (username, name))
+            row = c.fetchone()
+            default_sem1 = row[0] if row else 90.0
+            default_sem2 = row[1] if row else 90.0
+            sem1 = st.number_input(f"{name} Semester 1", 0, 100, value=default_sem1, key=f"ms_{num}_1")
+            sem2 = st.number_input(f"{name} Semester 2", 0, 100, value=default_sem2, key=f"ms_{num}_2)
+            ms_grades[name] = (sem1, sem2)
+            # Save to DB
+            c.execute('INSERT OR REPLACE INTO grades (username, course, section, sem1, sem2) VALUES (?, ?, "MS", ?, ?)',
+                      (username, name, sem1, sem2))
+            conn.commit()
 
-# -----------------------------
-# HIGH SCHOOL TAB
-# -----------------------------
-with tab2:
-    st.header("High School Grades")
-    hs_selected = st.multiselect("Select your High School courses", [v[0] for k,v in courses.items()])
-    quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
-    hs_data = {}
+            elif tab == "High School GPA":
+            st.header("📊 High School GPA Calculator")
+            hs_selected = st.multiselect("Select your courses", [f"{k}. {v[0]}" for k, v in courses.items()])
+            quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
+            weightages = {}
+            grades_dict = {}
 
-    for course in hs_selected:
-        weight = next((v[1] for k,v in courses.items() if v[0]==course), 5.5)
-        qs = []
-        for q in range(1, quarters_done+1):
-            grade = st.number_input(f"{course} Quarter {q}", 0.0, 100.0, 90.0, key=f"hs_{course}_{q}")
-            qs.append(grade)
-            c.execute("INSERT OR REPLACE INTO grades (username, course, section, quarter, grade) VALUES (?, ?, ?, ?, ?)",
-                      (st.session_state.username, course, "HS", q, grade))
-        hs_data[course] = {
-            "Average": sum(qs)/len(qs),
-            "Weighted GPA": weighted_gpa(sum(qs)/len(qs), weight),
-            "Unweighted GPA": unweighted_gpa(sum(qs)/len(qs))
-        }
-    conn.commit()
+            for item in hs_selected:
+                num = int(item.split(".")[0])
+            name, base_weight = courses[num]
+            if num == 9:
+                gt_year = st.radio("GT Humanities Year", [1, 2], horizontal=True)
+            weight = 5.5 if gt_year == 1 else 6.0
+            else:
+            weight = base_weight
+            weightages[name] = weight
 
-    if st.button("Calculate GPA"):
-        df = pd.DataFrame(hs_data).T
-        weighted_final = round(df["Weighted GPA"].mean(),2)
-        unweighted_final = round(df["Unweighted GPA"].mean(),2)
-        st.success(f"Weighted GPA: {weighted_final}")
-        st.success(f"Unweighted GPA: {unweighted_final}")
+            qs = []
+            for q in range(1, quarters_done + 1):
+                qs.append(st.number_input(f"{name} Quarter {q}", 0, 100, 90, key=f"hs_{num}_{q}"))
+            grades_dict[name] = qs
 
-        st.subheader("Analytics")
-        best_courses = df[df["Weighted GPA"] > weighted_final].index.tolist()
-        worst_courses = df[df["Weighted GPA"] < weighted_final].index.tolist()
-        st.write("Doing well in:", best_courses)
-        st.write("Needs improvement:", worst_courses)
+            if st.button("Calculate GPA"):
+                results = {}
+            for course, qs in grades_dict.items():
+                avg = sum(qs) / len(qs)
+            results[course] = {
+                "Average": avg,
+                "Weighted GPA": weighted_gpa(avg, weightages[course]),
+                "Unweighted GPA": unweighted_gpa(avg)
+            }
+            df = pd.DataFrame(results).T
+            weighted_final = round(df["Weighted GPA"].mean(), 2)
+            unweighted_final = round(df["Unweighted GPA"].mean(), 2)
+            st.success(f"Weighted GPA: {weighted_final}")
+            st.success(f"Unweighted GPA: {unweighted_final}")
 
-        st.bar_chart(df[["Weighted GPA","Unweighted GPA"]])
-
-# -----------------------------
-# END OF APP
-# -----------------------------
+            st.subheader("GPA Analytics")
+            for course, data in results.items():
+                if
+            data["Weighted GPA"] >= df["Weighted GPA"].mean():
+            st.text(f"{course} is helping your GPA!")
+            else:
+            st.text(f"{course} is dragging your GPA down.")
