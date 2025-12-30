@@ -1,6 +1,5 @@
 import streamlit as st
 import sqlite3
-import hashlib
 
 # =============================
 # PAGE CONFIG
@@ -47,15 +46,7 @@ conn = sqlite3.connect("gpa_users.db", check_same_thread=False)
 c = conn.cursor()
 
 c.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    username TEXT PRIMARY KEY,
-    password TEXT
-)
-""")
-
-c.execute("""
 CREATE TABLE IF NOT EXISTS grades (
-    username TEXT,
     course TEXT,
     section TEXT,
     s1 REAL,
@@ -64,9 +55,9 @@ CREATE TABLE IF NOT EXISTS grades (
     q2 REAL,
     q3 REAL,
     q4 REAL,
-    taken INTEGER,
     gt_year INTEGER,
-    PRIMARY KEY (username, course, section)
+    taken INTEGER,
+    PRIMARY KEY (course, section)
 )
 """)
 conn.commit()
@@ -74,9 +65,6 @@ conn.commit()
 # =============================
 # HELPERS
 # =============================
-def hash_pw(pw):
-    return hashlib.sha256(pw.encode()).hexdigest()
-
 def weighted_gpa(avg, weight):
     return max(weight - ((100 - avg) * 0.1), 0)
 
@@ -99,7 +87,6 @@ courses = {
     "Geometry": 5.5,
     "Algebra 2": 5.5,
     "AP Precalculus": 6.0,
-    "GT Humanities / AP World": None,
     "Biology": 5.5,
     "Chemistry": 5.5,
     "AP Human Geography": 6.0,
@@ -108,50 +95,14 @@ courses = {
     "Survey of Business Marketing Finance": 5.0,
     "Health": 5.0,
     "Computer Science": 5.5,
-    "Instruments": 5.0
+    "Instruments": 5.0,
+    "GT Humanities / AP World": None
 }
-
-# =============================
-# SESSION
-# =============================
-# Temporarily disabled authentication
-# if "user" not in st.session_state:
-#     st.session_state.user = None
-
-# =============================
-# AUTHENTICATION (COMMENTED OUT)
-# =============================
-"""
-if not st.session_state.user:
-    st.title("🎓 EduSphere")
-    mode = st.radio("Welcome", ["Login", "Sign Up"], horizontal=True)
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
-    if mode == "Sign Up":
-        if st.button("Create Account"):
-            c.execute("SELECT * FROM users WHERE username=?", (username,))
-            if c.fetchone():
-                st.error("Username already exists")
-            else:
-                c.execute("INSERT INTO users VALUES (?,?)", (username, hash_pw(password)))
-                conn.commit()
-                st.success("Account created! Please login.")
-    else:
-        if st.button("Login"):
-            c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, hash_pw(password)))
-            if c.fetchone():
-                st.session_state.user = username
-                st.experimental_rerun()
-            else:
-                st.error("Invalid credentials")
-    st.stop()
-"""
 
 # =============================
 # MAIN APP
 # =============================
-username = "TestUser"  # placeholder while login is disabled
-st.title(f"👋 Welcome, {username}")
+st.title(f"🎓 EduSphere GPA Tracker")
 tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
 # =============================
@@ -159,23 +110,29 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 # =============================
 with tabs[0]:
     st.header("Middle School Grades")
-    ms_courses = st.multiselect("Select Middle School Courses", list(courses.keys()), key="ms_multiselect")
-    for course in ms_courses:
+    for course in courses:
         c.execute("""
         SELECT s1, s2, taken FROM grades
-        WHERE username=? AND course=? AND section='MS'
-        """, (username, course))
+        WHERE course=? AND section='MS'
+        """, (course,))
         row = c.fetchone() or (90.0, 90.0, 0)
 
-        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+        taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
+
+        if taken:
+            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+        else:
+            s1, s2 = None, None
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?, ?, ?)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
         """, (
-            username, course, "MS",
-            s1, s2, None, None, None, None, 1, None
+            course, "MS",
+            s1, s2, None, None, None, None,
+            None,
+            int(taken)
         ))
     conn.commit()
 
@@ -185,30 +142,45 @@ with tabs[0]:
 with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
-    hs_courses = st.multiselect("Select High School Courses", list(courses.keys()), key="hs_multiselect")
-    for course in hs_courses:
+
+    for course in courses:
         c.execute("""
-        SELECT q1, q2, q3, q4, taken, gt_year FROM grades
-        WHERE username=? AND course=? AND section='HS'
-        """, (username, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0, None)
+        SELECT q1, q2, q3, q4, gt_year, taken FROM grades
+        WHERE course=? AND section='HS'
+        """, (course,))
+        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, None, 0)
+
+        taken = st.checkbox(course, value=bool(row[5]), key=f"hs_take_{course}")
 
         grades = []
-        for i in range(quarters):
-            grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}"))
+        if taken:
+            for i in range(quarters):
+                grades.append(
+                    st.number_input(
+                        f"{course} – Quarter {i+1}",
+                        0.0, 100.0, row[i],
+                        key=f"hs_q_{course}_{i}"
+                    )
+                )
 
-        gt_year = row[5]
-        if course == "GT Humanities / AP World":
-            index_default = 0 if not gt_year else gt_year - 1
-            gt_year = st.radio("GT/AP World Year", [1, 2], index=index_default, key=f"hs_gt_year_{course}")
+            if course == "GT Humanities / AP World":
+                gt_year = st.radio("GT/AP World Year", [1, 2], index=row[4]-1 if row[4] else 0)
+            else:
+                gt_year = None
+        else:
+            grades = [None]*quarters
+            gt_year = None
 
-        padded = grades + [None] * (4 - len(grades))
+        padded = grades + [None]*(4-len(grades))
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?, ?, ?)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
         """, (
-            username, course, "HS",
-            None, None, *padded, 1, gt_year
+            course, "HS",
+            None, None,
+            *padded,
+            gt_year,
+            int(taken)
         ))
     conn.commit()
 
@@ -217,21 +189,20 @@ with tabs[1]:
 # =============================
 with tabs[2]:
     st.header("GPA Results & Analytics")
+
     if st.button("🎯 Calculate GPA"):
         weighted, unweighted = [], []
 
         for course, weight in courses.items():
             c.execute("""
-            SELECT q1, q2, q3, q4, taken, gt_year FROM grades
-            WHERE username=? AND course=? AND section='HS'
-            """, (username, course))
+            SELECT q1, q2, q3, q4, taken FROM grades
+            WHERE course=? AND section='HS'
+            """, (course,))
             row = c.fetchone()
 
             if row and row[4]:
-                if course == "GT Humanities / AP World":
-                    weight = 5.5 if row[5] == 1 else 6.0
-
                 valid = [x for x in row[:4] if x is not None]
+
                 if valid:
                     avg = sum(valid)/len(valid)
                     weighted.append(weighted_gpa(avg, weight))
@@ -242,6 +213,7 @@ with tabs[2]:
         else:
             w = round(sum(weighted)/len(weighted), 2)
             uw = round(sum(unweighted)/len(unweighted), 2)
+
             st.success(f"🎓 **Weighted GPA:** {w}")
             st.success(f"📘 **Unweighted GPA:** {uw}")
 
