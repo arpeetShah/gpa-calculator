@@ -1,8 +1,9 @@
-# GPA Calculator Modernized with Tabs, Gradient Background, Login, and GPA Analytics
-
 import streamlit as st
 import pandas as pd
 import datetime
+import json
+import os
+import hashlib
 
 # -----------------------------
 # PAGE CONFIG
@@ -26,16 +27,12 @@ st.markdown(
         background-color: #4CAF50;
         color: white;
     }
-    .stDownloadButton>button {
-        background-color: #1f77b4;
-        color: white;
-    }
     </style>
     """, unsafe_allow_html=True
 )
 
 # -----------------------------
-# COURSE LIST + WEIGHTS
+# COURSE LIST
 # -----------------------------
 courses = {
     1: ("Spanish 1", 5.0),
@@ -74,43 +71,72 @@ def unweighted_gpa(avg):
     return 0
 
 
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+
+# -----------------------------
+# USER DATABASE
+# -----------------------------
+DB_FILE = "users.json"
+if not os.path.exists(DB_FILE):
+    with open(DB_FILE, "w") as f:
+        json.dump({}, f)
+
+
+def load_users():
+    with open(DB_FILE, "r") as f:
+        return json.load(f)
+
+
+def save_users(users):
+    with open(DB_FILE, "w") as f:
+        json.dump(users, f, indent=4)
+
+
 # -----------------------------
 # LOGIN / SIGNUP
 # -----------------------------
+users = load_users()
+
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-if "users" not in st.session_state:
-    st.session_state.users = {}  # username: password
-
 if not st.session_state.logged_in:
     st.title("📘 GPA Calculator Login / Sign Up")
-
     option = st.radio("Choose:", ["Login", "Sign Up"], horizontal=True)
-
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
     if st.button("Submit"):
         if option == "Sign Up":
-            if username in st.session_state.users:
+            if username in users:
                 st.error("Username already exists")
             else:
-                st.session_state.users[username] = password
+                users[username] = {
+                    "password": hash_password(password),
+                    "ms_grades": {},
+                    "hs_grades": {},
+                    "history": []
+                }
+                save_users(users)
                 st.success("Sign up successful! Please login.")
         else:  # Login
-            if username in st.session_state.users and st.session_state.users[username] == password:
+            if username in users and users[username]["password"] == hash_password(password):
                 st.session_state.logged_in = True
                 st.session_state.user = username
             else:
                 st.error("Incorrect username or password")
 
+# -----------------------------
+# MAIN APP
+# -----------------------------
 if st.session_state.logged_in:
-    st.title(f"📘 Welcome, {st.session_state.user}!")
+    current_user = st.session_state.user
+    user_data = users[current_user]
 
-    # -----------------------------
-    # TAB LAYOUT
-    # -----------------------------
+    st.title(f"📘 Welcome, {current_user}!")
+
     tabs = st.tabs(["Middle School Grades", "High School Grades", "GPA Results"])
 
     # -----------------------------
@@ -118,20 +144,22 @@ if st.session_state.logged_in:
     # -----------------------------
     with tabs[0]:
         st.header("📝 Middle School Grades")
-        ms_grades = {}
+        ms_grades = user_data.get("ms_grades", {})
         ms_courses_selected = st.multiselect(
             "Select Middle School Courses",
-            [f"{k}. {v[0]}" for k, v in courses.items()]
+            [f"{k}. {v[0]}" for k, v in courses.items()],
+            default=list(ms_grades.keys())
         )
         for item in ms_courses_selected:
             num = int(item.split(".")[0])
             name, base_weight = courses[num]
             if num == 9:
-                gt_year = st.radio(f"{name} year?", [1, 2], horizontal=True)
+                gt_year = st.radio(f"{name} year?", [1, 2], horizontal=True, index=0)
                 weight = 5.5 if gt_year == 1 else 6.0
             else:
                 weight = base_weight
-            sem = st.number_input(f"{name} Semester Average", 0.0, 100.0, 90.0, key=f"ms_{num}")
+            prev = ms_grades.get(name, {}).get("Average", 90.0)
+            sem = st.number_input(f"{name} Semester Average", 0.0, 100.0, prev, key=f"ms_{num}")
             ms_grades[name] = {
                 "Average": sem,
                 "Weighted GPA": weighted_gpa(sem, weight),
@@ -143,23 +171,26 @@ if st.session_state.logged_in:
     # -----------------------------
     with tabs[1]:
         st.header("📝 High School Grades")
-        hs_grades = {}
+        hs_grades = user_data.get("hs_grades", {})
         hs_courses_selected = st.multiselect(
             "Select High School Courses",
-            [f"{k}. {v[0]}" for k, v in courses.items()]
+            [f"{k}. {v[0]}" for k, v in courses.items()],
+            default=list(hs_grades.keys())
         )
         quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
         for item in hs_courses_selected:
             num = int(item.split(".")[0])
             name, base_weight = courses[num]
             if num == 9:
-                gt_year = st.radio(f"{name} year?", [1, 2], horizontal=True)
+                gt_year = st.radio(f"{name} year?", [1, 2], horizontal=True, index=0)
                 weight = 5.5 if gt_year == 1 else 6.0
             else:
                 weight = base_weight
+            prev_qs = hs_grades.get(name, {}).get("Average", 90.0)
             qs = []
             for q in range(1, quarters_done + 1):
-                qs.append(st.number_input(f"{name} Quarter {q}", 0.0, 100.0, 90.0, key=f"hs_{num}_{q}"))
+                prev = prev_qs if isinstance(prev_qs, float) else 90.0
+                qs.append(st.number_input(f"{name} Quarter {q}", 0.0, 100.0, prev, key=f"hs_{num}_{q}"))
             avg = sum(qs) / len(qs)
             hs_grades[name] = {
                 "Average": avg,
@@ -181,14 +212,26 @@ if st.session_state.logged_in:
             st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
             st.bar_chart(df[["Weighted GPA", "Unweighted GPA"]])
 
-            # -----------------------------
-            # ANALYTICS INSIGHTS
-            # -----------------------------
+            # Analytics / Insights
             top_course = df["Weighted GPA"].idxmax()
             bottom_course = df["Weighted GPA"].idxmin()
             st.subheader("📈 Analytics / Insights")
             st.markdown(f"- **Top contributor:** {top_course} ({df.loc[top_course, 'Weighted GPA']} GPA)")
             st.markdown(f"- **Lowest contributor:** {bottom_course} ({df.loc[bottom_course, 'Weighted GPA']} GPA)")
 
-        else:
-            st.info("Select courses in the tabs above to see GPA results")
+    # -----------------------------
+    # SAVE USER DATA
+    # -----------------------------
+    user_data["ms_grades"] = ms_grades
+    user_data["hs_grades"] = hs_grades
+    if "history" not in user_data:
+        user_data["history"] = []
+    # add current GPA calculation to history
+    record = {
+        "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "Weighted GPA": weighted_final,
+        "Unweighted GPA": unweighted_final
+    }
+    user_data["history"].append(record)
+    users[current_user] = user_data
+    save_users(users)
