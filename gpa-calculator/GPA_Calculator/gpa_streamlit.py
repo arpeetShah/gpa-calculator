@@ -274,16 +274,61 @@ with main_tabs[2]:
         st.header("Math Quiz")
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
 
+        # Algebra 1 Questions
         if math_level == "Algebra 1":
             q1 = st.radio("Solve for x: 2x + 5 = 13", ["x = 3", "x = 4", "x = 5"])
             q2 = st.radio("Simplify: 3(x + 4) - 2", ["3x + 10", "3x + 12", "3x + 2"])
+            q3 = st.radio("Factor: x^2 + 7x + 10", ["(x+5)(x+2)", "(x+10)(x+1)", "(x+2)(x+5)"])
+            q4 = st.radio("Solve: 5x - 9 = 16", ["x = 5", "x = 4", "x = 3"])
+
+        # Geometry Questions
         elif math_level == "Geometry":
             q1 = st.radio("The sum of angles in a triangle is?", ["180°", "360°", "90°"])
             q2 = st.radio("Find the area of a rectangle: length=5, width=3", ["15", "8", "10"])
+            q3 = st.radio("The Pythagorean theorem applies to which type of triangle?",
+                          ["Right triangle", "Equilateral triangle", "Isosceles triangle"])
+            q4 = st.radio("Find the circumference of a circle with radius 4", ["8π", "16π", "12π"])
+
+        # Algebra 2 Questions
         elif math_level == "Algebra 2":
             q1 = st.radio("Factor: x^2 + 5x + 6", ["(x+2)(x+3)", "(x+1)(x+6)", "(x+3)(x+4)"])
             q2 = st.radio("Solve: 2x - 7 = 5", ["x = 6", "x = 5", "x = 4"])
+            q3 = st.radio("Simplify: (x^2y)(3xy^2)", ["3x^3y^3", "3x^2y^2", "3x^3y^2"])
+            q4 = st.radio("Solve for y: 3y/4 = 9", ["y = 12", "y = 36", "y = 7"])
+
+        # AP Precalculus (FISD Units 1-4)
         else:
-            q1 = st.radio("Find the derivative of f(x)=3x^2", ["6x", "3x", "9x"])
-            q2 = st.radio("Evaluate: sin(π/2)", ["1", "0", "-1"])
+            st.subheader("AP Precalculus Quiz")
+            unit = st.selectbox("Which unit are you currently on?", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
+
+            # Unit 1 Questions
+            if unit in ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]:
+                st.write("Unit 1: Polynomial & Rational Functions")
+                st.radio("Q1: Find the average rate of change of f(x)=x^2 from x=2 to x=5", ["7", "6.5", "5"])
+                st.radio("Q2: Determine the zeros of f(x)=x^2-5x+6", ["x=2 and x=3", "x=1 and x=6", "x=-2 and x=-3"])
+                st.radio("Q3: Simplify the rational function (x^2-9)/(x+3)", ["x-3", "x+3", "x-9"])
+
+            # Unit 2 Questions
+            if unit in ["Unit 2", "Unit 3", "Unit 4"]:
+                st.write("Unit 2: Exponential & Logarithmic Functions")
+                st.radio("Q1: Solve for x: 2^x = 8", ["x = 3", "x = 2", "x = 4"])
+                st.radio("Q2: Simplify log(1000)", ["3", "2", "4"])
+                st.radio("Q3: Evaluate e^0", ["1", "0", "e"])
+
+            # Unit 3 Questions
+            if unit in ["Unit 3", "Unit 4"]:
+                st.write("Unit 3: Trigonometric & Polar Functions")
+                st.radio("Q1: sin(π/6) = ?", ["1/2", "√3/2", "1"])
+                st.radio("Q2: cos(π/3) = ?", ["1/2", "√3/2", "0"])
+                st.radio("Q3: Convert polar coordinates (r=5, θ=π/4) to rectangular",
+                         ["(5√2/2,5√2/2)", "(5,5)", "(√2,√2)"])
+
+            # Unit 4 Questions
+            if unit == "Unit 4":
+                st.write("Unit 4: Functions Involving Parameters, Vectors, and Matrices")
+                st.radio("Q1: Multiply matrix [[1,2],[3,4]] by vector [1,1]", ["[3,7]", "[1,2]", "[4,5]"])
+                st.radio("Q2: Parametric equations x=t^2, y=2t: find dy/dx at t=2", ["1", "2", "0"])
+                st.radio("Q3: Identify the output vector when applying matrix [[0,1],[-1,0]] to [2,3]",
+                         ["[3,-2]", "[2,3]", "[1,-1]"])
+
         st.success("Math quiz section loaded. Answers are not yet auto-graded.")
