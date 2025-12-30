@@ -110,8 +110,6 @@ with main_tabs[0]:
     st.subheader("Welcome to EduSphere!")
     st.image(
         "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80",
-    use_column_width=True
-),
         use_column_width=True
     )
     st.write("Track your GPA, analyze it, and practice quizzes to improve your learning!")
