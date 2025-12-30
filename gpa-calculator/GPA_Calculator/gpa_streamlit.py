@@ -1,6 +1,5 @@
 import streamlit as st
 import sqlite3
-import hashlib
 
 # =============================
 # PAGE CONFIG
@@ -48,34 +47,19 @@ c = conn.cursor()
 
 c.execute("""
 CREATE TABLE IF NOT EXISTS grades (
-    username TEXT,
-    course TEXT,
     section TEXT,
+    course TEXT,
     s1 REAL,
     s2 REAL,
     q1 REAL,
     q2 REAL,
     q3 REAL,
     q4 REAL,
-    taken INTEGER,
     gt_year INTEGER,
-    PRIMARY KEY (username, course, section)
+    PRIMARY KEY (section, course)
 )
 """)
 conn.commit()
-
-# =============================
-# HELPERS
-# =============================
-def weighted_gpa(avg, weight):
-    return max(weight - ((100 - avg) * 0.1), 0)
-
-def unweighted_gpa(avg):
-    if avg >= 90: return 4
-    if avg >= 80: return 3
-    if avg >= 70: return 2
-    if avg >= 60: return 1
-    return 0
 
 # =============================
 # COURSES
@@ -96,134 +80,135 @@ courses = {
     "Sports": 5.0,
     "Health": 5.0,
     "Computer Science": 5.5,
-    "AP Computer Science": 6.0,
+    "AP Computer Science Principles": 6.0,
     "Instruments": 5.0
 }
 
 # =============================
-# SESSION
+# HELPERS
 # =============================
-if "user" not in st.session_state:
-    st.session_state.user = "Anonymous"
+def weighted_gpa(avg, weight):
+    if weight is None:  # GT/AP World
+        weight = 5.5
+    return max(weight - ((100 - avg) * 0.1), 0)
+
+def unweighted_gpa(avg):
+    if avg >= 90: return 4
+    if avg >= 80: return 3
+    if avg >= 70: return 2
+    if avg >= 60: return 1
+    return 0
 
 # =============================
 # MAIN APP
 # =============================
-st.title(f"👋 Welcome, {st.session_state.user}")
+st.title("🎓 EduSphere")
 tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
-# =============================
+# -----------------------------
 # MIDDLE SCHOOL
-# =============================
+# -----------------------------
 with tabs[0]:
     st.header("Middle School Grades")
-    ms_course_gpas = {}
 
-    ms_selected = st.multiselect("Select your Middle School Courses", list(courses.keys()), key="ms_select")
-    for course in ms_selected:
-        c.execute("""
-        SELECT s1, s2 FROM grades
-        WHERE username=? AND course=? AND section='MS'
-        """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0)
+    selected_ms_courses = st.multiselect(
+        "Select your Middle School courses",
+        list(courses.keys())
+    )
 
-        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+    ms_grades = {}
+    for course in selected_ms_courses:
+        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, 90.0, key=f"ms_s1_{course}")
+        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, 90.0, key=f"ms_s2_{course}")
 
-        avg = (s1 + s2) / 2
-        ms_course_gpas[course] = avg
+        gt_year = None
+        if course == "GT / AP World History":
+            gt_year = st.radio(f"{course} – Year", [1, 2], horizontal=True, key="gt_year")
+
+        ms_grades[course] = {"s1": s1, "s2": s2, "gt_year": gt_year}
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?,?)
         """, (
-            st.session_state.user, course, "MS",
-            s1, s2, None, None, None, None,
-            1, None
+            "MS", course, s1, s2, None, None, None, None, gt_year
         ))
     conn.commit()
 
-# =============================
+# -----------------------------
 # HIGH SCHOOL
-# =============================
+# -----------------------------
 with tabs[1]:
     st.header("High School Grades")
-    hs_course_gpas = {}
+
+    selected_hs_courses = st.multiselect(
+        "Select your High School courses",
+        list(courses.keys())
+    )
+
     quarters = st.slider("Quarters Completed", 1, 4, 2)
+    hs_grades = {}
 
-    hs_selected = st.multiselect("Select your High School Courses", list(courses.keys()), key="hs_select")
-    for course in hs_selected:
-        c.execute("""
-        SELECT q1, q2, q3, q4, gt_year FROM grades
-        WHERE username=? AND course=? AND section='HS'
-        """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, None)
-
-        grades = []
+    for course in selected_hs_courses:
+        q_grades = []
         for i in range(quarters):
-            grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}"))
-        avg = sum(grades) / len(grades)
-        hs_course_gpas[course] = avg
+            q = st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, 90.0, key=f"hs_q_{course}_{i}")
+            q_grades.append(q)
 
-        gt_year = row[4]
+        gt_year = None
         if course == "GT / AP World History":
-            gt_year = st.radio("GT/AP World Year", [1, 2], horizontal=True, key="gt_year")
+            gt_year = st.radio(f"{course} – Year", [1, 2], horizontal=True, key=f"hs_gt_year")
 
-        padded = grades + [None] * (4 - len(grades))
+        hs_grades[course] = {"quarters": q_grades, "gt_year": gt_year}
 
+        padded = q_grades + [None]*(4 - len(q_grades))
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?,?)
         """, (
-            st.session_state.user, course, "HS",
-            None, None,
-            *padded,
-            1,
-            gt_year
+            "HS", course, None, None, padded[0], padded[1], padded[2], padded[3], gt_year
         ))
     conn.commit()
 
-# =============================
+# -----------------------------
 # GPA & ANALYTICS
-# =============================
+# -----------------------------
 with tabs[2]:
     st.header("GPA Results & Analytics")
 
     if st.button("🎯 Calculate GPA"):
-        weighted, unweighted = [], []
+        ms_course_gpas = {}
+        hs_course_gpas = {}
 
         # Middle School GPA
-        for avg in ms_course_gpas.values():
-            weighted.append(avg)  # weight ignored for MS
-            unweighted.append(unweighted_gpa(avg))
+        for course, data in ms_grades.items():
+            avg = (data["s1"] + data["s2"])/2
+            weight = courses[course]
+            ms_course_gpas[course] = weighted_gpa(avg, weight)
 
         # High School GPA
-        for course, avg in hs_course_gpas.items():
-            weight = courses[course] if courses[course] is not None else 5.5
-            weighted.append(weighted_gpa(avg, weight))
-            unweighted.append(unweighted_gpa(avg))
+        for course, data in hs_grades.items():
+            grades = data["quarters"]
+            avg = sum(grades)/len(grades)
+            weight = courses[course]
+            hs_course_gpas[course] = weighted_gpa(avg, weight)
 
-        if not weighted:
-            st.warning("No courses selected.")
-        else:
-            w = round(sum(weighted) / len(weighted), 2)
-            uw = round(sum(unweighted) / len(unweighted), 2)
+        weighted_final = round((sum(ms_course_gpas.values()) + sum(hs_course_gpas.values())) / (len(ms_course_gpas)+len(hs_course_gpas)), 2)
+        unweighted_final = round((sum([unweighted_gpa((data["s1"]+data["s2"])/2) for data in ms_grades.values()]) +
+                                  sum([unweighted_gpa(sum(data["quarters"])/len(data["quarters"])) for data in hs_grades.values()])) / (len(ms_grades)+len(hs_grades)), 2)
 
-            st.success(f"🎓 **Weighted GPA:** {w}")
-            st.success(f"📘 **Unweighted GPA:** {uw}")
+        st.success(f"🎓 Weighted GPA: {weighted_final}")
+        st.success(f"📘 Unweighted GPA: {unweighted_final}")
 
-            # =============================
-            # ANALYTICS
-            # =============================
-            st.subheader("📊 Class Breakdown")
-            st.table({
-                "Middle School": ms_course_gpas,
-                "High School": hs_course_gpas
-            })
+        st.subheader("📊 GPA by Class")
+        st.write("**Middle School:**")
+        st.table({course: round(gpa,2) for course,gpa in ms_course_gpas.items()})
+        st.write("**High School:**")
+        st.table({course: round(gpa,2) for course,gpa in hs_course_gpas.items()})
 
-            # Biggest impact classes
-            if hs_course_gpas:
-                best_course = max(hs_course_gpas, key=lambda x: weighted_gpa(hs_course_gpas[x], courses[x] if courses[x] else 5.5))
-                worst_course = min(hs_course_gpas, key=lambda x: weighted_gpa(hs_course_gpas[x], courses[x] if courses[x] else 5.5))
-                st.write(f"✅ Highest Impact: {best_course}")
-                st.write(f"⚠️ Lowest Impact: {worst_course}")
+        st.subheader("📈 Analysis")
+        if hs_course_gpas:
+            best_course = max(hs_course_gpas, key=hs_course_gpas.get)
+            worst_course = min(hs_course_gpas, key=hs_course_gpas.get)
+            st.write(f"✅ Class helping the most: {best_course}")
+            st.write(f"⚠️ Class bringing you
