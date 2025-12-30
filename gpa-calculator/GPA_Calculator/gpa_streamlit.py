@@ -99,15 +99,22 @@ courses = {
     "Geometry": 5.5,
     "Algebra 2": 5.5,
     "AP Precalculus": 6.0,
-    "GT Humanities / AP World": None,  # Weight depends on year
+    "GT Humanities / AP World": None,
     "Biology": 5.5,
     "Chemistry": 5.5,
-    "AP Human Geography": 6.0
+    "AP Human Geography": 6.0,
+    "Sports": 5.0,
+    "AP Computer Science Principles": 6.0,
+    "Survey of Business Marketing Finance": 5.0,
+    "Health": 5.0,
+    "Computer Science": 5.5,
+    "Instruments": 5.0
 }
 
 # =============================
-# SESSION (temporarily not used)
+# SESSION
 # =============================
+# Temporarily disabled authentication
 # if "user" not in st.session_state:
 #     st.session_state.user = None
 
@@ -118,10 +125,8 @@ courses = {
 if not st.session_state.user:
     st.title("🎓 EduSphere")
     mode = st.radio("Welcome", ["Login", "Sign Up"], horizontal=True)
-
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
-
     if mode == "Sign Up":
         if st.button("Create Account"):
             c.execute("SELECT * FROM users WHERE username=?", (username,))
@@ -143,7 +148,7 @@ if not st.session_state.user:
 """
 
 # =============================
-# MAIN APP (use temporary placeholder username)
+# MAIN APP
 # =============================
 username = "TestUser"  # placeholder while login is disabled
 st.title(f"👋 Welcome, {username}")
