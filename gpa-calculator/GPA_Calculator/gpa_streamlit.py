@@ -81,18 +81,38 @@ def unweighted_gpa(avg):
 # COURSES
 # =============================
 courses = {
+    # Languages
     "Spanish 1": 5.0,
     "Spanish 2": 5.0,
     "Spanish 3": 5.5,
     "Spanish 4 AP": 6.0,
+    "French 1": 5.0,
+    "French 2": 5.0,
+    # Math
     "Algebra 1": 5.5,
     "Geometry": 5.5,
     "Algebra 2": 5.5,
     "AP Precalculus": 6.0,
+    "Calculus AB": 6.0,
+    "Calculus BC": 6.5,
+    # Science
     "Biology": 5.5,
     "Chemistry": 5.5,
+    "Physics": 5.5,
+    "AP Biology": 6.0,
+    "AP Chemistry": 6.0,
+    "AP Physics": 6.0,
+    # Social Studies
     "AP Human Geography": 6.0,
-    "GT Humanities / AP World": None
+    "US History": 5.5,
+    "World History": 5.5,
+    "AP World History": 6.0,
+    "GT Humanities / AP World": None,
+    # Electives
+    "Art 1": 5.0,
+    "Art 2": 5.0,
+    "Music 1": 5.0,
+    "Music 2": 5.0
 }
 
 # =============================
