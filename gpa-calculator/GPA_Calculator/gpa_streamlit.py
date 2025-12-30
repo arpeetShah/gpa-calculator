@@ -108,7 +108,10 @@ main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
 # =============================
 with main_tabs[0]:
     st.subheader("Welcome to EduSphere!")
-    st.image("https://images.pexels.com/photos/159711/stack-of-books-books-book-binder-159711.jpeg", use_column_width=True)
+    st.image(
+        "https://images.pexels.com/photos/159711/stack-of-books-books-book-binder-159711.jpeg",
+        use_column_width=True
+    )
     st.write("Track your GPA, analyze it, and practice quizzes to improve your learning!")
 
 # =============================
