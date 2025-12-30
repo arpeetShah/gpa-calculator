@@ -158,7 +158,7 @@ if st.session_state.logged_in:
             default_sem1 = row[0] if row else 90.0
             default_sem2 = row[1] if row else 90.0
             sem1 = st.number_input(f"{name} Semester 1", 0, 100, value=default_sem1, key=f"ms_{num}_1")
-            sem2 = st.number_input(f"{name} Semester 2", 0, 100, value=default_sem2, key=f"ms_{num}_2)
+            sem2 = st.number_input(f"{name} Semester 2", 0, 100, value=default_sem2, key=f"ms_{num}_2")
             ms_grades[name] = (sem1, sem2)
             # Save to DB
             c.execute('INSERT OR REPLACE INTO grades (username, course, section, sem1, sem2) VALUES (?, ?, "MS", ?, ?)',
