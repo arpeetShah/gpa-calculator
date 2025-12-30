@@ -106,14 +106,15 @@ courses = {
 }
 
 # =============================
-# SESSION
+# SESSION (temporarily not used)
 # =============================
-if "user" not in st.session_state:
-    st.session_state.user = None
+# if "user" not in st.session_state:
+#     st.session_state.user = None
 
 # =============================
-# AUTHENTICATION
+# AUTHENTICATION (COMMENTED OUT)
 # =============================
+"""
 if not st.session_state.user:
     st.title("🎓 EduSphere")
     mode = st.radio("Welcome", ["Login", "Sign Up"], horizontal=True)
@@ -139,11 +140,13 @@ if not st.session_state.user:
             else:
                 st.error("Invalid credentials")
     st.stop()
+"""
 
 # =============================
-# MAIN APP
+# MAIN APP (use temporary placeholder username)
 # =============================
-st.title(f"👋 Welcome, {st.session_state.user}")
+username = "TestUser"  # placeholder while login is disabled
+st.title(f"👋 Welcome, {username}")
 tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
 # =============================
@@ -156,7 +159,7 @@ with tabs[0]:
         c.execute("""
         SELECT s1, s2, taken FROM grades
         WHERE username=? AND course=? AND section='MS'
-        """, (st.session_state.user, course))
+        """, (username, course))
         row = c.fetchone() or (90.0, 90.0, 0)
 
         s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
@@ -164,9 +167,9 @@ with tabs[0]:
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?,?, ?, ?)
         """, (
-            st.session_state.user, course, "MS",
+            username, course, "MS",
             s1, s2, None, None, None, None, 1, None
         ))
     conn.commit()
@@ -182,7 +185,7 @@ with tabs[1]:
         c.execute("""
         SELECT q1, q2, q3, q4, taken, gt_year FROM grades
         WHERE username=? AND course=? AND section='HS'
-        """, (st.session_state.user, course))
+        """, (username, course))
         row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0, None)
 
         grades = []
@@ -199,7 +202,7 @@ with tabs[1]:
         INSERT OR REPLACE INTO grades
         VALUES (?,?,?,?,?,?,?,?,?, ?, ?)
         """, (
-            st.session_state.user, course, "HS",
+            username, course, "HS",
             None, None, *padded, 1, gt_year
         ))
     conn.commit()
@@ -216,7 +219,7 @@ with tabs[2]:
             c.execute("""
             SELECT q1, q2, q3, q4, taken, gt_year FROM grades
             WHERE username=? AND course=? AND section='HS'
-            """, (st.session_state.user, course))
+            """, (username, course))
             row = c.fetchone()
 
             if row and row[4]:
