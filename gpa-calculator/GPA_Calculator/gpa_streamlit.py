@@ -78,30 +78,16 @@ def unweighted_gpa(avg):
     return 0
 
 # =============================
-# COURSES & WEIGHTS (all previously mentioned)
+# COURSES (only the ones you specified)
 # =============================
 courses = {
-    "Spanish 1": 5.0,
-    "Spanish 2": 5.0,
-    "Spanish 3": 5.5,
-    "Spanish 4 AP": 6.0,
+    "Computer Science": 5.5,
+    "Sports": 4.0,
+    "GT Humanities / AP World": 6.0,
     "Algebra 1": 5.5,
     "Geometry": 5.5,
-    "Algebra 2": 5.5,
-    "AP Precalculus": 6.0,
     "Biology": 5.5,
-    "Chemistry": 5.5,
-    "AP Human Geography": 6.0,
-    "GT Humanities / AP World": 6.0,
-    "Physics": 5.5,
-    "English 1": 5.0,
-    "English 2": 5.0,
-    "English 3 AP": 6.0,
-    "English 4 AP": 6.0,
-    "World History": 5.5,
-    "US History AP": 6.0,
-    "Government AP": 6.0,
-    "Economics AP": 6.0
+    "Chemistry": 5.5
 }
 
 # =============================
