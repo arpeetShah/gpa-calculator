@@ -11,11 +11,11 @@ st.set_page_config(
 )
 
 # =============================
-# STYLES (GRADIENT BACKGROUND)
+# STYLES
 # =============================
 st.markdown("""
 <style>
-body {
+[data-testid="stAppViewContainer"] {
     background: linear-gradient(135deg, #0a1a3c, #2b124f);
     color: white;
 }
