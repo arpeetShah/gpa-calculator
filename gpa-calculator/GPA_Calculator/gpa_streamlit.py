@@ -74,7 +74,7 @@ def unweighted_gpa(avg):
     return 0
 
 # =============================
-# COURSES (Only the ones you mentioned)
+# COURSES
 # =============================
 courses = [
     "Spanish 1",
@@ -109,25 +109,21 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    for course in courses:
-        # Load previous grades
+    ms_selected = st.multiselect("Select the Middle School courses you took:", courses, default=courses)
+
+    for course in ms_selected:
         c.execute("SELECT s1, s2 FROM grades WHERE section='MS' AND course=?", (course,))
         row = c.fetchone() or (90.0, 90.0)
 
-        taken = st.checkbox(course, key=f"ms_take_{course}", value=True)
-
-        if taken:
-            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
-        else:
-            s1, s2 = None, None
+        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
 
         # Save middle school grades
         c.execute("""
         INSERT OR REPLACE INTO grades
         (section, course, s1, s2, q1, q2, q3, q4, gt_year)
         VALUES (?,?,?,?,?,?,?,?,?)
-        """, ( "MS", course, s1, s2, None, None, None, None, None))
+        """, ("MS", course, s1, s2, None, None, None, None, None))
     conn.commit()
 
 # -----------------------------
@@ -137,27 +133,23 @@ with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
 
-    for course in courses:
+    hs_selected = st.multiselect("Select the High School courses you are taking:", courses, default=courses)
+
+    for course in hs_selected:
         c.execute("SELECT q1,q2,q3,q4,gt_year FROM grades WHERE section='HS' AND course=?", (course,))
         row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, None)
 
-        taken = st.checkbox(course, key=f"hs_take_{course}", value=True)
         grades = []
+        for i in range(quarters):
+            grades.append(
+                st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}")
+            )
 
-        if taken:
-            for i in range(quarters):
-                grades.append(
-                    st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}")
-                )
-
-            # Special GT / AP World year selection
-            gt_year = row[4]
-            if course == "GT Humanities / AP World":
-                gt_year = st.radio("Select GT/AP World Year", [1,2], index=0 if gt_year is None else gt_year-1, key="gt_year")
-            else:
-                gt_year = None
+        # Special GT / AP World year selection
+        gt_year = row[4]
+        if course == "GT Humanities / AP World":
+            gt_year = st.radio("Select GT/AP World Year", [1,2], index=0 if gt_year is None else gt_year-1, key="gt_year")
         else:
-            grades = [None]*4
             gt_year = None
 
         padded = grades + [None]*(4 - len(grades))
