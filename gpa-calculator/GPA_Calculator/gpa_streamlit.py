@@ -211,4 +211,4 @@ with tabs[2]:
             best_course = max(hs_course_gpas, key=hs_course_gpas.get)
             worst_course = min(hs_course_gpas, key=hs_course_gpas.get)
             st.write(f"✅ Class helping the most: {best_course}")
-            st.write(f"⚠️ Class bringing you
+            st.write(f"⚠️ Class bringing you")
