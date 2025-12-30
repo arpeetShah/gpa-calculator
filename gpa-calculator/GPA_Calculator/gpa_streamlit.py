@@ -1,41 +1,5 @@
 import streamlit as st
 import sqlite3
-import hashlib
-import random
-
-# =============================
-# WELCOME AESTHETIC SECTION
-# =============================
-# =============================
-# WELCOME AESTHETIC SECTION
-# =============================
-st.markdown("""
-<div id="welcome-section" style="
-    height: 50vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #0a1a3c, #2b124f);
-    color: white;
-    font-size: 3em;
-    font-weight: bold;
-    text-align: center;
-    transition: opacity 1s;
-    ">
-    Welcome to EduSphere 🎓<br>
-    Your Education Companion
-</div>
-
-<script>
-window.addEventListener('scroll', function() {
-    const section = document.getElementById('welcome-section');
-    const fadePoint = 300; // pixels to start fade
-    const opacity = 1 - window.scrollY / fadePoint;
-    section.style.opacity = opacity < 0 ? 0 : opacity;
-});
-</script>
-""", unsafe_allow_html=True)
 
 # =============================
 # PAGE CONFIG
@@ -47,7 +11,7 @@ st.set_page_config(
 )
 
 # =============================
-# STYLES
+# STYLES (UNCHANGED)
 # =============================
 st.markdown("""
 <style>
@@ -92,7 +56,7 @@ CREATE TABLE IF NOT EXISTS grades (
     q3 REAL,
     q4 REAL,
     taken INTEGER,
-    gt_year INTEGER,
+    gt_year TEXT,
     PRIMARY KEY (course, section)
 )
 """)
@@ -130,156 +94,185 @@ courses = {
     "Sports": 5.0,
     "Health": 5.0,
     "Computer Science": 5.5,
-    "AP Computer Science Principles": 6.0,
+    "AP Computer Science": 6.0,
     "Instruments": 5.0
 }
 
 # =============================
-# TOP LEVEL TABS
+# TOP-LEVEL TABS
 # =============================
-top_tabs = st.tabs(["📘 GPA", "📝 Quiz & Practice Problems"])
+top_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
+
+# =============================
+# WELCOME TAB
+# =============================
+with top_tabs[0]:
+    st.title("🎉 Welcome to EduSphere!")
+    st.write("Track your grades, analyze your GPA, and practice quizzes—all in one place.")
+    st.image("https://i.imgur.com/0D1d1sB.png", use_column_width=True)  # example image, can replace
 
 # =============================
 # GPA TAB
 # =============================
-with top_tabs[0]:
-    tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
+with top_tabs[1]:
+    gpa_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
-    # -----------------------------
-    # Middle School
-    # -----------------------------
-    with tabs[0]:
+    # =============================
+    # MIDDLE SCHOOL
+    # =============================
+    with gpa_tabs[0]:
         st.header("Middle School Grades")
-
-        # Dropdown for MS courses
-        ms_selected = st.multiselect(
-            "Select the Middle School courses you took",
-            list(courses.keys())
-        )
-
-        for course in ms_selected:
+        for course in courses:
             c.execute("""
             SELECT s1, s2, taken, gt_year FROM grades
             WHERE course=? AND section='MS'
             """, (course,))
-            row = c.fetchone() or (90.0, 90.0, 0, None)
+            row = c.fetchone() or (90.0, 90.0, 0, "")
 
-            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+            taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
 
-            gt_year = None
-            if course == "GT / AP World History":
-                gt_year = st.selectbox(f"{course} Year", [1, 2], index=0, key=f"ms_gt_year")
+            if taken:
+                s1 = st.number_input(
+                    f"{course} – Semester 1",
+                    0.0, 100.0, row[0], key=f"ms_s1_{course}"
+                )
+                s2 = st.number_input(
+                    f"{course} – Semester 2",
+                    0.0, 100.0, row[1], key=f"ms_s2_{course}"
+                )
+                # GT / AP World optional year
+                if course == "GT / AP World History":
+                    gt_year = st.text_input("GT / AP World History Year", value=row[3], key=f"ms_gt_{course}")
+                else:
+                    gt_year = None
+            else:
+                s1, s2, gt_year = None, None, None
 
             c.execute("""
             INSERT OR REPLACE INTO grades
             VALUES (?,?,?,?,?,?,?,?,?,?)
-            """, (course, "MS", s1, s2, None, None, None, None, 1, gt_year))
+            """, (
+                course, "MS", s1, s2, None, None, None, None, int(taken), gt_year
+            ))
         conn.commit()
 
-    # -----------------------------
-    # High School
-    # -----------------------------
-    with tabs[1]:
+    # =============================
+    # HIGH SCHOOL
+    # =============================
+    with gpa_tabs[1]:
         st.header("High School Grades")
         quarters = st.slider("Quarters Completed", 1, 4, 2)
-
-        hs_selected = st.multiselect(
-            "Select the High School courses you are taking",
-            list(courses.keys())
-        )
-
-        for course in hs_selected:
+        for course in courses:
             c.execute("""
-            SELECT q1,q2,q3,q4,taken,gt_year FROM grades
+            SELECT q1, q2, q3, q4, taken, gt_year FROM grades
             WHERE course=? AND section='HS'
             """, (course,))
-            row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0, None)
+            row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0, "")
 
-            grades_list = []
-            for i in range(quarters):
-                grades_list.append(
-                    st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}")
-                )
+            taken = st.checkbox(course, value=bool(row[4]), key=f"hs_take_{course}")
 
-            gt_year = None
-            if course == "GT / AP World History":
-                gt_year = st.selectbox(f"{course} Year", [1, 2], index=0, key=f"hs_gt_year")
+            grades = []
+            if taken:
+                for i in range(quarters):
+                    grades.append(
+                        st.number_input(
+                            f"{course} – Quarter {i+1}",
+                            0.0, 100.0, row[i],
+                            key=f"hs_q_{course}_{i}"
+                        )
+                    )
+                # GT / AP World optional year
+                if course == "GT / AP World History":
+                    gt_year = st.text_input("GT / AP World History Year", value=row[5], key=f"hs_gt_{course}")
+                else:
+                    gt_year = None
+            else:
+                grades, gt_year = [None]*4, None
 
-            padded = grades_list + [None]*(4 - len(grades_list))
+            padded = grades + [None]*(4 - len(grades))
             c.execute("""
             INSERT OR REPLACE INTO grades
             VALUES (?,?,?,?,?,?,?,?,?,?)
-            """, (course, "HS", None, None, *padded, 1, gt_year))
+            """, (
+                course, "HS",
+                None, None,
+                *padded,
+                int(taken),
+                gt_year
+            ))
         conn.commit()
 
-    # -----------------------------
-    # GPA & Analytics
-    # -----------------------------
-    with tabs[2]:
+    # =============================
+    # GPA & ANALYTICS
+    # =============================
+    with gpa_tabs[2]:
         st.header("GPA Results & Analytics")
-
         if st.button("🎯 Calculate GPA"):
-            ms_course_gpas = {}
-            hs_course_gpas = {}
-            weighted_list = []
-            unweighted_list = []
+            weighted, unweighted = [], []
+            ms_course_gpas, hs_course_gpas = {}, {}
 
             for course, weight in courses.items():
-                # MS GPA
-                c.execute("SELECT s1, s2,taken FROM grades WHERE course=? AND section='MS'", (course,))
+                # Middle School
+                c.execute("""
+                SELECT s1, s2, taken FROM grades
+                WHERE course=? AND section='MS'
+                """, (course,))
                 row = c.fetchone()
                 if row and row[2]:
-                    avg = (row[0]+row[1])/2
-                    ms_course_gpas[course] = avg
+                    valid = [x for x in row[:2] if x is not None]
+                    if valid:
+                        avg = sum(valid)/len(valid)
+                        if weight:  # skip None weight (e.g., GT/AP World)
+                            weighted.append(weighted_gpa(avg, weight))
+                        unweighted.append(unweighted_gpa(avg))
+                        ms_course_gpas[course] = avg
 
-                # HS GPA
-                c.execute("SELECT q1,q2,q3,q4,taken FROM grades WHERE course=? AND section='HS'", (course,))
+                # High School
+                c.execute("""
+                SELECT q1, q2, q3, q4, taken FROM grades
+                WHERE course=? AND section='HS'
+                """, (course,))
                 row = c.fetchone()
                 if row and row[4]:
                     valid = [x for x in row[:4] if x is not None]
                     if valid:
                         avg = sum(valid)/len(valid)
+                        if weight:
+                            weighted.append(weighted_gpa(avg, weight))
+                        unweighted.append(unweighted_gpa(avg))
                         hs_course_gpas[course] = avg
-                        weighted_list.append(weighted_gpa(avg, weight))
-                        unweighted_list.append(unweighted_gpa(avg))
 
-            if weighted_list:
-                weighted_final = round(sum(weighted_list)/len(weighted_list),2)
-                unweighted_final = round(sum(unweighted_list)/len(unweighted_list),2)
-                st.success(f"🎓 Weighted GPA: {weighted_final}")
-                st.success(f"📘 Unweighted GPA: {unweighted_final}")
+            if not weighted:
+                st.warning("No courses selected.")
+            else:
+                w = round(sum(weighted)/len(weighted), 2)
+                uw = round(sum(unweighted)/len(unweighted), 2)
+                st.success(f"🎓 **Weighted GPA:** {w}")
+                st.success(f"📘 **Unweighted GPA:** {uw}")
 
                 st.subheader("📊 GPA Insight")
-                # Top and bottom courses
+                if w >= 5.5:
+                    st.write("Your GPA is being boosted by strong performance in weighted courses.")
+                elif w >= 4.5:
+                    st.write("Your GPA is solid, but higher-weight classes have the biggest impact.")
+                else:
+                    st.write("Lower performance in GPA-heavy courses is pulling your GPA down.")
+
+                st.subheader("📋 GPA Table")
+                st.write("**Middle School:**")
+                st.table(ms_course_gpas)
+                st.write("**High School:**")
+                st.table(hs_course_gpas)
+
                 if hs_course_gpas:
-                    max_course = max(hs_course_gpas, key=hs_course_gpas.get)
-                    min_course = min(hs_course_gpas, key=hs_course_gpas.get)
-                    st.write(f"✅ Best performing HS course: {max_course} ({hs_course_gpas[max_course]:.2f})")
-                    st.write(f"⚠️ Lowest performing HS course: {min_course} ({hs_course_gpas[min_course]:.2f})")
+                    max_class = max(hs_course_gpas, key=hs_course_gpas.get)
+                    min_class = min(hs_course_gpas, key=hs_course_gpas.get)
+                    st.write(f"📈 **Class Helping GPA Most:** {max_class}")
+                    st.write(f"📉 **Class Bringing GPA Down Most:** {min_class}")
 
 # =============================
-# Quiz & Practice Problems
+# QUIZ & PRACTICE TAB
 # =============================
-with top_tabs[1]:
-    st.header("📝 Quiz & Practice Problems")
-    subjects = list(courses.keys())
-    quiz_subject = st.selectbox("Select a subject for quiz/practice", subjects)
-
-    # Example questions (simple dictionary)
-    quiz_questions = {
-        "Spanish 1": [("What is 'Hello' in Spanish?", "Hola", ["Hola","Adios","Gracias","Por favor"])],
-        "Algebra 1": [("Solve 2x+3=7. x=?", "2", ["1","2","3","4"])],
-        "Biology": [("Which organelle is the powerhouse of the cell?", "Mitochondria", ["Mitochondria","Nucleus","Ribosome","Chloroplast"])],
-        "AP Precalculus": [("sin(90°) = ?", "1", ["0","0.5","1","2"])],
-    }
-
-    questions = quiz_questions.get(quiz_subject, [])
-    for idx, (q, ans, opts) in enumerate(questions):
-        st.write(f"Q{idx+1}: {q}")
-        user_answer = st.radio("Choose an answer", opts, key=f"q{idx}_{quiz_subject}")
-        if st.button(f"Submit Answer {idx+1}"):
-            if user_answer == ans:
-                st.success("Correct!")
-            else:
-                st.error(f"Wrong. Correct answer: {ans}")
+with top_tabs[2]:
+    st.header("Quiz & Practice Problems")
+    st.write("Add your quizzes and practice problem features here.")
