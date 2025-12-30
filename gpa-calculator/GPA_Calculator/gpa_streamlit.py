@@ -64,8 +64,8 @@ courses = {
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(to right, #89f7fe, #66a6ff);
-        color: #000;
+        background: linear-gradient(to right, #0f2027, #2c3e50, #6a3093);
+        color: #fff;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -189,48 +189,48 @@ with tabs[1]:
         st.success("High School grades saved!")
 
 # -----------------------------
-# GPA RESULTS
+# GPA RESULTS (only after button click)
 # -----------------------------
 with tabs[2]:
     st.header("📊 GPA Results")
-    weighted_final = None
-    unweighted_final = None
-    combined = {**ms_grades, **hs_grades}
-    if combined:
-        df = pd.DataFrame(combined).T
-        weighted_final = round(df["Weighted GPA"].mean(), 2)
-        unweighted_final = round(df["Unweighted GPA"].mean(), 2)
-        st.success(f"🎯 **Weighted GPA:** {weighted_final}")
-        st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
-        st.bar_chart(df[["Weighted GPA","Unweighted GPA"]])
+    if st.button("📊 Calculate GPA"):
+        weighted_final = None
+        unweighted_final = None
+        combined = {**ms_grades, **hs_grades}
+        if combined:
+            df = pd.DataFrame(combined).T
+            weighted_final = round(df["Weighted GPA"].mean(), 2)
+            unweighted_final = round(df["Unweighted GPA"].mean(), 2)
+            st.success(f"🎯 **Weighted GPA:** {weighted_final}")
+            st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
+            st.bar_chart(df[["Weighted GPA","Unweighted GPA"]])
 
-        # Analytics
-        top_course = df["Weighted GPA"].idxmax()
-        bottom_course = df["Weighted GPA"].idxmin()
-        st.subheader("📈 Analytics / Insights")
-        st.markdown(f"- **Top contributor:** {top_course} ({df.loc[top_course,'Weighted GPA']} GPA)")
-        st.markdown(f"- **Lowest contributor:** {bottom_course} ({df.loc[bottom_course,'Weighted GPA']} GPA)")
+            # Analytics
+            top_course = df["Weighted GPA"].idxmax()
+            bottom_course = df["Weighted GPA"].idxmin()
+            st.subheader("📈 Analytics / Insights")
+            st.markdown(f"- **Top contributor:** {top_course} ({df.loc[top_course,'Weighted GPA']} GPA)")
+            st.markdown(f"- **Lowest contributor:** {bottom_course} ({df.loc[bottom_course,'Weighted GPA']} GPA)")
 
-    # Save history
-    if weighted_final is not None:
-        if "history" not in user_data:
-            user_data["history"] = []
-        record = {
-            "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "Weighted GPA": weighted_final,
-            "Unweighted GPA": unweighted_final
-        }
-        user_data["history"].append(record)
-        users[current_user] = user_data
-        save_users(users)
+            # Save history
+            if "history" not in user_data:
+                user_data["history"] = []
+            record = {
+                "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "Weighted GPA": weighted_final,
+                "Unweighted GPA": unweighted_final
+            }
+            user_data["history"].append(record)
+            users[current_user] = user_data
+            save_users(users)
 
-    # Show history
-    if "history" in user_data and user_data["history"]:
-        hist_df = pd.DataFrame(user_data["history"])
-        st.subheader("🕒 GPA History")
-        st.dataframe(hist_df)
-        csv = hist_df.to_csv(index=False).encode("utf-8")
-        st.download_button("⬇️ Download GPA History", csv, "gpa_history.csv", "text/csv")
+        # Show history
+        if "history" in user_data and user_data["history"]:
+            hist_df = pd.DataFrame(user_data["history"])
+            st.subheader("🕒 GPA History")
+            st.dataframe(hist_df)
+            csv = hist_df.to_csv(index=False).encode("utf-8")
+            st.download_button("⬇️ Download GPA History", csv, "gpa_history.csv", "text/csv")
 
 # -----------------------------
 # INSTALL TIP
