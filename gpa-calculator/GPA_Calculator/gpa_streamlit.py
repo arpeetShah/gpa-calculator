@@ -96,6 +96,7 @@ courses = {
     "Sports": 5.0,
     "Health": 5.0,
     "Computer Science": 5.5,
+    "AP Computer Science": 6.0,
     "Instruments": 5.0
 }
 
