@@ -78,16 +78,25 @@ def unweighted_gpa(avg):
     return 0
 
 # =============================
-# COURSES (only the ones you specified)
+# COURSES
 # =============================
 courses = {
-    "Computer Science": 5.5,
-    "Sports": 4.0,
-    "GT Humanities / AP World": 6.0,
+    "Spanish 1": 5.0,
+    "Spanish 2": 5.0,
+    "Spanish 3": 5.5,
+    "Spanish 4 AP": 6.0,
     "Algebra 1": 5.5,
     "Geometry": 5.5,
+    "Algebra 2": 5.5,
+    "AP Precalculus": 6.0,
+    "GT / AP World History": None,
     "Biology": 5.5,
-    "Chemistry": 5.5
+    "Chemistry": 5.5,
+    "AP Human Geography": 6.0,
+    "Sports": 5.0,
+    "Health": 5.0,
+    "Computer Science": 5.5,
+    "Instruments": 5.0
 }
 
 # =============================
@@ -156,7 +165,7 @@ with tabs[1]:
         hs_course_gpas[course] = avg
 
         gt_year = row[4]
-        if course == "GT Humanities / AP World":
+        if course == "GT / AP World History":
             gt_year = st.radio("GT/AP World Year", [1, 2], horizontal=True, key="gt_year")
 
         padded = grades + [None] * (4 - len(grades))
@@ -189,7 +198,7 @@ with tabs[2]:
 
         # High School GPA
         for course, avg in hs_course_gpas.items():
-            weight = courses[course]
+            weight = courses[course] if courses[course] is not None else 5.5
             weighted.append(weighted_gpa(avg, weight))
             unweighted.append(unweighted_gpa(avg))
 
@@ -213,7 +222,7 @@ with tabs[2]:
 
             # Biggest impact classes
             if hs_course_gpas:
-                best_course = max(hs_course_gpas, key=lambda x: weighted_gpa(hs_course_gpas[x], courses[x]))
-                worst_course = min(hs_course_gpas, key=lambda x: weighted_gpa(hs_course_gpas[x], courses[x]))
+                best_course = max(hs_course_gpas, key=lambda x: weighted_gpa(hs_course_gpas[x], courses[x] if courses[x] else 5.5))
+                worst_course = min(hs_course_gpas, key=lambda x: weighted_gpa(hs_course_gpas[x], courses[x] if courses[x] else 5.5))
                 st.write(f"✅ Highest Impact: {best_course}")
                 st.write(f"⚠️ Lowest Impact: {worst_course}")
