@@ -282,158 +282,67 @@ with main_tabs[2]:
 
             if st.button("Show Questions"):
                 questions = {
-                    questions = {
-    "Unit 1": {
-        "Easy": [
-            {"type":"mcq","question":"Solve for x: x^2 - 5x + 6 = 0","options":["x=2 or 3","x=1 or 6","x=0 or 6"],"answer":"x=2 or 3"},
-            {"type":"text","question":"Find the zeros of f(x) = x^2 - 4","answer":"2,-2"},
-            {"type":"mcq","question":"Simplify: (x^2 - 9)/(x+3)","options":["x-3","x+3","x^2+3"],"answer":"x-3"},
-            {"type":"text","question":"Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum","answer":"maximum"},
-            {"type":"mcq","question":"Find f(2) if f(x)=x^2+3x-1","options":["9","7","5"],"answer":"7"},
-            {"type":"mcq","question":"Which is a vertical asymptote of f(x)=1/(x-5)?","options":["x=5","x=-5","x=0"],"answer":"x=5"},
-            {"type":"text","question":"Find the average rate of change of f(x)=x^2 from x=1 to x=4","answer":"7"},
-            {"type":"text","question":"Factor completely: x^3 - 3x^2 - 4x + 12","answer":"(x-2)(x-2)(x+3)"},
-            {"type":"mcq","question":"Identify the leading coefficient of f(x)=3x^4-2x^3+5","options":["3","-2","5"],"answer":"3"},
-            {"type":"text","question":"Solve for x: (x^2+2x)/(x^2-4) > 0","answer":"x<-2 or x>0 and x!=2"}
-        ],
-        "Medium": [
-            {"type":"mcq","question":"Divide: (2x^3+3x^2-x+5)/(x+2)","options":["2x^2-x+3","2x^2+7x+15","2x^2-x+1"],"answer":"2x^2-x+3"},
-            {"type":"text","question":"Factor completely: x^3 - 3x^2 - 4x + 12","answer":"(x-2)(x-2)(x+3)"},
-            {"type":"mcq","question":"Which is a vertical asymptote of f(x)=1/(x-5)?","options":["x=5","x=-5","x=0"],"answer":"x=5"},
-            {"type":"text","question":"Find the average rate of change of f(x)=x^2 from x=1 to x=4","answer":"7"},
-            {"type":"mcq","question":"Identify the leading coefficient of f(x)=3x^4-2x^3+5","options":["3","-2","5"],"answer":"3"},
-            {"type":"text","question":"Solve: x^3 - 6x^2 + 11x - 6 = 0","answer":"1,2,3"},
-            {"type":"mcq","question":"Simplify: (x^3 - 8)/(x-2)","options":["x^2+2x+4","x^2-2x+4","x^2+4"],"answer":"x^2+2x+4"},
-            {"type":"text","question":"Find f'(x) for f(x)=x^3-5x^2+6x","answer":"3x^2-10x+6"},
-            {"type":"mcq","question":"End behavior of f(x)=-2x^4+3x^2","options":["f→-∞ as x→∞","f→∞ as x→∞","f→0 as x→∞"],"answer":"f→-∞ as x→∞"},
-            {"type":"text","question":"Solve for x: (x^2-1)/(x+1) < 0","answer":"x<-1 or 0<x<1"}
-        ],
-        "Hard": [
-            {"type":"text","question":"Find all real solutions for x: 2x^4 - 3x^3 - 11x^2 + 6x + 9 = 0","answer":"-1,1,3/2,-1/2"},
-            {"type":"mcq","question":"If f(x)=(x^2-4)/(x^2-9), holes in the graph?","options":["None","x=2","x=3"],"answer":"None"},
-            {"type":"text","question":"Find the rate of change at x=2 for f(x)=x^3 - 2x^2 + x","answer":"7"},
-            {"type":"mcq","question":"End behavior of f(x)=-x^3+4x^2","options":["As x→∞, f(x)→ -∞","As x→∞, f(x)→ ∞","As x→∞, f(x)→ 0"],"answer":"As x→∞, f(x)→ -∞"},
-            {"type":"text","question":"Solve for x: (x^2+2x)/(x^2-4) > 0","answer":"x<-2 or x>0 and x!=2"},
-            {"type":"text","question":"Find all zeros of f(x)=x^4-5x^2+4","answer":"1,-1,2,-2"},
-            {"type":"mcq","question":"Simplify: (x^3+27)/(x+3)","options":["x^2-3x+9","x^2+3x+9","x^2-3x-9"],"answer":"x^2-3x+9"},
-            {"type":"text","question":"Determine the vertex of f(x)=-2x^2+4x+1","answer":"(1,3)"},
-            {"type":"mcq","question":"Which is the horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)","options":["y=2","y=0","y=3"],"answer":"y=2"},
-            {"type":"text","question":"Solve: x^3-6x^2+11x-6=0","answer":"1,2,3"}
-        ]
-    },
-    "Unit 2": {
-        "Easy":[
-            {"type":"mcq","question":"Simplify: log10(100)","options":["2","10","100"],"answer":"2"},
-            {"type":"text","question":"Evaluate: 2^3","answer":"8"},
-            {"type":"mcq","question":"Which of these is exponential growth?","options":["Population increasing by 5% each year","Height of a triangle","Sum of numbers"],"answer":"Population increasing by 5% each year"},
-            {"type":"text","question":"Solve for x: 3^x = 9","answer":"2"},
-            {"type":"mcq","question":"ln(e^5) equals:","options":["5","1","e^5"],"answer":"5"},
-            {"type":"text","question":"Solve for x: 2^(x+1)=16","answer":"3"},
-            {"type":"mcq","question":"Condense: log(a)+log(b)","options":["log(ab)","log(a+b)","log(a-b)"],"answer":"log(ab)"},
-            {"type":"text","question":"Solve for x: log2(x)=5","answer":"32"},
-            {"type":"mcq","question":"Domain of f(x)=ln(x-3)?","options":["x>3","x<3","x≥0"],"answer":"x>3"},
-            {"type":"text","question":"Determine x: e^(2x)=7","answer":"ln(7)/2"}
-        ],
-        "Medium":[
-            {"type":"text","question":"Solve: 2^(x+2) = 32","answer":"3"},
-            {"type":"mcq","question":"Condense: log(a^2)+log(b)","options":["log(a^2b)","log(a+b)","log(a^2+b)"],"answer":"log(a^2b)"},
-            {"type":"text","question":"Solve for x: ln(x-1)=2","answer":"x=e^2+1"},
-            {"type":"mcq","question":"f(x)=e^x, derivative?","options":["e^x","xe^(x-1)","x^e"],"answer":"e^x"},
-            {"type":"text","question":"Solve: 5*3^(2x-1)=45","answer":"2"},
-            {"type":"mcq","question":"ln(√e^6) = ?","options":["3","6","e^3"],"answer":"3"},
-            {"type":"text","question":"Solve: log5(x+1)=2","answer":"24"},
-            {"type":"mcq","question":"Which is continuous exponential growth?","options":["P(t)=100e^(0.05t)","P(t)=100+5t","P(t)=t^2"],"answer":"P(t)=100e^(0.05t)"},
-            {"type":"text","question":"Find x: 10^(2x-1)=1000","answer":"2"},
-            {"type":"mcq","question":"Simplify: ln(e^7)","options":["7","e","1"],"answer":"7"}
-        ],
-        "Hard":[
-            {"type":"text","question":"Solve: 2^(x+3)-3*2^x=5","answer":"1"},
-            {"type":"mcq","question":"Solve: log2(x-1)+log2(x+3)=3","options":["x=1","x=3","x=2"],"answer":"2"},
-            {"type":"text","question":"Solve for x: ln(x^2-4)=0","answer":"x=-2,2"},
-            {"type":"mcq","question":"Derivative of f(x)=e^(3x)?","options":["3e^(3x)","e^(3x)","e^(x^3)"],"answer":"3e^(3x)"},
-            {"type":"text","question":"Solve: 5*2^(2x-1)=40","answer":"2"},
-            {"type":"mcq","question":"If P(t)=100*e^(0.05t), type of growth?","options":["Continuous exponential","Linear","Quadratic"],"answer":"Continuous exponential"},
-            {"type":"text","question":"Solve: log3(x-2)+log3(x+2)=2","answer":"3"},
-            {"type":"mcq","question":"Simplify: ln(sqrt(e^6))","options":["3","6","e^3"],"answer":"3"},
-            {"type":"text","question":"Solve: 10^(2x-1)=1000","answer":"2"},
-            {"type":"mcq","question":"Which has a horizontal asymptote y=0?","options":["f(x)=1/x","f(x)=x^2","f(x)=2x+3"],"answer":"f(x)=1/x"}
-        ]
-    },
-    "Unit 3": {
-        "Easy":[
-            {"type":"mcq","question":"sin(π/2)=?","options":["1","0","-1"],"answer":"1"},
-            {"type":"text","question":"Find cos(0)","answer":"1"},
-            {"type":"mcq","question":"Which function is periodic?","options":["sin(x)","x^2+1","x^3-2"],"answer":"sin(x)"},
-            {"type":"text","question":"Evaluate tan(π/4)","answer":"1"},
-            {"type":"mcq","question":"Amplitude of f(x)=2sin(x)?","options":["2","1","0"],"answer":"2"},
-            {"type":"text","question":"Solve for x: 2sin(x)-1=0, x in [0,2π]","answer":"π/6,5π/6"},
-            {"type":"mcq","question":"cos(θ)=1/2, θ in [0,2π]?","options":["π/3 or 5π/3","π/2 or π","π/4 or 3π/4"],"answer":"π/3 or 5π/3"},
-            {"type":"text","question":"Convert polar coordinates (2, π/2) to rectangular","answer":"(0,2)"},
-            {"type":"mcq","question":"Period of sin(3x)?","options":["2π/3","2π","3π"],"answer":"2π/3"},
-            {"type":"text","question":"Find sin(2θ) if sin(θ)=1/2","answer":"√3/2"}
-        ],
-        "Medium":[
-            {"type":"text","question":"Solve for x: sin(x)+1/2=0, x in [0,2π]","answer":"7π/6,11π/6"},
-            {"type":"mcq","question":"cos(θ)=√2/2, θ in [0,2π]?","options":["π/4 or 7π/4","π/6 or 5π/6","π/3 or 5π/3"],"answer":"π/4 or 7π/4"},
-            {"type":"text","question":"Convert polar coordinates (3, π/3) to rectangular","answer":"(3/2√3, 3√3/2)"},
-            {"type":"mcq","question":"Period of tan(2x)?","options":["π/2","π","2π"],"answer":"π/2"},
-            {"type":"text","question":"Find sin(x)cos(x) if sin(x)=1/2 and cos(x)=√3/2","answer":"√3/4"},
-            {"type":"mcq","question":"Which identity is correct?","options":["1+tan^2(x)=sec^2(x)","1+sin^2(x)=1","cos^2(x)+1=sin^2(x)"],"answer":"1+tan^2(x)=sec^2(x)"},
-            {"type":"text","question":"Find all solutions of 2cos(x)-1=0, x in [0,2π]","answer":"π/3,5π/3"},
-            {"type":"mcq","question":"Amplitude of f(x)=3cos(2x)?","options":["3","2","1"],"answer":"3"},
-            {"type":"text","question":"Find exact value of cos(2π/3)","answer":"-1/2"},
-            {"type":"mcq","question":"Graph of r=1+cos(θ) is:","options":["Cardioid","Circle","Line"],"answer":"Cardioid"}
-        ],
-        "Hard":[
-            {"type":"text","question":"Prove the identity: 1 + tan^2(x) = sec^2(x)","answer":"true"},
-            {"type":"mcq","question":"Evaluate cos(π)+sin(π/2)","options":["1","0","-1"],"answer":"1"},
-            {"type":"text","question":"Convert rectangular (3,-3) to polar coordinates","answer":"(3√2,7π/4)"},
-            {"type":"mcq","question":"Graph of r=2cos(θ) is a:","options":["Circle","Line","Parabola"],"answer":"Circle"},
-            {"type":"text","question":"Find all solutions: sin(2x)=√3/2, x in [0,2π]","answer":"π/12,5π/12,7π/12,11π/12,13π/12,17π/12,19π/12,23π/12"},
-            {"type":"mcq","question":"Double angle formula: sin(2x)=?","options":["2sin(x)cos(x)","sin^2(x)","cos^2(x)"],"answer":"2sin(x)cos(x)"},
-            {"type":"text","question":"Find exact value of tan(5π/4)","answer":"1"},
-            {"type":"mcq","question":"Which is not periodic?","options":["x^3+1","cos(x)","sin(x)"],"answer":"x^3+1"},
-            {"type":"text","question":"Solve: 3sin^2(x)-2=0, x in [0,2π]","answer":"π/6,5π/6,7π/6,11π/6"},
-            {"type":"mcq","question":"cos^2(x)-sin^2(x) equals?","options":["cos(2x)","sin(2x)","tan(2x)"],"answer":"cos(2x)"}
-        ]
-    },
-    "Unit 4": {
-        "Easy":[
-            {"type":"text","question":"Evaluate the vector: v = <3,4>, find ||v||","answer":"5"},
-            {"type":"mcq","question":"If r=<2,3> and s=<1,0>, r+s=?","options":["<3,3>","<1,3>","<2,0>"],"answer":"<3,3>"},
-            {"type":"text","question":"Multiply matrices: [[1,2],[3,4]] * [[1,0],[0,1]]","answer":"[[1,2],[3,4]]"},
-            {"type":"mcq","question":"Which of these is a parametric equation?","options":["x=t^2,y=t","y=x^2+3","f(x)=3x+1"],"answer":"x=t^2,y=t"},
-            {"type":"text","question":"Find the vector projection of <3,4> onto <1,0>","answer":"<3,0>"},
-            {"type":"mcq","question":"Determinant of [[2,1],[3,4]]","options":["5","8","1"],"answer":"5"},
-            {"type":"text","question":"Solve for t: x=2t+1, y=3t-2","answer":"1"},
-            {"type": "mcq",
-             "question": "Which operation rotates a vector 90° clockwise?",
-             "options": ["Matrix multiplication", "Dot product", "Cross product"],
-             "answer": "Matrix multiplication"}
+                    "Unit 1": {
+                        "Easy": [
+                            {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
+                             "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
+                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
+                            {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": ["x-3", "x+3", "x^2+3"],
+                             "answer": "x-3"},
+                            {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
+                             "answer": "maximum"},
+                            {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"],
+                             "answer": "7"},
+                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
+                             "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                            {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
+                             "answer": "7"},
+                            {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
+                             "answer": "(x-2)(x-2)(x+3)"},
+                            {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
+                             "options": ["3", "-2", "5"], "answer": "3"},
+                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
+                             "answer": "x<-2 or x>0 and x!=2"}
                         ],
-                        "Medium": [],
-                        "Hard": []
+                        "Medium": [
+                            {"type": "mcq", "question": "Divide: (2x^3+3x^2-x+5)/(x+2)",
+                             "options": ["2x^2-x+3", "2x^2+7x+15", "2x^2-x+1"], "answer": "2x^2-x+3"},
+                            {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
+                             "answer": "(x-2)(x-2)(x+3)"},
+                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
+                             "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                            {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
+                             "answer": "7"},
+                            {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
+                             "options": ["3", "-2", "5"], "answer": "3"},
+                            {"type": "text", "question": "Solve: x^3 - 6x^2 + 11x - 6 = 0", "answer": "1,2,3"},
+                            {"type": "mcq", "question": "Simplify: (x^3 - 8)/(x-2)",
+                             "options": ["x^2+2x+4", "x^2-2x+4", "x^2+4"], "answer": "x^2+2x+4"},
+                            {"type": "text", "question": "Find f'(x) for f(x)=x^3-5x^2+6x", "answer": "3x^2-10x+6"},
+                            {"type": "mcq", "question": "End behavior of f(x)=-2x^4+3x^2",
+                             "options": ["f→-∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→-∞ as x→∞"},
+                            {"type": "text", "question": "Solve for x: (x^2-1)/(x+1) < 0", "answer": "x<-1 or 0<x<1"}
+                        ],
+                        "Hard": [
+                            {"type": "text",
+                             "question": "Find all real solutions for x: 2x^4 - 3x^3 - 11x^2 + 6x + 9 = 0",
+                             "answer": "-1,1,3/2,-1/2"},
+                            {"type": "mcq", "question": "If f(x)=(x^2-4)/(x^2-9), holes in the graph?",
+                             "options": ["None", "x=2", "x=3"], "answer": "None"},
+                            {"type": "text", "question": "Find the rate of change at x=2 for f(x)=x^3 - 2x^2 + x",
+                             "answer": "7"},
+                            {"type": "mcq", "question": "End behavior of f(x)=-x^3+4x^2",
+                             "options": ["As x→∞, f(x)→ -∞", "As x→∞, f(x)→ ∞", "As x→∞, f(x)→ 0"],
+                             "answer": "As x→∞, f(x)→ -∞"},
+                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
+                             "answer": "x<-2 or x>0 and x!=2"},
+                            {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                            {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
+                             "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
+                            {"type": "text", "question": "Determine the vertex of f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                            {"type": "mcq", "question": "Which is the horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)",
+                             "options": ["y=2", "y=0", "y=3"], "answer": "y=2"},
+                            {"type": "text", "question": "Solve: x^3-6x^2+11x-6=0", "answer": "1,2,3"}
+                        ]
                     }
                 }
-
-                # Check existence before rendering
-                if unit in questions and difficulty in questions[unit] and questions[unit][difficulty]:
-                    st.subheader(f"{unit} Questions ({difficulty} level)")
-                    user_answers = {}
-                    for i, q in enumerate(questions[unit][difficulty], 1):
-                        if q["type"] == "mcq":
-                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"mcq_{i}")
-                        else:
-                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"text_{i}")
-
-                    # Submit button
-                    if st.button("Submit Answers"):
-                        score = 0
-                        for i, q in enumerate(questions[unit][difficulty], 1):
-                            ans = str(user_answers[i]).strip().lower()
-                            correct = str(q["answer"]).strip().lower()
-                            if ans == correct:
-                                score += 1
-                        st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
-                else:
-                    st.warning("No questions available for this unit and difficulty.")
