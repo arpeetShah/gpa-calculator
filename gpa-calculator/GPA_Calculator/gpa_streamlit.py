@@ -1,4 +1,6 @@
-# GPA App with Persistent User Data and Weighted GPA Analytics
+# -----------------------------
+# GPA Calculator with Persistent Database
+# -----------------------------
 import streamlit as st
 import pandas as pd
 import sqlite3
@@ -78,14 +80,17 @@ def unweighted_gpa(avg):
 
 
 # -----------------------------
-# PAGE CONFIG
+# PAGE CONFIG AND STYLING
 # -----------------------------
-st.set_page_config(page_title="GPA Calculator", page_icon="📘", layout="wide")
+st.set_page_config(page_title="GPA_Calculator", page_icon="📘", layout="wide")
 st.markdown("""
 <style>
 body {
     background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
     color: white;
+}
+.stButton>button {
+    background-color: #444; color: white; border-radius: 10px; padding: 8px 20px;
 }
 .tab-button {
     background-color: #444; border-radius: 30px; padding: 8px 16px; margin: 4px;
@@ -113,7 +118,6 @@ if "logged_in" not in st.session_state:
 
 if not st.session_state.logged_in:
     page = st.radio("Choose Page", ["Login", "Sign Up"], index=0, horizontal=True)
-
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
@@ -127,7 +131,7 @@ if not st.session_state.logged_in:
                           (username, hash_password(password)))
                 conn.commit()
                 st.success("Account created! Please login.")
-    else:  # Login
+    else:
         if st.button("Login"):
             if check_user(username, password):
                 st.session_state.logged_in = True
@@ -136,20 +140,16 @@ if not st.session_state.logged_in:
             else:
                 st.error("Invalid credentials")
 
+# -----------------------------
+# MAIN APP AFTER LOGIN
+# -----------------------------
 if st.session_state.logged_in:
     st.title(f"Welcome, {st.session_state.username}")
-
-    # -----------------------------
-    # LOAD USER GRADES
-    # -----------------------------
     ms_input, hs_input = load_grades(st.session_state.username)
 
-    # -----------------------------
-    # TABS
-    # -----------------------------
     tabs = st.tabs(["Middle School Grades", "High School Grades", "GPA Analytics"])
 
-    # ----------- Middle School -----------
+    # Middle School Tab
     with tabs[0]:
         st.header("Middle School Grades (2 Semesters)")
         for course, weight in courses.items():
@@ -159,7 +159,7 @@ if st.session_state.logged_in:
             sem2 = st.number_input(f"{course} Semester 2", 0, 100, value=default_sem2, key=f"ms_{course}_2")
             ms_input[course] = [sem1, sem2]
 
-    # ----------- High School -----------
+    # High School Tab
     with tabs[1]:
         st.header("High School Grades (Quarters)")
         quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
@@ -172,17 +172,15 @@ if st.session_state.logged_in:
                 hs_quarters.append(grade)
             hs_input[course] = hs_quarters
 
-    # ----------- GPA Analytics -----------
+    # GPA Analytics Tab
     with tabs[2]:
         st.header("GPA Analytics")
         if st.button("Calculate GPA"):
-            # Save grades to database
             save_grades(st.session_state.username, ms_input, hs_input)
-
-            # Weighted GPA Calculation
             all_weighted, all_unweighted = [], []
             weighted_dict = {}
 
+            # Middle School GPA
             for name, (sem1, sem2) in ms_input.items():
                 avg = (sem1 + sem2) / 2
                 w_gpa = weighted_gpa(avg, courses[name])
@@ -190,6 +188,7 @@ if st.session_state.logged_in:
                 all_unweighted.append(unweighted_gpa(avg))
                 weighted_dict[name] = w_gpa
 
+            # High School GPA
             for name, quarters in hs_input.items():
                 avg = sum(quarters) / len(quarters)
                 w_gpa = weighted_gpa(avg, courses[name])
@@ -203,7 +202,6 @@ if st.session_state.logged_in:
             st.success(f"🎯 Weighted GPA: {weighted_final}")
             st.success(f"📘 Unweighted GPA: {unweighted_final}")
 
-            # Analytics
             st.subheader("Class Analysis by GPA Impact")
             for name, w_gpa in weighted_dict.items():
                 if w_gpa >= 5.5:
