@@ -64,13 +64,12 @@ CREATE TABLE IF NOT EXISTS grades (
     q2 REAL,
     q3 REAL,
     q4 REAL,
-    gt_year INTEGER,
     taken INTEGER,
+    gt_year INTEGER,
     PRIMARY KEY (username, course, section)
 )
 """)
 conn.commit()
-
 
 # =============================
 # HELPERS
@@ -78,10 +77,8 @@ conn.commit()
 def hash_pw(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
 
-
 def weighted_gpa(avg, weight):
     return max(weight - ((100 - avg) * 0.1), 0)
-
 
 def unweighted_gpa(avg):
     if avg >= 90: return 4
@@ -89,7 +86,6 @@ def unweighted_gpa(avg):
     if avg >= 70: return 2
     if avg >= 60: return 1
     return 0
-
 
 # =============================
 # COURSES
@@ -103,10 +99,16 @@ courses = {
     "Geometry": 5.5,
     "Algebra 2": 5.5,
     "AP Precalculus": 6.0,
-    "GT Humanities / AP World": None,  # weight depends on year
     "Biology": 5.5,
     "Chemistry": 5.5,
-    "AP Human Geography": 6.0
+    "AP Human Geography": 6.0,
+    "Sports": 5.0,
+    "AP Computer Science Principles": 6.0,
+    "Survey of Business Marketing Finance": 5.0,
+    "Health": 5.0,
+    "Computer Science": 5.5,
+    "Instruments": 5.0,
+    "GT Humanities / AP World": None
 }
 
 # =============================
@@ -164,36 +166,29 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    ms_selected = st.multiselect("Select your Middle School courses", list(courses.keys()))
+    ms_courses = st.multiselect("Select Middle School Courses", list(courses.keys()), key="ms_select")
 
-    for course in ms_selected:
+    for course in ms_courses:
         c.execute("""
-        SELECT s1, s2, gt_year, taken FROM grades
+        SELECT s1, s2, taken, gt_year FROM grades
         WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, None, 1)
+        row = c.fetchone() or (90.0, 90.0, 0, None)
 
-        s1 = st.number_input(
-            f"{course} – Semester 1",
-            0.0, 100.0, row[0], key=f"ms_s1_{course}"
-        )
-        s2 = st.number_input(
-            f"{course} – Semester 2",
-            0.0, 100.0, row[1], key=f"ms_s2_{course}"
-        )
+        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
 
-        gt_year = row[2]
+        gt_year = None
         if course == "GT Humanities / AP World":
-            gt_year = st.radio("GT/AP World Year", [1, 2], index=(row[2] - 1 if row[2] else 0), horizontal=True)
+            gt_year = st.radio("GT Humanities / AP World Year", [1, 2], index=0, key=f"gt_{course}", horizontal=True)
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?, ?, ?)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
         """, (
             st.session_state.user, course, "MS",
             s1, s2, None, None, None, None,
-            gt_year,
-            1
+            1, gt_year
         ))
     conn.commit()
 
@@ -204,35 +199,32 @@ with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
 
-    hs_selected = st.multiselect("Select your High School courses", list(courses.keys()))
+    hs_courses = st.multiselect("Select High School Courses", list(courses.keys()), key="hs_select")
 
-    for course in hs_selected:
+    for course in hs_courses:
         c.execute("""
         SELECT q1, q2, q3, q4, taken FROM grades
         WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 1)
+        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0)
 
         grades = []
         for i in range(quarters):
             grades.append(
-                st.number_input(
-                    f"{course} – Quarter {i + 1}",
-                    0.0, 100.0, row[i], key=f"hs_q_{course}_{i}"
-                )
+                st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, row[i], key=f"hs_q_{course}_{i}")
             )
 
         padded = grades + [None] * (4 - len(grades))
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?, ?, ?)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
         """, (
             st.session_state.user, course, "HS",
             None, None,
             *padded,
-            None,
-            1
+            1 if hs_courses else 0,
+            None
         ))
     conn.commit()
 
@@ -254,7 +246,6 @@ with tabs[2]:
 
             if row and row[4]:
                 valid = [x for x in row[:4] if x is not None]
-
                 if valid:
                     avg = sum(valid) / len(valid)
                     weighted.append(weighted_gpa(avg, weight))
