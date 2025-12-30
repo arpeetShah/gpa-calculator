@@ -87,7 +87,7 @@ def unweighted_gpa(avg):
     return 0
 
 # =============================
-# COURSES (FIXED + COMPLETE)
+# COURSES
 # =============================
 courses = {
     "Spanish 1": 5.0,
@@ -165,20 +165,22 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    for course in courses:
+    # Multiselect dropdown
+    selected_ms = st.multiselect(
+        "Select your Middle School courses:",
+        list(courses.keys()),
+        key="ms_multiselect"
+    )
+
+    for course in selected_ms:
         c.execute("""
         SELECT s1, s2, taken FROM grades
         WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 0)
+        row = c.fetchone() or (90.0, 90.0, 1)
 
-        taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
-
-        if taken:
-            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
-            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
-        else:
-            s1, s2 = None, None
+        s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+        s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
 
         c.execute("""
         INSERT OR REPLACE INTO grades
@@ -186,7 +188,7 @@ with tabs[0]:
         """, (
             st.session_state.user, course, "MS",
             s1, s2, None, None, None, None,
-            int(taken)
+            1
         ))
     conn.commit()
 
@@ -197,28 +199,30 @@ with tabs[1]:
     st.header("High School Grades")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
 
-    for course in courses:
+    selected_hs = st.multiselect(
+        "Select your High School courses:",
+        list(courses.keys()),
+        key="hs_multiselect"
+    )
+
+    for course in selected_hs:
         c.execute("""
         SELECT q1, q2, q3, q4, taken FROM grades
         WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0)
-
-        taken = st.checkbox(course, value=bool(row[4]), key=f"hs_take_{course}")
+        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 1)
 
         grades = []
-        if taken:
-            for i in range(quarters):
-                grades.append(
-                    st.number_input(
-                        f"{course} – Quarter {i+1}",
-                        0.0, 100.0, row[i],
-                        key=f"hs_q_{course}_{i}"
-                    )
+        for i in range(quarters):
+            grades.append(
+                st.number_input(
+                    f"{course} – Quarter {i+1}",
+                    0.0, 100.0, row[i],
+                    key=f"hs_q_{course}_{i}"
                 )
+            )
 
         padded = grades + [None] * (4 - len(grades))
-
         c.execute("""
         INSERT OR REPLACE INTO grades
         VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -226,7 +230,7 @@ with tabs[1]:
             st.session_state.user, course, "HS",
             None, None,
             *padded,
-            int(taken)
+            1
         ))
     conn.commit()
 
@@ -269,3 +273,9 @@ with tabs[2]:
                 st.write("Your GPA is solid, but higher-weight courses matter most.")
             else:
                 st.write("Lower performance in weighted courses is pulling your GPA down.")
+
+# =============================
+# OPTIONAL IMAGES (top of tabs)
+# =============================
+# Example: You can uncomment and replace URLs with your own images
+# st.image("https://via.placeholder.com/600x100.png?text=EduSphere+Banner", use_column_width=True)
