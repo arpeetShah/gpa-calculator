@@ -277,78 +277,119 @@ with main_tabs[2]:
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
 
         if math_level == "AP Precalculus":
-            # Step 2: Select unit
-            unit = st.selectbox("Select the Unit you want to practice:", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
+            # Step 2: Select Unit
+            unit = st.selectbox("Select the Unit you want to practice:",
+                                ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
 
-            # Step 3: Select difficulty
+            # Step 3: Select Difficulty
             difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
 
-            # Define questions per unit and difficulty
-            questions = {
-                "Unit 1": {
-                    "Easy": [
-                        "Solve for x: 2x + 3 = 7",
-                        "Simplify: 3(x+2) - 4",
-                        "Find the zeros of f(x)=x^2-5x+6"
-                    ],
-                    "Medium": [
-                        "Find the average rate of change of f(x)=x^2+2x from x=1 to x=4",
-                        "Solve for x: x^2 - 5x + 6 = 0",
-                        "Factor: x^2 + 4x + 3"
-                    ],
-                    "Hard": [
-                        "Find all critical points of f(x)=x^3-3x^2+2",
-                        "Simplify: (x^4-16)/(x^2-4)",
-                        "Determine the interval where f(x)=x^3-3x^2+2 is increasing"
-                    ]
-                },
-                "Unit 2": {
-                    "Easy": [
-                        "Solve for x: 2^x = 16",
-                        "Evaluate log10(1000)"
-                    ],
-                    "Medium": [
-                        "Solve for x: log2(x-3)=4",
-                        "Simplify: ln(e^5)"
-                    ],
-                    "Hard": [
-                        "Solve: 3*2^x - 8 = 4",
-                        "Find the inverse of f(x)=e^x"
-                    ]
-                },
-                "Unit 3": {
-                    "Easy": [
-                        "Find the period of y=sin(2x)",
-                        "What is sin(π/2)?"
-                    ],
-                    "Medium": [
-                        "Determine amplitude, period of y=3sin(2x-π/4)",
-                        "Solve cos(θ)=1/2 for θ in [0,2π]"
-                    ],
-                    "Hard": [
-                        "Solve sin(2θ) = √3/2 for θ in [0,2π]",
-                        "Convert polar coordinates (r=5, θ=π/3) to rectangular"
-                    ]
-                },
-                "Unit 4": {
-                    "Easy": [
-                        "Multiply matrix [[1,2],[3,4]] by vector [1,1]",
-                        "Find x if 2x + y = 5 and y = 1"
-                    ],
-                    "Medium": [
-                        "Parametric: x=t^2-1, y=2t+3. Find dy/dx at t=2",
-                        "Rotate vector [1,0] 90° using rotation matrix [[0,-1],[1,0]]"
-                    ],
-                    "Hard": [
-                        "Find determinant of matrix [[2,3],[1,4]]",
-                        "Apply matrix [[1,2],[3,4]] to vector [2,1] and find result"
-                    ]
+            # Step 4: "Show Questions" button
+            if st.button("Show Questions"):
+                # Define questions per unit and difficulty
+                questions = {
+                    "Unit 1": {
+                        "Easy": [
+                            "Solve for x: 2x + 3 = 7",
+                            "Simplify: 3(x+2) - 4",
+                            "Find the zeros of f(x)=x^2-5x+6",
+                            "Determine if f(x)=x^2+3x+2 has a maximum or minimum",
+                            "Evaluate f(2) for f(x)=x^2-3x+4",
+                            "Simplify: (x^2+5x+6)/(x+2)",
+                            "Solve: x^2 - 9 = 0",
+                            "Factor completely: x^3 - 8",
+                            "Find y-intercept of f(x)=x^2-4x+3",
+                            "Find x when f(x)=0 for f(x)=x^2+2x-8"
+                        ],
+                        "Medium": [
+                            "Find the average rate of change of f(x)=x^2+2x from x=1 to x=4",
+                            "Solve for x: x^2 - 5x + 6 = 0",
+                            "Factor: x^2 + 4x + 3",
+                            "Divide: (x^3+3x^2+2x)/(x+1)",
+                            "Find critical points of f(x)=x^3-3x^2+2",
+                            "Simplify: (x^4-16)/(x^2-4)",
+                            "Determine intervals where f(x)=x^3-3x^2+2 is increasing",
+                            "Solve for x: x^2 + 6x + 5 = 0",
+                            "Find domain of f(x)=1/(x^2-4)",
+                            "Find f(0) if f(x)=x^2-2x+1"
+                        ],
+                        "Hard": [
+                            "Find all critical points of f(x)=x^3-3x^2+2",
+                            "Simplify: (x^4-16)/(x^2-4)",
+                            "Determine intervals where f(x)=x^3-3x^2+2 is increasing",
+                            "Find local maxima and minima for f(x)=x^3-6x^2+9x+1",
+                            "Solve inequality: x^2-5x+6>0",
+                            "Sketch graph of f(x)=x^3-3x^2+2",
+                            "Solve: x^4-5x^2+4=0",
+                            "Find concavity of f(x)=x^3-6x^2+9x+1",
+                            "Factor by grouping: x^3+3x^2+2x+6",
+                            "Find roots of f(x)=x^3-4x^2-7x+10"
+                        ]
+                    },
+                    "Unit 2": {
+                        "Easy": [
+                            "Solve for x: 2^x = 16",
+                            "Evaluate log10(1000)",
+                            "Simplify: ln(e^3)",
+                            "Solve: 3^x = 9",
+                            "Convert: log2(8) to base 2"
+                        ],
+                        "Medium": [
+                            "Solve for x: log2(x-3)=4",
+                            "Simplify: ln(e^5)",
+                            "Solve: 2*log3(x)=4",
+                            "Evaluate log5(25)",
+                            "Solve for x: 10^x=1000"
+                        ],
+                        "Hard": [
+                            "Solve: 3*2^x - 8 = 4",
+                            "Find the inverse of f(x)=e^x",
+                            "Solve: log2(x^2-4)=3",
+                            "Simplify: ln(e^(2x+1))",
+                            "Solve: 5^x - 3*5^(x-1) = 20"
+                        ]
+                    },
+                    "Unit 3": {
+                        "Easy": [
+                            "Find the period of y=sin(2x)",
+                            "What is sin(π/2)?",
+                            "Find cos(0)",
+                            "Evaluate tan(π/4)",
+                            "Determine amplitude of y=3sin(x)"
+                        ],
+                        "Medium": [
+                            "Determine amplitude, period of y=3sin(2x-π/4)",
+                            "Solve cos(θ)=1/2 for θ in [0,2π]",
+                            "Find phase shift of y=sin(x-π/3)",
+                            "Solve sin(θ)=√3/2 for θ in [0,2π]",
+                            "Graph y=cos(2x)"
+                        ],
+                        "Hard": [
+                            "Solve sin(2θ) = √3/2 for θ in [0,2π]",
+                            "Convert polar coordinates (r=5, θ=π/3) to rectangular",
+                            "Solve 2cos^2(x)-1=0 for x in [0,2π]",
+                            "Find exact value: sin(5π/6)",
+                            "Prove: sin^2(x)+cos^2(x)=1"
+                        ]
+                    },
+                    "Unit 4": {
+                        "Easy": [
+                            "Multiply matrix [[1,2],[3,4]] by vector [1,1]",
+                            "Find x if 2x + y = 5 and y = 1"
+                        ],
+                        "Medium": [
+                            "Parametric: x=t^2-1, y=2t+3. Find dy/dx at t=2",
+                            "Rotate vector [1,0] 90° using rotation matrix [[0,-1],[1,0]]"
+                        ],
+                        "Hard": [
+                            "Find determinant of matrix [[2,3],[1,4]]",
+                            "Apply matrix [[1,2],[3,4]] to vector [2,1] and find result"
+                        ]
+                    }
                 }
-            }
 
-            # Step 4: Display only questions for the selected unit
-            st.subheader(f"{unit} Questions ({difficulty} level)")
-            for i, q in enumerate(questions[unit][difficulty], 1):
-                st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
+                st.subheader(f"{unit} Questions ({difficulty} level)")
+                for i, q in enumerate(questions[unit][difficulty], 1):
+                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
 
-            st.success(f"AP Precalculus quiz loaded for {difficulty} questions in {unit}!")
+                st.success(f"AP Precalculus quiz loaded for {difficulty} questions in {unit}!")
