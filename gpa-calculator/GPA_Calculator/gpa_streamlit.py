@@ -286,55 +286,52 @@ with main_tabs[2]:
 
             # Step 4: Show Questions button
             if st.button("Show Questions"):
-                # Define questions per unit and difficulty (abbreviated example; full list can be extended)
+                # Define questions per unit and difficulty
                 questions = {
-                    "Unit 1": {
+                    "Unit 1": {  # Polynomial & Rational Functions
                         "Easy": [
                             {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
                              "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
-                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": ["2", "-2"]}
+                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"}
                         ],
-                        "Medium": [
-                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
-                             "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
-                            {"type": "text", "question": "Find average rate of change of f(x)=x^2 from x=1 to x=4",
-                             "answer": "7"}
-                        ],
-                        "Hard": [
-                            {"type": "mcq", "question": "Determine the end behavior of f(x)=-x^3+4x^2",
-                             "options": ["As x→∞, f(x)→ -∞", "As x→∞, f(x)→ ∞", "As x→∞, f(x)→ 0"],
-                             "answer": "As x→∞, f(x)→ -∞"},
-                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
-                             "answer": "x<-2 or -2<x<0 or x>2"}
-                        ]
+                        "Medium": [],
+                        "Hard": []
                     },
-                    # Unit 2, 3, 4 can be added similarly...
+                    "Unit 2": {  # Exponential & Logarithmic Functions
+                        "Easy": [],
+                        "Medium": [],
+                        "Hard": []
+                    },
+                    "Unit 3": {  # Trigonometric & Polar Functions
+                        "Easy": [],
+                        "Medium": [],
+                        "Hard": []
+                    },
+                    "Unit 4": {  # Parameters, Vectors, Matrices
+                        "Easy": [],
+                        "Medium": [],
+                        "Hard": []
+                    }
                 }
 
-                st.subheader(f"{unit} Questions ({difficulty} level)")
-                user_answers = {}
-
-                # Display questions
-                for i, q in enumerate(questions[unit][difficulty], 1):
-                    if q["type"] == "mcq":
-                        user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"mcq_{i}")
-                    else:
-                        user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"text_{i}")
-
-                # Submit button
-                if st.button("Submit Quiz"):
-                    total = len(questions[unit][difficulty])
-                    correct = 0
-
+                # Display questions for the selected unit and difficulty
+                if unit in questions and difficulty in questions[unit] and questions[unit][difficulty]:
+                    st.subheader(f"{unit} Questions ({difficulty} level)")
+                    user_answers = {}
                     for i, q in enumerate(questions[unit][difficulty], 1):
-                        if q["type"] == "mcq" and user_answers[i] == q["answer"]:
-                            correct += 1
-                        elif q["type"] == "text":
-                            if isinstance(q["answer"], list):
-                                if user_answers[i].strip() in q["answer"]:
-                                    correct += 1
-                            elif user_answers[i].strip() == q["answer"]:
-                                correct += 1
+                        if q["type"] == "mcq":
+                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"mcq_{i}")
+                        else:
+                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"text_{i}")
 
-                    score_percent = round((correct / total) * 100, 2)
-                    st.success(f"You scored {correct}/{total} correct ({score_percent}%)")
+                    # Submit button
+                    if st.button("Submit Answers"):
+                        score = 0
+                        for i, q in enumerate(questions[unit][difficulty], 1):
+                            ans = user_answers[i].strip().lower()
+                            correct = q["answer"].strip().lower()
+                            if ans == correct:
+                                score += 1
+                        st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
+                else:
+                    st.warning("No questions available for this unit and difficulty.")
