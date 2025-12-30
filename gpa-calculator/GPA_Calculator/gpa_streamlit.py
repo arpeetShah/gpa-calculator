@@ -271,7 +271,7 @@ with main_tabs[2]:
     # MATH QUIZ
     # =============================
     with quiz_tabs[1]:
-        st.header("AP Precalculus Quiz")
+        st.header("Math Quizzes")
 
         # Step 1: Choose Math course
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
@@ -346,14 +346,9 @@ with main_tabs[2]:
                 }
             }
 
-            # Step 4: Display questions in columns based on unit
-            col1, col2, col3, col4 = st.columns(4)
-            units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]
-            cols = [col1, col2, col3, col4]
+            # Step 4: Display only questions for the selected unit
+            st.subheader(f"{unit} Questions ({difficulty} level)")
+            for i, q in enumerate(questions[unit][difficulty], 1):
+                st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
 
-            for u, c in zip(units, cols):
-                c.subheader(u)
-                for i, q in enumerate(questions[u][difficulty], 1):
-                    c.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
-
-            st.success(f"AP Precalculus quiz loaded for {difficulty} questions up to {unit}!")
+            st.success(f"AP Precalculus quiz loaded for {difficulty} questions in {unit}!")
