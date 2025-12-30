@@ -109,7 +109,8 @@ top_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
 with top_tabs[0]:
     st.title("🎉 Welcome to EduSphere!")
     st.write("Track your grades, analyze your GPA, and practice quizzes—all in one place.")
-    st.image("https://i.imgur.com/0D1d1sB.png", use_column_width=True)  # example image, can replace
+    # Updated image URL
+    st.image("https://images.unsplash.com/photo-1596496052554-6f81b63b75b0?auto=format&fit=crop&w=800&q=60", use_column_width=True)
 
 # =============================
 # GPA TAB
@@ -122,37 +123,39 @@ with top_tabs[1]:
     # =============================
     with gpa_tabs[0]:
         st.header("Middle School Grades")
-        for course in courses:
+
+        ms_selected = st.multiselect(
+            "Select the courses you took",
+            options=list(courses.keys()),
+            default=[]
+        )
+
+        for course in ms_selected:
             c.execute("""
-            SELECT s1, s2, taken, gt_year FROM grades
+            SELECT s1, s2, gt_year FROM grades
             WHERE course=? AND section='MS'
             """, (course,))
-            row = c.fetchone() or (90.0, 90.0, 0, "")
+            row = c.fetchone() or (90.0, 90.0, "")
 
-            taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
+            s1 = st.number_input(
+                f"{course} – Semester 1",
+                0.0, 100.0, row[0], key=f"ms_s1_{course}"
+            )
+            s2 = st.number_input(
+                f"{course} – Semester 2",
+                0.0, 100.0, row[1], key=f"ms_s2_{course}"
+            )
 
-            if taken:
-                s1 = st.number_input(
-                    f"{course} – Semester 1",
-                    0.0, 100.0, row[0], key=f"ms_s1_{course}"
-                )
-                s2 = st.number_input(
-                    f"{course} – Semester 2",
-                    0.0, 100.0, row[1], key=f"ms_s2_{course}"
-                )
-                # GT / AP World optional year
-                if course == "GT / AP World History":
-                    gt_year = st.text_input("GT / AP World History Year", value=row[3], key=f"ms_gt_{course}")
-                else:
-                    gt_year = None
-            else:
-                s1, s2, gt_year = None, None, None
+            # GT / AP World optional year
+            gt_year = row[2]
+            if course == "GT / AP World History":
+                gt_year = st.text_input("GT / AP World History Year", value=row[2], key=f"ms_gt_{course}")
 
             c.execute("""
             INSERT OR REPLACE INTO grades
             VALUES (?,?,?,?,?,?,?,?,?,?)
             """, (
-                course, "MS", s1, s2, None, None, None, None, int(taken), gt_year
+                course, "MS", s1, s2, None, None, None, None, 1, gt_year
             ))
         conn.commit()
 
@@ -162,34 +165,37 @@ with top_tabs[1]:
     with gpa_tabs[1]:
         st.header("High School Grades")
         quarters = st.slider("Quarters Completed", 1, 4, 2)
-        for course in courses:
+
+        hs_selected = st.multiselect(
+            "Select the courses you took",
+            options=list(courses.keys()),
+            default=[]
+        )
+
+        for course in hs_selected:
             c.execute("""
-            SELECT q1, q2, q3, q4, taken, gt_year FROM grades
+            SELECT q1, q2, q3, q4, gt_year FROM grades
             WHERE course=? AND section='HS'
             """, (course,))
-            row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0, "")
-
-            taken = st.checkbox(course, value=bool(row[4]), key=f"hs_take_{course}")
+            row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, "")
 
             grades = []
-            if taken:
-                for i in range(quarters):
-                    grades.append(
-                        st.number_input(
-                            f"{course} – Quarter {i+1}",
-                            0.0, 100.0, row[i],
-                            key=f"hs_q_{course}_{i}"
-                        )
+            for i in range(quarters):
+                grades.append(
+                    st.number_input(
+                        f"{course} – Quarter {i+1}",
+                        0.0, 100.0, row[i],
+                        key=f"hs_q_{course}_{i}"
                     )
-                # GT / AP World optional year
-                if course == "GT / AP World History":
-                    gt_year = st.text_input("GT / AP World History Year", value=row[5], key=f"hs_gt_{course}")
-                else:
-                    gt_year = None
-            else:
-                grades, gt_year = [None]*4, None
+                )
 
             padded = grades + [None]*(4 - len(grades))
+
+            # GT / AP World optional year
+            gt_year = row[4]
+            if course == "GT / AP World History":
+                gt_year = st.text_input("GT / AP World History Year", value=row[4], key=f"hs_gt_{course}")
+
             c.execute("""
             INSERT OR REPLACE INTO grades
             VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -197,7 +203,7 @@ with top_tabs[1]:
                 course, "HS",
                 None, None,
                 *padded,
-                int(taken),
+                1,
                 gt_year
             ))
         conn.commit()
@@ -214,26 +220,26 @@ with top_tabs[1]:
             for course, weight in courses.items():
                 # Middle School
                 c.execute("""
-                SELECT s1, s2, taken FROM grades
+                SELECT s1, s2 FROM grades
                 WHERE course=? AND section='MS'
                 """, (course,))
                 row = c.fetchone()
-                if row and row[2]:
+                if row:
                     valid = [x for x in row[:2] if x is not None]
                     if valid:
                         avg = sum(valid)/len(valid)
-                        if weight:  # skip None weight (e.g., GT/AP World)
+                        if weight:
                             weighted.append(weighted_gpa(avg, weight))
                         unweighted.append(unweighted_gpa(avg))
                         ms_course_gpas[course] = avg
 
                 # High School
                 c.execute("""
-                SELECT q1, q2, q3, q4, taken FROM grades
+                SELECT q1, q2, q3, q4 FROM grades
                 WHERE course=? AND section='HS'
                 """, (course,))
                 row = c.fetchone()
-                if row and row[4]:
+                if row:
                     valid = [x for x in row[:4] if x is not None]
                     if valid:
                         avg = sum(valid)/len(valid)
