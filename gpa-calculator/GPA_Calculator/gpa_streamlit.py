@@ -271,94 +271,89 @@ with main_tabs[2]:
     # MATH QUIZ
     # =============================
     with quiz_tabs[1]:
-        st.header("Math Quiz")
+        st.header("AP Precalculus Quiz")
+
+        # Step 1: Choose Math course
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
 
-        # Algebra 1 Questions
-        if math_level == "Algebra 1":
-            q1 = st.radio("Solve for x: 2x + 5 = 13", ["x = 3", "x = 4", "x = 5"])
-            q2 = st.radio("Simplify: 3(x + 4) - 2", ["3x + 10", "3x + 12", "3x + 2"])
-            q3 = st.radio("Factor: x^2 + 7x + 10", ["(x+5)(x+2)", "(x+10)(x+1)", "(x+2)(x+5)"])
-            q4 = st.radio("Solve: 5x - 9 = 16", ["x = 5", "x = 4", "x = 3"])
+        if math_level == "AP Precalculus":
+            # Step 2: Select unit
+            unit = st.selectbox("Select the Unit you want to practice:", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
 
-        # Geometry Questions
-        elif math_level == "Geometry":
-            q1 = st.radio("The sum of angles in a triangle is?", ["180°", "360°", "90°"])
-            q2 = st.radio("Find the area of a rectangle: length=5, width=3", ["15", "8", "10"])
-            q3 = st.radio("The Pythagorean theorem applies to which type of triangle?",
-                          ["Right triangle", "Equilateral triangle", "Isosceles triangle"])
-            q4 = st.radio("Find the circumference of a circle with radius 4", ["8π", "16π", "12π"])
-
-        # Algebra 2 Questions
-        elif math_level == "Algebra 2":
-            q1 = st.radio("Factor: x^2 + 5x + 6", ["(x+2)(x+3)", "(x+1)(x+6)", "(x+3)(x+4)"])
-            q2 = st.radio("Solve: 2x - 7 = 5", ["x = 6", "x = 5", "x = 4"])
-            q3 = st.radio("Simplify: (x^2y)(3xy^2)", ["3x^3y^3", "3x^2y^2", "3x^3y^2"])
-            q4 = st.radio("Solve for y: 3y/4 = 9", ["y = 12", "y = 36", "y = 7"])
-
-        # AP Precalculus (FISD Units 1-4)
-        # AP Precalculus (FISD Units 1-4)
-        # =============================
-        # AP Precalculus Quiz by Difficulty
-        # =============================
-        with quiz_tabs[1]:
-            st.header("AP Precalculus Quiz")
+            # Step 3: Select difficulty
             difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
 
-            # Easy Questions (10)
-            easy_questions = [
-                "Solve for x: 2x + 3 = 7",
-                "Simplify: 3(x+2) - 4",
-                "Find the zeros of f(x)=x^2-5x+6",
-                "What is the sum of angles in a triangle?",
-                "Factor: x^2 + 4x + 3",
-                "Evaluate f(2) if f(x)=x^2",
-                "Simplify: (x^2 * x^3)",
-                "Solve for y: 3y - 6 = 0",
-                "Identify the coefficient of x in 7x-2",
-                "Graph y = 2x + 1: What is the y-intercept?"
-            ]
+            # Define questions per unit and difficulty
+            questions = {
+                "Unit 1": {
+                    "Easy": [
+                        "Solve for x: 2x + 3 = 7",
+                        "Simplify: 3(x+2) - 4",
+                        "Find the zeros of f(x)=x^2-5x+6"
+                    ],
+                    "Medium": [
+                        "Find the average rate of change of f(x)=x^2+2x from x=1 to x=4",
+                        "Solve for x: x^2 - 5x + 6 = 0",
+                        "Factor: x^2 + 4x + 3"
+                    ],
+                    "Hard": [
+                        "Find all critical points of f(x)=x^3-3x^2+2",
+                        "Simplify: (x^4-16)/(x^2-4)",
+                        "Determine the interval where f(x)=x^3-3x^2+2 is increasing"
+                    ]
+                },
+                "Unit 2": {
+                    "Easy": [
+                        "Solve for x: 2^x = 16",
+                        "Evaluate log10(1000)"
+                    ],
+                    "Medium": [
+                        "Solve for x: log2(x-3)=4",
+                        "Simplify: ln(e^5)"
+                    ],
+                    "Hard": [
+                        "Solve: 3*2^x - 8 = 4",
+                        "Find the inverse of f(x)=e^x"
+                    ]
+                },
+                "Unit 3": {
+                    "Easy": [
+                        "Find the period of y=sin(2x)",
+                        "What is sin(π/2)?"
+                    ],
+                    "Medium": [
+                        "Determine amplitude, period of y=3sin(2x-π/4)",
+                        "Solve cos(θ)=1/2 for θ in [0,2π]"
+                    ],
+                    "Hard": [
+                        "Solve sin(2θ) = √3/2 for θ in [0,2π]",
+                        "Convert polar coordinates (r=5, θ=π/3) to rectangular"
+                    ]
+                },
+                "Unit 4": {
+                    "Easy": [
+                        "Multiply matrix [[1,2],[3,4]] by vector [1,1]",
+                        "Find x if 2x + y = 5 and y = 1"
+                    ],
+                    "Medium": [
+                        "Parametric: x=t^2-1, y=2t+3. Find dy/dx at t=2",
+                        "Rotate vector [1,0] 90° using rotation matrix [[0,-1],[1,0]]"
+                    ],
+                    "Hard": [
+                        "Find determinant of matrix [[2,3],[1,4]]",
+                        "Apply matrix [[1,2],[3,4]] to vector [2,1] and find result"
+                    ]
+                }
+            }
 
-            # Medium Questions (10)
-            medium_questions = [
-                "Find the average rate of change of f(x)=x^2+2x from x=1 to x=4",
-                "Solve for x: 2^x = 16",
-                "Simplify: (3x^2 - 2x) + (x^2 + 4x)",
-                "Determine all real zeros of f(x)=x^3-6x^2+11x-6",
-                "Find the vertex of y=x^2-4x+3",
-                "Evaluate log10(1000)",
-                "Solve: 3x^2 - 12 = 0",
-                "Simplify the rational function (x^2-9)/(x-3)",
-                "Find the period of y=sin(2x)",
-                "Convert polar coordinates (r=5, θ=π/3) to rectangular"
-            ]
+            # Step 4: Display questions in columns based on unit
+            col1, col2, col3, col4 = st.columns(4)
+            units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]
+            cols = [col1, col2, col3, col4]
 
-            # Hard Questions (10)
-            hard_questions = [
-                "Find the derivative of f(x)=3x^3 - 5x^2 + 2x",
-                "Solve sin(2θ) = √3/2 for θ in [0,2π]",
-                "Multiply matrix [[2,-1],[3,4]] by vector [1,2]",
-                "Parametric: x=t^2-1, y=2t+3. Find dy/dx at t=2",
-                "Find all critical points of f(x)=x^3-3x^2+2",
-                "Evaluate the integral ∫(2x+1)dx",
-                "Simplify: (x^4-16)/(x^2-4)",
-                "Determine amplitude, period, phase shift of y=3sin(2x-π/4)",
-                "Solve log2(x-3)=4",
-                "A rotation matrix [[0,-1],[1,0]] is applied to vector [3,4]. Find the new vector"
-            ]
+            for u, c in zip(units, cols):
+                c.subheader(u)
+                for i, q in enumerate(questions[u][difficulty], 1):
+                    c.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
 
-            # Display Questions Based on Difficulty
-            if difficulty == "Easy":
-                st.subheader("Easy Questions")
-                for i, q in enumerate(easy_questions, 1):
-                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
-            elif difficulty == "Medium":
-                st.subheader("Medium Questions")
-                for i, q in enumerate(medium_questions, 1):
-                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
-            else:
-                st.subheader("Hard Questions")
-                for i, q in enumerate(hard_questions, 1):
-                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
-
-            st.success("AP Precalculus quiz loaded! Answers are not yet auto-graded.")
+            st.success(f"AP Precalculus quiz loaded for {difficulty} questions up to {unit}!")
