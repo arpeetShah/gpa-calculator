@@ -100,10 +100,24 @@ def unweighted_gpa(avg):
 # =============================
 # MAIN TABS
 # =============================
-with tabs[0]:
+# Create the main tabs at the top
+main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
+
+# Welcome Tab
+with main_tabs[0]:
     st.header("Welcome to EduSphere!")
     st.image("https://images.unsplash.com/photo-1596496056730-3b7162c14d1c?auto=format&fit=crop&w=1200&q=80", use_column_width=True)
     st.write("Track your GPA, get insights, and practice quizzes all in one place.")
+
+# GPA Tab
+with main_tabs[1]:
+    # Your GPA subtabs and existing code go here
+    pass
+
+# Quiz Tab
+with main_tabs[2]:
+    # Your quiz code goes here
+    pass
 
 # =============================
 # WELCOME TAB
