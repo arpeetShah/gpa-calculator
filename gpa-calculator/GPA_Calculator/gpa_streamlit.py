@@ -20,7 +20,7 @@ st.set_page_config(
 # -----------------------------
 st.title("📘 GPA_Calculator")
 
-username = st.text_input("Enter your username (use the same one every time):")
+username = st.text_input("Enter your username:")
 if not username:
     st.warning("Please enter your username to continue.")
     st.stop()
@@ -91,7 +91,7 @@ if not selected:
     st.stop()
 
 # -----------------------------
-# SEMESTER/QUARTER INPUT
+# QUARTER INPUT
 # -----------------------------
 quarters_done = st.slider("How many quarters completed this year?", 1, 4, 2)
 
@@ -106,10 +106,12 @@ for item in selected:
     # -----------------------------
     # Middle School input
     # -----------------------------
-    if st.checkbox(f"Did you take {name} in Middle School?"):
+    is_ms = st.checkbox(f"Did you take {name} in Middle School?", key=f"{num}_ms_checkbox")
+    if is_ms:
         sem1 = st.number_input(f"{name} MS Semester 1 grade:", 0.0, 100.0, 90.0, key=f"{num}_ms1")
         sem2 = st.number_input(f"{name} MS Semester 2 grade:", 0.0, 100.0, 90.0, key=f"{num}_ms2")
-        grades[name] = {"MS": [sem1, sem2]}
+        grades[name] = {"MS": [sem1, sem2], "weight": base_weight}
+        continue  # Skip High School quarter input for this course
 
     # -----------------------------
     # GT Humanities year selection
@@ -130,9 +132,7 @@ for item in selected:
             0.0, 100.0, 90.0,
             key=f"{num}_q{q}"
         ))
-    grades[name] = grades.get(name, {})
-    grades[name]['HS'] = qs
-    grades[name]['weight'] = weight
+    grades[name] = {"HS": qs, "weight": weight}
 
 # -----------------------------
 # CALCULATE BUTTON
