@@ -6,9 +6,12 @@ import random
 # =============================
 # WELCOME AESTHETIC SECTION
 # =============================
+# =============================
+# WELCOME AESTHETIC SECTION
+# =============================
 st.markdown("""
 <div id="welcome-section" style="
-    height: 100vh;
+    height: 50vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
