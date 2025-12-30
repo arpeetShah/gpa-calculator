@@ -5,18 +5,15 @@ import pandas as pd
 import datetime
 
 # -----------------------------
-# PAGE CONFIG (IMPORTANT)
+# PAGE CONFIG
 # -----------------------------
 st.set_page_config(
-    page_title="GPA_Calculator",
+    page_title="GPA Calculator",
     page_icon="📘",
     layout="centered"
 )
 
-# -----------------------------
-# SIMPLE USER PROFILE
-# -----------------------------
-st.title("📘 GPA_Calculator")
+st.title("📘 GPA Calculator")
 student_name = st.text_input("Your Name (optional)")
 
 # -----------------------------
@@ -57,50 +54,78 @@ def unweighted_gpa(avg):
     return 0
 
 # -----------------------------
-# SESSION STORAGE (HISTORY)
+# SESSION HISTORY
 # -----------------------------
 if "history" not in st.session_state:
     st.session_state.history = []
 
 # -----------------------------
-# INPUT SECTION
+# MIDDLE SCHOOL INPUT
 # -----------------------------
-st.header("📚 Courses & Grades")
-
-selected = st.multiselect(
-    "Select your courses",
-    [f"{k}. {v[0]}" for k, v in courses.items()]
+st.header("📝 Middle School Courses")
+ms_selected = st.multiselect(
+    "Select your Middle School courses",
+    [f"{k}. {v[0]}" for k, v in courses.items()],
+    key="ms_select"
 )
 
-quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
-
+ms_grades = {}
 gt_year = None
-grades = {}
 
-for item in selected:
+for item in ms_selected:
     num = int(item.split(".")[0])
     name, base_weight = courses[num]
 
     st.subheader(name)
-
+    # GT year only if selected
     if num == 9:
-        gt_year = st.radio("GT Humanities year", [1, 2], horizontal=True)
+        gt_year = st.radio(f"{name} year in MS", [1, 2], key=f"gt_ms_{num}")
+        weight = 5.5 if gt_year == 1 else 6.0
+    else:
+        weight = base_weight
+
+    sem1 = st.number_input(f"{name} Semester 1 grade", 0.0, 100.0, 90.0, key=f"ms_{num}_1")
+    sem2 = st.number_input(f"{name} Semester 2 grade", 0.0, 100.0, 90.0, key=f"ms_{num}_2")
+
+    avg = (sem1 + sem2) / 2
+    ms_grades[name] = {
+        "Average": avg,
+        "Weighted GPA": weighted_gpa(avg, weight),
+        "Unweighted GPA": unweighted_gpa(avg)
+    }
+
+# -----------------------------
+# HIGH SCHOOL INPUT
+# -----------------------------
+st.header("📚 High School Courses")
+hs_selected = st.multiselect(
+    "Select your High School courses",
+    [f"{k}. {v[0]}" for k, v in courses.items()],
+    key="hs_select"
+)
+
+quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
+
+hs_grades = {}
+
+for item in hs_selected:
+    num = int(item.split(".")[0])
+    name, base_weight = courses[num]
+
+    st.subheader(name)
+    if num == 9:
+        if gt_year is None:
+            gt_year = st.radio(f"{name} year in HS", [1, 2], key=f"gt_hs_{num}")
         weight = 5.5 if gt_year == 1 else 6.0
     else:
         weight = base_weight
 
     qs = []
     for q in range(1, quarters_done + 1):
-        qs.append(
-            st.number_input(
-                f"Quarter {q} grade",
-                0.0, 100.0, 90.0,
-                key=f"{num}_{q}"
-            )
-        )
+        qs.append(st.number_input(f"Quarter {q} grade", 0.0, 100.0, 90.0, key=f"hs_{num}_{q}"))
 
     avg = sum(qs) / len(qs)
-    grades[name] = {
+    hs_grades[name] = {
         "Average": avg,
         "Weighted GPA": weighted_gpa(avg, weight),
         "Unweighted GPA": unweighted_gpa(avg)
@@ -109,27 +134,23 @@ for item in selected:
 # -----------------------------
 # CALCULATE BUTTON
 # -----------------------------
+all_grades = {**ms_grades, **hs_grades}
+
 if st.button("📊 Calculate GPA", use_container_width=True):
-    if not grades:
+    if not all_grades:
         st.warning("Please select at least one course.")
     else:
-        df = pd.DataFrame(grades).T
-
+        df = pd.DataFrame(all_grades).T
         weighted_final = round(df["Weighted GPA"].mean(), 2)
         unweighted_final = round(df["Unweighted GPA"].mean(), 2)
 
         st.success(f"🎯 **Weighted GPA:** {weighted_final}")
         st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
 
-        # -----------------------------
-        # CHART
-        # -----------------------------
         st.subheader("📈 GPA Breakdown")
         st.bar_chart(df[["Weighted GPA", "Unweighted GPA"]])
 
-        # -----------------------------
-        # SAVE HISTORY
-        # -----------------------------
+        # Save history
         record = {
             "Name": student_name or "Anonymous",
             "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
