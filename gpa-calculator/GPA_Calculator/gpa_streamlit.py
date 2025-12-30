@@ -298,54 +298,67 @@ with main_tabs[2]:
 
         # AP Precalculus (FISD Units 1-4)
         # AP Precalculus (FISD Units 1-4)
-        else:
-            st.subheader("AP Precalculus Quiz")
-            unit = st.selectbox("Which unit are you currently on?", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
+        # =============================
+        # AP Precalculus Quiz by Difficulty
+        # =============================
+        with quiz_tabs[1]:
+            st.header("AP Precalculus Quiz")
+            difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
 
-            # Unit 1: Polynomial & Rational Functions
-            if unit in ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]:
-                st.write("Unit 1: Polynomial & Rational Functions")
-                st.radio("Q1: Find the average rate of change of f(x)=2x^3 - 5x^2 + x from x=1 to x=4",
-                         ["26.5", "18.5", "22"])
-                st.radio("Q2: Determine all real zeros of f(x)=x^3-6x^2+11x-6",
-                         ["x=1,2,3", "x=1,3,4", "x=2,3,5"])
-                st.radio("Q3: Simplify the rational function (x^3-8)/(x-2)",
-                         ["x^2+2x+4", "x^2-2x+4", "x^2+4x+4"])
-                st.radio("Q4: Identify the end behavior of f(x)=-3x^4 + 2x^3 - x",
-                         ["f(x)→-∞ as x→±∞", "f(x)→∞ as x→±∞", "f(x)→∞ as x→-∞ and f(x)→-∞ as x→∞"])
+            # Easy Questions (10)
+            easy_questions = [
+                "Solve for x: 2x + 3 = 7",
+                "Simplify: 3(x+2) - 4",
+                "Find the zeros of f(x)=x^2-5x+6",
+                "What is the sum of angles in a triangle?",
+                "Factor: x^2 + 4x + 3",
+                "Evaluate f(2) if f(x)=x^2",
+                "Simplify: (x^2 * x^3)",
+                "Solve for y: 3y - 6 = 0",
+                "Identify the coefficient of x in 7x-2",
+                "Graph y = 2x + 1: What is the y-intercept?"
+            ]
 
-            # Unit 2: Exponential & Logarithmic Functions
-            if unit in ["Unit 2", "Unit 3", "Unit 4"]:
-                st.write("Unit 2: Exponential & Logarithmic Functions")
-                st.radio("Q1: Solve for x: 5^(2x-1) = 125", ["x = 2", "x = 1.5", "x = 3"])
-                st.radio("Q2: Solve for x: log2(x-3)=4", ["x=19", "x=16", "x=18"])
-                st.radio("Q3: If a population grows according to P(t)=100e^(0.03t), find P after 10 years",
-                         ["134.99", "130", "140"])
-                st.radio(
-                    "Q4: The half-life of a substance is 5 years. Write the decay function and find the remaining amount after 15 years.",
-                    ["A=100*(1/2)^(15/5)", "A=100*e^(-15/5)", "A=100*(1/2)^15"])
+            # Medium Questions (10)
+            medium_questions = [
+                "Find the average rate of change of f(x)=x^2+2x from x=1 to x=4",
+                "Solve for x: 2^x = 16",
+                "Simplify: (3x^2 - 2x) + (x^2 + 4x)",
+                "Determine all real zeros of f(x)=x^3-6x^2+11x-6",
+                "Find the vertex of y=x^2-4x+3",
+                "Evaluate log10(1000)",
+                "Solve: 3x^2 - 12 = 0",
+                "Simplify the rational function (x^2-9)/(x-3)",
+                "Find the period of y=sin(2x)",
+                "Convert polar coordinates (r=5, θ=π/3) to rectangular"
+            ]
 
-            # Unit 3: Trigonometric & Polar Functions
-            if unit in ["Unit 3", "Unit 4"]:
-                st.write("Unit 3: Trigonometric & Polar Functions")
-                st.radio("Q1: Solve sin(2θ) = √3/2 for θ in [0, 2π]",
-                         ["θ=π/6,5π/6,7π/6,11π/6", "θ=π/3,2π/3,4π/3,5π/3", "θ=π/4,3π/4,5π/4,7π/4"])
-                st.radio(
-                    "Q2: A Ferris wheel of radius 10 meters rotates such that θ(t)=πt/6. Find the height after t=3 seconds.",
-                    ["15 meters", "10 meters", "20 meters"])
-                st.radio("Q3: Convert polar coordinates (r=6, θ=5π/4) to rectangular",
-                         ["(-3√2,-3√2)", "(-6√2/2,6√2/2)", "(3√2, -3√2)"])
-                st.radio("Q4: Determine amplitude, period, and phase shift of y=3sin(2x-π/4)",
-                         ["Amplitude=3, Period=π, Phase shift=π/8", "Amplitude=3, Period=2π, Phase shift=π/4",
-                          "Amplitude=2, Period=π, Phase shift=π/2"])
+            # Hard Questions (10)
+            hard_questions = [
+                "Find the derivative of f(x)=3x^3 - 5x^2 + 2x",
+                "Solve sin(2θ) = √3/2 for θ in [0,2π]",
+                "Multiply matrix [[2,-1],[3,4]] by vector [1,2]",
+                "Parametric: x=t^2-1, y=2t+3. Find dy/dx at t=2",
+                "Find all critical points of f(x)=x^3-3x^2+2",
+                "Evaluate the integral ∫(2x+1)dx",
+                "Simplify: (x^4-16)/(x^2-4)",
+                "Determine amplitude, period, phase shift of y=3sin(2x-π/4)",
+                "Solve log2(x-3)=4",
+                "A rotation matrix [[0,-1],[1,0]] is applied to vector [3,4]. Find the new vector"
+            ]
 
-            # Unit 4: Functions Involving Parameters, Vectors, and Matrices
-            if unit == "Unit 4":
-                st.write("Unit 4: Functions Involving Parameters, Vectors, and Matrices")
-                st.radio("Q1: Multiply matrix [[2, -1],[3,4]] by vector [1,2]", ["[0,11]", "[3,10]", "[1,9]"])
-                st.radio("Q2: Parametric equations x=t^2-1, y=2t+3. Find dy/dx at t=2", ["1/2", "1", "2"])
-                st.radio("Q3: A rotation matrix [[0,-1],[1,0]] is applied to vector [3,4]. Find the new vector",
-                         ["[-4,3]", "[4,-3]", "[-3,4]"])
-                st.radio("Q4: If r(t) = <t^2, t^3>, find dr/dt at t=1", ["<2,3>", "<1,1>", "<2,1>"])
+            # Display Questions Based on Difficulty
+            if difficulty == "Easy":
+                st.subheader("Easy Questions")
+                for i, q in enumerate(easy_questions, 1):
+                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
+            elif difficulty == "Medium":
+                st.subheader("Medium Questions")
+                for i, q in enumerate(medium_questions, 1):
+                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
+            else:
+                st.subheader("Hard Questions")
+                for i, q in enumerate(hard_questions, 1):
+                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
 
-            st.success("Math quiz section loaded. Answers are not yet auto-graded.")
+            st.success("AP Precalculus quiz loaded! Answers are not yet auto-graded.")
