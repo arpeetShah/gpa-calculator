@@ -10,6 +10,15 @@ st.set_page_config(
     layout="wide"
 )
 
+
+st.markdown("""
+<style>
+body {
+    background: linear-gradient(135deg, #0a1a3c, #2b124f);
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
 # =============================
 # STYLES
 # =============================
