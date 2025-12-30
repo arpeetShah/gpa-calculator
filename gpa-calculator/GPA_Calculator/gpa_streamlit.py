@@ -20,7 +20,7 @@ st.set_page_config(
 # -----------------------------
 st.title("📘 GPA_Calculator")
 
-username = st.text_input("Enter your username (use the same one every time:")
+username = st.text_input("Enter your username (use the same one every time):")
 if not username:
     st.warning("Please enter your username to continue.")
     st.stop()
