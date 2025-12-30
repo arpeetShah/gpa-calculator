@@ -186,9 +186,9 @@ with tabs[0]:
         s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
         s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
 
-        gt_year = None
+        gt_year = row[3]
         if course == "GT Humanities / AP World":
-            gt_year = st.radio("GT/AP World Year", [1, 2], index=row[3]-1 if row[3] else 0, key=f"gt_year")
+            gt_year = st.radio("GT/AP World Year", [1, 2], index=(gt_year-1) if gt_year else 0, key=f"gt_year")
 
         c.execute("""
         INSERT OR REPLACE INTO grades
