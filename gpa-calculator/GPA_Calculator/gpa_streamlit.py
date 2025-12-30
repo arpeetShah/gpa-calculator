@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS grades (
     q2 REAL,
     q3 REAL,
     q4 REAL,
+    gt_year INTEGER,
     taken INTEGER,
     PRIMARY KEY (username, course, section)
 )
@@ -101,13 +102,7 @@ courses = {
     "Biology": 5.5,
     "Chemistry": 5.5,
     "AP Human Geography": 6.0,
-    "GT Humanities / AP World": 6.0,
-    "AP Computer Science Principles": 6.0,
-    "Computer Science": 5.5,
-    "Survey of Business, Marketing & Finance": 5.0,
-    "Health": 5.0,
-    "Instruments": 5.0,
-    "Sports": 5.0
+    "GT Humanities / AP World": 5.5
 }
 
 # =============================
@@ -165,7 +160,6 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    # Multiselect dropdown
     selected_ms = st.multiselect(
         "Select your Middle School courses:",
         list(courses.keys()),
@@ -174,13 +168,17 @@ with tabs[0]:
 
     for course in selected_ms:
         c.execute("""
-        SELECT s1, s2, taken FROM grades
+        SELECT s1, s2, gt_year, taken FROM grades
         WHERE username=? AND course=? AND section='MS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 1)
+        row = c.fetchone() or (90.0, 90.0, None, 1)
 
         s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
         s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
+
+        gt_year = row[2]
+        if course == "GT Humanities / AP World":
+            gt_year = st.radio(f"{course} – Year", [1, 2], index=(gt_year-1 if gt_year else 0), key=f"ms_gt_year")
 
         c.execute("""
         INSERT OR REPLACE INTO grades
@@ -188,6 +186,7 @@ with tabs[0]:
         """, (
             st.session_state.user, course, "MS",
             s1, s2, None, None, None, None,
+            gt_year,
             1
         ))
     conn.commit()
@@ -207,10 +206,10 @@ with tabs[1]:
 
     for course in selected_hs:
         c.execute("""
-        SELECT q1, q2, q3, q4, taken FROM grades
+        SELECT q1, q2, q3, q4, gt_year, taken FROM grades
         WHERE username=? AND course=? AND section='HS'
         """, (st.session_state.user, course))
-        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 1)
+        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, None, 1)
 
         grades = []
         for i in range(quarters):
@@ -222,7 +221,12 @@ with tabs[1]:
                 )
             )
 
+        gt_year = row[4]
+        if course == "GT Humanities / AP World":
+            gt_year = st.radio(f"{course} – Year", [1, 2], index=(gt_year-1 if gt_year else 0), key=f"hs_gt_year")
+
         padded = grades + [None] * (4 - len(grades))
+
         c.execute("""
         INSERT OR REPLACE INTO grades
         VALUES (?,?,?,?,?,?,?,?,?,?)
@@ -230,6 +234,7 @@ with tabs[1]:
             st.session_state.user, course, "HS",
             None, None,
             *padded,
+            gt_year,
             1
         ))
     conn.commit()
@@ -268,14 +273,8 @@ with tabs[2]:
 
             st.subheader("📊 GPA Insight")
             if w >= 5.5:
-                st.write("Your GPA is being boosted by strong performance in GPA-heavy courses.")
+                st.write("Your GPA is being boosted by strong performance in weighted courses.")
             elif w >= 4.5:
-                st.write("Your GPA is solid, but higher-weight courses matter most.")
+                st.write("Your GPA is solid, but higher-weight classes have the biggest impact.")
             else:
-                st.write("Lower performance in weighted courses is pulling your GPA down.")
-
-# =============================
-# OPTIONAL IMAGES (top of tabs)
-# =============================
-# Example: You can uncomment and replace URLs with your own images
-# st.image("https://via.placeholder.com/600x100.png?text=EduSphere+Banner", use_column_width=True)
+                st.write("Lower performance in GPA-heavy courses is pulling your GPA down.")
