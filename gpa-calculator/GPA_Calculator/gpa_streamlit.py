@@ -297,38 +297,55 @@ with main_tabs[2]:
             q4 = st.radio("Solve for y: 3y/4 = 9", ["y = 12", "y = 36", "y = 7"])
 
         # AP Precalculus (FISD Units 1-4)
+        # AP Precalculus (FISD Units 1-4)
         else:
             st.subheader("AP Precalculus Quiz")
             unit = st.selectbox("Which unit are you currently on?", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
 
-            # Unit 1 Questions
+            # Unit 1: Polynomial & Rational Functions
             if unit in ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]:
                 st.write("Unit 1: Polynomial & Rational Functions")
-                st.radio("Q1: Find the average rate of change of f(x)=x^2 from x=2 to x=5", ["7", "6.5", "5"])
-                st.radio("Q2: Determine the zeros of f(x)=x^2-5x+6", ["x=2 and x=3", "x=1 and x=6", "x=-2 and x=-3"])
-                st.radio("Q3: Simplify the rational function (x^2-9)/(x+3)", ["x-3", "x+3", "x-9"])
+                st.radio("Q1: Find the average rate of change of f(x)=2x^3 - 5x^2 + x from x=1 to x=4",
+                         ["26.5", "18.5", "22"])
+                st.radio("Q2: Determine all real zeros of f(x)=x^3-6x^2+11x-6",
+                         ["x=1,2,3", "x=1,3,4", "x=2,3,5"])
+                st.radio("Q3: Simplify the rational function (x^3-8)/(x-2)",
+                         ["x^2+2x+4", "x^2-2x+4", "x^2+4x+4"])
+                st.radio("Q4: Identify the end behavior of f(x)=-3x^4 + 2x^3 - x",
+                         ["f(x)→-∞ as x→±∞", "f(x)→∞ as x→±∞", "f(x)→∞ as x→-∞ and f(x)→-∞ as x→∞"])
 
-            # Unit 2 Questions
+            # Unit 2: Exponential & Logarithmic Functions
             if unit in ["Unit 2", "Unit 3", "Unit 4"]:
                 st.write("Unit 2: Exponential & Logarithmic Functions")
-                st.radio("Q1: Solve for x: 2^x = 8", ["x = 3", "x = 2", "x = 4"])
-                st.radio("Q2: Simplify log(1000)", ["3", "2", "4"])
-                st.radio("Q3: Evaluate e^0", ["1", "0", "e"])
+                st.radio("Q1: Solve for x: 5^(2x-1) = 125", ["x = 2", "x = 1.5", "x = 3"])
+                st.radio("Q2: Solve for x: log2(x-3)=4", ["x=19", "x=16", "x=18"])
+                st.radio("Q3: If a population grows according to P(t)=100e^(0.03t), find P after 10 years",
+                         ["134.99", "130", "140"])
+                st.radio(
+                    "Q4: The half-life of a substance is 5 years. Write the decay function and find the remaining amount after 15 years.",
+                    ["A=100*(1/2)^(15/5)", "A=100*e^(-15/5)", "A=100*(1/2)^15"])
 
-            # Unit 3 Questions
+            # Unit 3: Trigonometric & Polar Functions
             if unit in ["Unit 3", "Unit 4"]:
                 st.write("Unit 3: Trigonometric & Polar Functions")
-                st.radio("Q1: sin(π/6) = ?", ["1/2", "√3/2", "1"])
-                st.radio("Q2: cos(π/3) = ?", ["1/2", "√3/2", "0"])
-                st.radio("Q3: Convert polar coordinates (r=5, θ=π/4) to rectangular",
-                         ["(5√2/2,5√2/2)", "(5,5)", "(√2,√2)"])
+                st.radio("Q1: Solve sin(2θ) = √3/2 for θ in [0, 2π]",
+                         ["θ=π/6,5π/6,7π/6,11π/6", "θ=π/3,2π/3,4π/3,5π/3", "θ=π/4,3π/4,5π/4,7π/4"])
+                st.radio(
+                    "Q2: A Ferris wheel of radius 10 meters rotates such that θ(t)=πt/6. Find the height after t=3 seconds.",
+                    ["15 meters", "10 meters", "20 meters"])
+                st.radio("Q3: Convert polar coordinates (r=6, θ=5π/4) to rectangular",
+                         ["(-3√2,-3√2)", "(-6√2/2,6√2/2)", "(3√2, -3√2)"])
+                st.radio("Q4: Determine amplitude, period, and phase shift of y=3sin(2x-π/4)",
+                         ["Amplitude=3, Period=π, Phase shift=π/8", "Amplitude=3, Period=2π, Phase shift=π/4",
+                          "Amplitude=2, Period=π, Phase shift=π/2"])
 
-            # Unit 4 Questions
+            # Unit 4: Functions Involving Parameters, Vectors, and Matrices
             if unit == "Unit 4":
                 st.write("Unit 4: Functions Involving Parameters, Vectors, and Matrices")
-                st.radio("Q1: Multiply matrix [[1,2],[3,4]] by vector [1,1]", ["[3,7]", "[1,2]", "[4,5]"])
-                st.radio("Q2: Parametric equations x=t^2, y=2t: find dy/dx at t=2", ["1", "2", "0"])
-                st.radio("Q3: Identify the output vector when applying matrix [[0,1],[-1,0]] to [2,3]",
-                         ["[3,-2]", "[2,3]", "[1,-1]"])
+                st.radio("Q1: Multiply matrix [[2, -1],[3,4]] by vector [1,2]", ["[0,11]", "[3,10]", "[1,9]"])
+                st.radio("Q2: Parametric equations x=t^2-1, y=2t+3. Find dy/dx at t=2", ["1/2", "1", "2"])
+                st.radio("Q3: A rotation matrix [[0,-1],[1,0]] is applied to vector [3,4]. Find the new vector",
+                         ["[-4,3]", "[4,-3]", "[-3,4]"])
+                st.radio("Q4: If r(t) = <t^2, t^3>, find dr/dt at t=1", ["<2,3>", "<1,1>", "<2,1>"])
 
-        st.success("Math quiz section loaded. Answers are not yet auto-graded.")
+            st.success("Math quiz section loaded. Answers are not yet auto-graded.")
