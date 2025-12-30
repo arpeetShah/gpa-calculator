@@ -271,7 +271,7 @@ with main_tabs[2]:
     # MATH QUIZ
     # =============================
     with quiz_tabs[1]:
-        st.header("Math Quizzes")
+        st.header("AP Precalculus Quiz")
 
         # Step 1: Choose Math course
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
@@ -284,112 +284,135 @@ with main_tabs[2]:
             # Step 3: Select Difficulty
             difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
 
-            # Step 4: "Show Questions" button
+            # Step 4: Show Questions button
             if st.button("Show Questions"):
                 # Define questions per unit and difficulty
                 questions = {
-                    "Unit 1": {
+                    "Unit 1": {  # Polynomial & Rational Functions
                         "Easy": [
-                            "Solve for x: 2x + 3 = 7",
-                            "Simplify: 3(x+2) - 4",
-                            "Find the zeros of f(x)=x^2-5x+6",
-                            "Determine if f(x)=x^2+3x+2 has a maximum or minimum",
-                            "Evaluate f(2) for f(x)=x^2-3x+4",
-                            "Simplify: (x^2+5x+6)/(x+2)",
-                            "Solve: x^2 - 9 = 0",
-                            "Factor completely: x^3 - 8",
-                            "Find y-intercept of f(x)=x^2-4x+3",
-                            "Find x when f(x)=0 for f(x)=x^2+2x-8"
+                            {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
+                             "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"]},
+                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4"},
+                            {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)",
+                             "options": ["x-3", "x+3", "x^2+3"]},
+                            {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum"},
+                            {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"]}
                         ],
                         "Medium": [
-                            "Find the average rate of change of f(x)=x^2+2x from x=1 to x=4",
-                            "Solve for x: x^2 - 5x + 6 = 0",
-                            "Factor: x^2 + 4x + 3",
-                            "Divide: (x^3+3x^2+2x)/(x+1)",
-                            "Find critical points of f(x)=x^3-3x^2+2",
-                            "Simplify: (x^4-16)/(x^2-4)",
-                            "Determine intervals where f(x)=x^3-3x^2+2 is increasing",
-                            "Solve for x: x^2 + 6x + 5 = 0",
-                            "Find domain of f(x)=1/(x^2-4)",
-                            "Find f(0) if f(x)=x^2-2x+1"
+                            {"type": "mcq", "question": "Divide: (2x^3+3x^2-x+5)/(x+2)",
+                             "options": ["2x^2-x+3", "2x^2+7x+15", "2x^2-x+1"]},
+                            {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12"},
+                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x) = 1/(x-5)?",
+                             "options": ["x=5", "x=-5", "x=0"]},
+                            {"type": "text",
+                             "question": "Find the average rate of change of f(x) = x^2 from x=1 to x=4"},
+                            {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
+                             "options": ["3", "-2", "5"]}
                         ],
                         "Hard": [
-                            "Find all critical points of f(x)=x^3-3x^2+2",
-                            "Simplify: (x^4-16)/(x^2-4)",
-                            "Determine intervals where f(x)=x^3-3x^2+2 is increasing",
-                            "Find local maxima and minima for f(x)=x^3-6x^2+9x+1",
-                            "Solve inequality: x^2-5x+6>0",
-                            "Sketch graph of f(x)=x^3-3x^2+2",
-                            "Solve: x^4-5x^2+4=0",
-                            "Find concavity of f(x)=x^3-6x^2+9x+1",
-                            "Factor by grouping: x^3+3x^2+2x+6",
-                            "Find roots of f(x)=x^3-4x^2-7x+10"
+                            {"type": "text",
+                             "question": "Find all real solutions for x in 2x^4 - 3x^3 - 11x^2 + 6x + 9 = 0"},
+                            {"type": "mcq", "question": "If f(x) = (x^2-4)/(x^2-9), what are the holes in the graph?",
+                             "options": ["None", "x=2", "x=3"]},
+                            {"type": "text", "question": "Find the rate of change at x=2 for f(x)=x^3 - 2x^2 + x"},
+                            {"type": "mcq", "question": "Determine the end behavior of f(x)= -x^3 + 4x^2",
+                             "options": ["As x→∞, f(x)→ -∞", "As x→∞, f(x)→ ∞", "As x→∞, f(x)→ 0"]},
+                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0"}
                         ]
                     },
-                    "Unit 2": {
+                    "Unit 2": {  # Exponential & Logarithmic Functions
                         "Easy": [
-                            "Solve for x: 2^x = 16",
-                            "Evaluate log10(1000)",
-                            "Simplify: ln(e^3)",
-                            "Solve: 3^x = 9",
-                            "Convert: log2(8) to base 2"
+                            {"type": "mcq", "question": "Simplify: log10(100)", "options": ["2", "10", "100"]},
+                            {"type": "text", "question": "Evaluate: 2^3"},
+                            {"type": "mcq", "question": "Which of these is exponential growth?",
+                             "options": ["Population increasing by 5% each year", "Height of a triangle",
+                                         "Sum of numbers"]},
+                            {"type": "text", "question": "Solve for x: 3^x = 9"},
+                            {"type": "mcq", "question": "ln(e^5) equals:", "options": ["5", "1", "e^5"]}
                         ],
                         "Medium": [
-                            "Solve for x: log2(x-3)=4",
-                            "Simplify: ln(e^5)",
-                            "Solve: 2*log3(x)=4",
-                            "Evaluate log5(25)",
-                            "Solve for x: 10^x=1000"
+                            {"type": "text", "question": "Solve: 2^(x+1) = 16"},
+                            {"type": "mcq", "question": "Condense: log(a) + log(b)",
+                             "options": ["log(ab)", "log(a+b)", "log(a-b)"]},
+                            {"type": "text", "question": "Solve for x: log2(x)=5"},
+                            {"type": "mcq", "question": "Which is the domain of f(x)=ln(x-3)?",
+                             "options": ["x>3", "x<3", "x≥0"]},
+                            {"type": "text", "question": "Determine x: e^(2x)=7"}
                         ],
                         "Hard": [
-                            "Solve: 3*2^x - 8 = 4",
-                            "Find the inverse of f(x)=e^x",
-                            "Solve: log2(x^2-4)=3",
-                            "Simplify: ln(e^(2x+1))",
-                            "Solve: 5^x - 3*5^(x-1) = 20"
+                            {"type": "text", "question": "Solve for x: 5*2^(2x-1)=40"},
+                            {"type": "mcq", "question": "If P(t)=100*e^(0.05t), what type of growth is this?",
+                             "options": ["Continuous exponential", "Linear", "Quadratic"]},
+                            {"type": "text", "question": "Solve for x: log3(x-2) + log3(x+2)=2"},
+                            {"type": "mcq", "question": "Simplify: ln(sqrt(e^6))", "options": ["3", "6", "e^3"]},
+                            {"type": "text", "question": "Determine the value of x: 10^(2x-1)=1000"}
                         ]
                     },
-                    "Unit 3": {
+                    "Unit 3": {  # Trigonometric & Polar Functions
                         "Easy": [
-                            "Find the period of y=sin(2x)",
-                            "What is sin(π/2)?",
-                            "Find cos(0)",
-                            "Evaluate tan(π/4)",
-                            "Determine amplitude of y=3sin(x)"
+                            {"type": "mcq", "question": "sin(π/2) = ?", "options": ["1", "0", "-1"]},
+                            {"type": "text", "question": "Find cos(0)"},
+                            {"type": "mcq", "question": "Which function is periodic?",
+                             "options": ["sin(x)", "x^2+1", "x^3-2"]},
+                            {"type": "text", "question": "Evaluate tan(π/4)"},
+                            {"type": "mcq", "question": "What is the amplitude of f(x)=2sin(x)?",
+                             "options": ["2", "1", "0"]}
                         ],
                         "Medium": [
-                            "Determine amplitude, period of y=3sin(2x-π/4)",
-                            "Solve cos(θ)=1/2 for θ in [0,2π]",
-                            "Find phase shift of y=sin(x-π/3)",
-                            "Solve sin(θ)=√3/2 for θ in [0,2π]",
-                            "Graph y=cos(2x)"
+                            {"type": "text", "question": "Solve for x: 2sin(x)-1=0, x in [0,2π]"},
+                            {"type": "mcq", "question": "cos(θ)=1/2, θ in [0,2π]?",
+                             "options": ["π/3 or 5π/3", "π/2 or π", "π/4 or 3π/4"]},
+                            {"type": "text", "question": "Convert polar coordinates (2, π/2) to rectangular"},
+                            {"type": "mcq", "question": "Which is the period of sin(3x)?",
+                             "options": ["2π/3", "2π", "3π"]},
+                            {"type": "text", "question": "Find sin(2θ) if sin(θ)=1/2"}
                         ],
                         "Hard": [
-                            "Solve sin(2θ) = √3/2 for θ in [0,2π]",
-                            "Convert polar coordinates (r=5, θ=π/3) to rectangular",
-                            "Solve 2cos^2(x)-1=0 for x in [0,2π]",
-                            "Find exact value: sin(5π/6)",
-                            "Prove: sin^2(x)+cos^2(x)=1"
+                            {"type": "text", "question": "Prove the identity: 1 + tan^2(x) = sec^2(x)"},
+                            {"type": "mcq", "question": "Evaluate: cos(π) + sin(π/2)", "options": ["1", "0", "-1"]},
+                            {"type": "text", "question": "Convert rectangular (3,-3) to polar coordinates"},
+                            {"type": "mcq", "question": "Graph of r=2cos(θ) is a:",
+                             "options": ["Circle", "Line", "Parabola"]},
+                            {"type": "text", "question": "Find all solutions: sin(2x)=√3/2, x in [0,2π]"}
                         ]
                     },
-                    "Unit 4": {
+                    "Unit 4": {  # Functions Involving Parameters, Vectors, Matrices
                         "Easy": [
-                            "Multiply matrix [[1,2],[3,4]] by vector [1,1]",
-                            "Find x if 2x + y = 5 and y = 1"
+                            {"type": "text", "question": "Evaluate the vector: v = <3,4>, find ||v||"},
+                            {"type": "mcq", "question": "If r=<2,3> and s=<1,0>, r+s=?",
+                             "options": ["<3,3>", "<1,3>", "<2,0>"]},
+                            {"type": "text", "question": "Multiply matrices: [[1,2],[3,4]] * [[1,0],[0,1]]"},
+                            {"type": "mcq", "question": "Which of these is a parametric equation?",
+                             "options": ["x=t^2, y=t", "y=x^2+3", "f(x)=3x+1"]},
+                            {"type": "text", "question": "Find the vector projection of <3,4> onto <1,0>"}
                         ],
                         "Medium": [
-                            "Parametric: x=t^2-1, y=2t+3. Find dy/dx at t=2",
-                            "Rotate vector [1,0] 90° using rotation matrix [[0,-1],[1,0]]"
+                            {"type": "mcq", "question": "Determinant of [[2,1],[3,4]]", "options": ["5", "8", "1"]},
+                            {"type": "text", "question": "Solve for t: x=2t+1, y=3t-2 when t=?"},
+                            {"type": "mcq", "question": "Which operation rotates a vector 90° clockwise?",
+                             "options": ["Matrix multiplication", "Dot product", "Cross product"]},
+                            {"type": "text", "question": "Find the inverse of [[1,2],[3,4]]"},
+                            {"type": "mcq", "question": "Parametric curve: x=cos(t), y=sin(t) is a:",
+                             "options": ["Circle", "Line", "Parabola"]}
                         ],
                         "Hard": [
-                            "Find determinant of matrix [[2,3],[1,4]]",
-                            "Apply matrix [[1,2],[3,4]] to vector [2,1] and find result"
+                            {"type": "text", "question": "Solve for x: [[2,3],[1,4]] * [[x],[2]] = [[5],[6]]"},
+                            {"type": "mcq", "question": "Find the determinant of [[1,2,3],[0,1,4],[5,6,0]]",
+                             "options": ["1", "24", "-1"]},
+                            {"type": "text", "question": "Find all eigenvalues of [[2,1],[1,2]]"},
+                            {"type": "mcq", "question": "Which of these represents a vector in R^3?",
+                             "options": ["<1,2,3>", "<1,2>", "<1,2,3,4>"]},
+                            {"type": "text", "question": "Multiply matrices: [[1,0,2],[0,1,3]] * [[1,2],[3,4],[5,6]]"}
                         ]
                     }
                 }
 
+                # Display questions for the selected unit and difficulty
                 st.subheader(f"{unit} Questions ({difficulty} level)")
                 for i, q in enumerate(questions[unit][difficulty], 1):
-                    st.radio(f"Q{i}: {q}", ["Option A", "Option B", "Option C"])
+                    if q["type"] == "mcq":
+                        st.radio(f"Q{i}: {q['question']}", q["options"])
+                    else:
+                        st.text_input(f"Q{i}: {q['question']}", key=f"open_q{i}")
 
                 st.success(f"AP Precalculus quiz loaded for {difficulty} questions in {unit}!")
