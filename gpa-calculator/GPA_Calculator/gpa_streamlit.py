@@ -109,12 +109,15 @@ main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice"])
 with main_tabs[0]:
     st.subheader("Welcome to EduSphere!")
     st.write(
-        "Hey! I created this app/website for YOU to have a convenitent way to track your educational path. There is not platform(until now) which allows you to get your CUMMALITIVE GPA and that was the inspiration of this. Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! Addtitionally, you do not need to give any personal credentials as you just manually input all of your grades and no one (including me) will have access to your personal information and grades.")
+        "Hey! I created this app/website for YOU to have a convenient way to track your educational path. "
+        "There is no platform (until now) which allows you to get your cumulative GPA, and that was the inspiration for this. "
+        "Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! "
+        "Additionally, you do not need to give any personal credentials; you just manually input your grades and no one (including me) will have access to your personal information and grades."
+    )
     st.image(
         "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80",
         use_column_width=True
     )
-
 
 # =============================
 # GPA TAB
@@ -228,4 +231,12 @@ with main_tabs[1]:
 # =============================
 with main_tabs[2]:
     st.subheader("Quiz & Practice Problems")
-    st.write("This section is under development. Soon you will be able to take quizzes and practice problems!")
+
+    # Create sub-tabs for each subject (organized like MS/HS tabs)
+    quiz_subjects = ["Spanish", "Math", "Science", "GT / AP World History", "Computer Science", "Other"]
+    quiz_tabs = st.tabs(quiz_subjects)
+
+    for i, subject in enumerate(quiz_subjects):
+        with quiz_tabs[i]:
+            st.write(f"Practice quizzes and problems for **{subject}** will appear here.")
+            st.info("This section is under development. Soon you will be able to take quizzes, practice problems, and see your results!")
