@@ -13,6 +13,9 @@ st.set_page_config(
     layout="centered"
 )
 
+# -----------------------------
+# SIMPLE USER PROFILE
+# -----------------------------
 st.title("📘 GPA Calculator")
 student_name = st.text_input("Your Name (optional)")
 
@@ -54,126 +57,145 @@ def unweighted_gpa(avg):
     return 0
 
 # -----------------------------
-# SESSION HISTORY
+# SESSION STORAGE
 # -----------------------------
 if "history" not in st.session_state:
     st.session_state.history = []
 
 # -----------------------------
-# MIDDLE SCHOOL INPUT
+# TABS
 # -----------------------------
-st.header("📝 Middle School Courses")
-ms_selected = st.multiselect(
-    "Select your Middle School courses",
-    [f"{k}. {v[0]}" for k, v in courses.items()],
-    key="ms_select"
-)
-
-ms_grades = {}
-gt_year = None
-
-for item in ms_selected:
-    num = int(item.split(".")[0])
-    name, base_weight = courses[num]
-
-    st.subheader(name)
-    # GT year only if selected
-    if num == 9:
-        gt_year = st.radio(f"{name} year in MS", [1, 2], key=f"gt_ms_{num}")
-        weight = 5.5 if gt_year == 1 else 6.0
-    else:
-        weight = base_weight
-
-    sem1 = st.number_input(f"{name} Semester 1 grade", 0.0, 100.0, 90.0, key=f"ms_{num}_1")
-    sem2 = st.number_input(f"{name} Semester 2 grade", 0.0, 100.0, 90.0, key=f"ms_{num}_2")
-
-    avg = (sem1 + sem2) / 2
-    ms_grades[name] = {
-        "Average": avg,
-        "Weighted GPA": weighted_gpa(avg, weight),
-        "Unweighted GPA": unweighted_gpa(avg)
-    }
+tab1, tab2, tab3 = st.tabs(["📚 Input Grades", "📊 GPA Results", "🕒 History"])
 
 # -----------------------------
-# HIGH SCHOOL INPUT
+# TAB 1: INPUT
 # -----------------------------
-st.header("📚 High School Courses")
-hs_selected = st.multiselect(
-    "Select your High School courses",
-    [f"{k}. {v[0]}" for k, v in courses.items()],
-    key="hs_select"
-)
-
-quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
-
-hs_grades = {}
-
-for item in hs_selected:
-    num = int(item.split(".")[0])
-    name, base_weight = courses[num]
-
-    st.subheader(name)
-    if num == 9:
-        if gt_year is None:
-            gt_year = st.radio(f"{name} year in HS", [1, 2], key=f"gt_hs_{num}")
-        weight = 5.5 if gt_year == 1 else 6.0
-    else:
-        weight = base_weight
-
-    qs = []
-    for q in range(1, quarters_done + 1):
-        qs.append(st.number_input(f"Quarter {q} grade", 0.0, 100.0, 90.0, key=f"hs_{num}_{q}"))
-
-    avg = sum(qs) / len(qs)
-    hs_grades[name] = {
-        "Average": avg,
-        "Weighted GPA": weighted_gpa(avg, weight),
-        "Unweighted GPA": unweighted_gpa(avg)
-    }
-
-# -----------------------------
-# CALCULATE BUTTON
-# -----------------------------
-all_grades = {**ms_grades, **hs_grades}
-
-if st.button("📊 Calculate GPA", use_container_width=True):
-    if not all_grades:
-        st.warning("Please select at least one course.")
-    else:
-        df = pd.DataFrame(all_grades).T
-        weighted_final = round(df["Weighted GPA"].mean(), 2)
-        unweighted_final = round(df["Unweighted GPA"].mean(), 2)
-
-        st.success(f"🎯 **Weighted GPA:** {weighted_final}")
-        st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
-
-        st.subheader("📈 GPA Breakdown")
-        st.bar_chart(df[["Weighted GPA", "Unweighted GPA"]])
-
-        # Save history
-        record = {
-            "Name": student_name or "Anonymous",
-            "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "Weighted GPA": weighted_final,
-            "Unweighted GPA": unweighted_final
-        }
-        st.session_state.history.append(record)
-
-# -----------------------------
-# HISTORY + DOWNLOAD
-# -----------------------------
-if st.session_state.history:
-    st.header("🕒 GPA History")
-    hist_df = pd.DataFrame(st.session_state.history)
-    st.dataframe(hist_df, use_container_width=True)
-
-    csv = hist_df.to_csv(index=False).encode("utf-8")
-    st.download_button(
-        "⬇️ Download GPA History",
-        csv,
-        "gpa_history.csv",
-        "text/csv"
+with tab1:
+    st.header("Select Your Courses & Enter Grades")
+    selected = st.multiselect(
+        "Select your courses",
+        [f"{k}. {v[0]}" for k, v in courses.items()]
     )
+
+    quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
+
+    gt_year = None
+    grades = {}
+
+    for item in selected:
+        num = int(item.split(".")[0])
+        name, base_weight = courses[num]
+
+        st.subheader(f"📌 {name}")
+
+        # GT Humanities special weight
+        if num == 9:
+            gt_year = st.radio("GT Humanities year", [1, 2], horizontal=True)
+            weight = 5.5 if gt_year == 1 else 6.0
+        else:
+            weight = base_weight
+
+        qs = []
+        for q in range(1, quarters_done + 1):
+            qs.append(
+                st.number_input(
+                    f"Quarter {q} grade",
+                    0.0, 100.0, 90.0,
+                    key=f"{num}_{q}"
+                )
+            )
+
+        avg = sum(qs) / len(qs)
+        grades[name] = {
+            "Average": avg,
+            "Weighted GPA": weighted_gpa(avg, weight),
+            "Unweighted GPA": unweighted_gpa(avg)
+        }
+
+    # -----------------------------
+    # WHAT-IF SIMULATOR
+    # -----------------------------
+    st.subheader("🛠️ What-If GPA Simulator")
+    st.info("Enter hypothetical grades to see projected GPA.")
+    simulate = {}
+    for item in selected:
+        num = int(item.split(".")[0])
+        name, base_weight = courses[num]
+        if num == 9:
+            weight = 5.5 if gt_year == 1 else 6.0
+        else:
+            weight = base_weight
+
+        sim_grade = st.number_input(
+            f"What-if grade for {name} next quarter",
+            0.0, 100.0, 90.0,
+            key=f"sim_{num}"
+        )
+        simulate[name] = {
+            "Weighted GPA": weighted_gpa(sim_grade, weight),
+            "Unweighted GPA": unweighted_gpa(sim_grade)
+        }
+
+# -----------------------------
+# TAB 2: RESULTS
+# -----------------------------
+with tab2:
+    if st.button("📊 Calculate GPA", use_container_width=True):
+        if not grades:
+            st.warning("Please select at least one course.")
+        else:
+            df = pd.DataFrame(grades).T
+            weighted_final = round(df["Weighted GPA"].mean(), 2)
+            unweighted_final = round(df["Unweighted GPA"].mean(), 2)
+
+            st.success(f"🎯 **Current Weighted GPA:** {weighted_final}")
+            st.success(f"📘 **Current Unweighted GPA:** {unweighted_final}")
+
+            # What-if GPA
+            sim_df = pd.DataFrame(simulate).T
+            projected_weighted = round(sim_df["Weighted GPA"].mean(), 2)
+            projected_unweighted = round(sim_df["Unweighted GPA"].mean(), 2)
+
+            st.info(f"🛠️ **Projected Weighted GPA:** {projected_weighted}")
+            st.info(f"🛠️ **Projected Unweighted GPA:** {projected_unweighted}")
+
+            # Charts
+            st.subheader("📈 GPA Breakdown")
+            combined_df = pd.concat([df, sim_df], axis=1, keys=["Current", "Projected"])
+            st.bar_chart(pd.DataFrame({
+                "Current Weighted": df["Weighted GPA"],
+                "Projected Weighted": sim_df["Weighted GPA"],
+                "Current Unweighted": df["Unweighted GPA"],
+                "Projected Unweighted": sim_df["Unweighted GPA"]
+            }))
+
+            # Save history
+            record = {
+                "Name": student_name or "Anonymous",
+                "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "Weighted GPA": weighted_final,
+                "Unweighted GPA": unweighted_final,
+                "Projected Weighted GPA": projected_weighted,
+                "Projected Unweighted GPA": projected_unweighted
+            }
+            st.session_state.history.append(record)
+
+# -----------------------------
+# TAB 3: HISTORY
+# -----------------------------
+with tab3:
+    if st.session_state.history:
+        st.header("🕒 GPA History")
+        hist_df = pd.DataFrame(st.session_state.history)
+        st.dataframe(hist_df, use_container_width=True)
+
+        csv = hist_df.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            "⬇️ Download GPA History",
+            csv,
+            "gpa_history.csv",
+            "text/csv"
+        )
 
 # -----------------------------
 # INSTALL AS APP TIP
