@@ -1,5 +1,6 @@
 import streamlit as st
 import sqlite3
+import hashlib
 
 # =============================
 # PAGE CONFIG
@@ -55,12 +56,11 @@ CREATE TABLE IF NOT EXISTS grades (
     q2 REAL,
     q3 REAL,
     q4 REAL,
-    gt_year INTEGER,
-    taken INTEGER,
-    PRIMARY KEY (course, section)
+    gt_year INTEGER
 )
 """)
 conn.commit()
+
 
 # =============================
 # HELPERS
@@ -68,12 +68,14 @@ conn.commit()
 def weighted_gpa(avg, weight):
     return max(weight - ((100 - avg) * 0.1), 0)
 
+
 def unweighted_gpa(avg):
     if avg >= 90: return 4
     if avg >= 80: return 3
     if avg >= 70: return 2
     if avg >= 60: return 1
     return 0
+
 
 # =============================
 # COURSES
@@ -90,19 +92,13 @@ courses = {
     "Biology": 5.5,
     "Chemistry": 5.5,
     "AP Human Geography": 6.0,
-    "Sports": 5.0,
-    "AP Computer Science Principles": 6.0,
-    "Survey of Business Marketing Finance": 5.0,
-    "Health": 5.0,
-    "Computer Science": 5.5,
-    "Instruments": 5.0,
     "GT Humanities / AP World": None
 }
 
 # =============================
 # MAIN APP
 # =============================
-st.title(f"🎓 EduSphere GPA Tracker")
+st.title("🎓 EduSphere")
 tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
 # =============================
@@ -111,10 +107,7 @@ tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"
 with tabs[0]:
     st.header("Middle School Grades")
 
-    selected_ms = st.multiselect(
-        "Select the courses you took in Middle School",
-        list(courses.keys())
-    )
+    selected_ms = st.multiselect("Select your Middle School courses", list(courses.keys()), key="ms_dropdown")
 
     for course in selected_ms:
         c.execute("""
@@ -128,12 +121,9 @@ with tabs[0]:
 
         c.execute("""
         INSERT OR REPLACE INTO grades
-        VALUES (?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?,?)
         """, (
-            course, "MS",
-            s1, s2, None, None, None, None,
-            None,
-            1
+            course, "MS", s1, s2, None, None, None, None, None
         ))
     conn.commit()
 
@@ -142,12 +132,8 @@ with tabs[0]:
 # =============================
 with tabs[1]:
     st.header("High School Grades")
+    selected_hs = st.multiselect("Select your High School courses", list(courses.keys()), key="hs_dropdown")
     quarters = st.slider("Quarters Completed", 1, 4, 2)
-
-    selected_hs = st.multiselect(
-        "Select the courses you are taking in High School",
-        list(courses.keys())
-    )
 
     for course in selected_hs:
         c.execute("""
@@ -160,27 +146,24 @@ with tabs[1]:
         for i in range(quarters):
             grades.append(
                 st.number_input(
-                    f"{course} – Quarter {i+1}",
+                    f"{course} – Quarter {i + 1}",
                     0.0, 100.0, row[i],
                     key=f"hs_q_{course}_{i}"
                 )
             )
 
+        # GT/AP World year selection
+        gt_year = row[4]
         if course == "GT Humanities / AP World":
-            gt_year = st.radio("GT/AP World Year", [1, 2], index=row[4]-1 if row[4] else 0)
-        else:
-            gt_year = None
+            gt_year = st.radio(f"{course} Year", [1, 2], index=0 if gt_year is None else gt_year - 1, key="gt_year")
 
-        padded = grades + [None]*(4-len(grades))
+        padded = grades + [None] * (4 - len(grades))
+
         c.execute("""
         INSERT OR REPLACE INTO grades
         VALUES (?,?,?,?,?,?,?,?,?,?)
         """, (
-            course, "HS",
-            None, None,
-            *padded,
-            gt_year,
-            1
+            course, "HS", None, None, *padded, gt_year, None
         ))
     conn.commit()
 
@@ -193,24 +176,36 @@ with tabs[2]:
     if st.button("🎯 Calculate GPA"):
         weighted, unweighted = [], []
 
-        for course, weight in courses.items():
+        for course in selected_hs:
             c.execute("""
-            SELECT q1, q2, q3, q4 FROM grades
+            SELECT q1, q2, q3, q4, gt_year FROM grades
             WHERE course=? AND section='HS'
             """, (course,))
             row = c.fetchone()
-            if row and any(row):
+
+            # Assign weight
+            if course == "GT Humanities / AP World":
+                if row[4] == 1:
+                    weight = 5.5
+                elif row[4] == 2:
+                    weight = 6.0
+                else:
+                    weight = 5.5
+            else:
+                weight = courses.get(course)
+
+            if row:
                 valid = [x for x in row[:4] if x is not None]
-                if valid:
-                    avg = sum(valid)/len(valid)
+                if valid and weight is not None:
+                    avg = sum(valid) / len(valid)
                     weighted.append(weighted_gpa(avg, weight))
                     unweighted.append(unweighted_gpa(avg))
 
         if not weighted:
             st.warning("No high school courses selected.")
         else:
-            w = round(sum(weighted)/len(weighted), 2)
-            uw = round(sum(unweighted)/len(unweighted), 2)
+            w = round(sum(weighted) / len(weighted), 2)
+            uw = round(sum(unweighted) / len(unweighted), 2)
 
             st.success(f"🎓 **Weighted GPA:** {w}")
             st.success(f"📘 **Unweighted GPA:** {uw}")
