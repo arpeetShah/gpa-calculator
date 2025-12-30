@@ -1,10 +1,6 @@
-# redeploy trigger
-
 import streamlit as st
 import pandas as pd
 import datetime
-import json
-import os
 
 # -----------------------------
 # PAGE CONFIG
@@ -15,29 +11,8 @@ st.set_page_config(
     layout="centered"
 )
 
-# -----------------------------
-# SIMPLE USER LOGIN / PROFILE
-# -----------------------------
-st.title("📘 GPA_Calculator")
-
-username = st.text_input("Enter your username:")
-if not username:
-    st.warning("Please enter your username to continue.")
-    st.stop()
-
-# User data storage
-user_folder = "user_data"
-if not os.path.exists(user_folder):
-    os.makedirs(user_folder)
-
-user_file = f"{user_folder}/{username}.json"
-if os.path.exists(user_file):
-    with open(user_file, "r") as f:
-        user_data = json.load(f)
-else:
-    user_data = {"history": []}
-
-st.success(f"Welcome, {username}!")
+st.title("📘 GPA Calculator")
+student_name = st.text_input("Your Name (optional)")
 
 # -----------------------------
 # COURSE LIST + WEIGHTS
@@ -63,11 +38,13 @@ courses = {
     18: ("Instruments", 5.0)
 }
 
+
 # -----------------------------
 # GPA FUNCTIONS
 # -----------------------------
 def weighted_gpa(avg, weight):
     return max(weight - ((100 - avg) * 0.1), 0)
+
 
 def unweighted_gpa(avg):
     if avg >= 90: return 4
@@ -76,123 +53,140 @@ def unweighted_gpa(avg):
     if avg >= 60: return 1
     return 0
 
-# -----------------------------
-# COURSE SELECTION
-# -----------------------------
-st.header("📚 Courses & Grades")
-
-selected = st.multiselect(
-    "Select your courses",
-    [f"{k}. {v[0]}" for k, v in courses.items()]
-)
-
-if not selected:
-    st.warning("Please select at least one course.")
-    st.stop()
 
 # -----------------------------
-# QUARTER INPUT
+# SESSION STATE FOR HISTORY AND MIDDLE SCHOOL
 # -----------------------------
-quarters_done = st.slider("How many quarters completed this year?", 1, 4, 2)
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-grades = {}
-gt_year = None
+if "ms_grades" not in st.session_state:
+    st.session_state.ms_grades = {}  # Saved middle school grades
 
-for item in selected:
-    num = int(item.split(".")[0])
-    name, base_weight = courses[num]
-    st.subheader(name)
+# -----------------------------
+# TABS
+# -----------------------------
+tab1, tab2 = st.tabs(["Middle School", "High School"])
 
-    # -----------------------------
-    # Middle School input
-    # -----------------------------
-    is_ms = st.checkbox(f"Did you take {name} in Middle School?", key=f"{num}_ms_checkbox")
-    if is_ms:
-        sem1 = st.number_input(f"{name} MS Semester 1 grade:", 0.0, 100.0, 90.0, key=f"{num}_ms1")
-        sem2 = st.number_input(f"{name} MS Semester 2 grade:", 0.0, 100.0, 90.0, key=f"{num}_ms2")
-        grades[name] = {"MS": [sem1, sem2], "weight": base_weight}
-        continue  # Skip High School quarter input for this course
+# -----------------------------
+# MIDDLE SCHOOL TAB
+# -----------------------------
+with tab1:
+    st.header("🏫 Middle School Grades")
+    selected_ms = st.multiselect(
+        "Select your Middle School courses",
+        [f"{k}. {v[0]}" for k, v in courses.items()]
+    )
 
-    # -----------------------------
-    # GT Humanities year selection
-    # -----------------------------
-    if num == 9:
-        gt_year = st.radio("GT Humanities year", [1, 2], horizontal=True)
-        weight = 5.5 if gt_year == 1 else 6.0
-    else:
-        weight = base_weight
+    for item in selected_ms:
+        num = int(item.split(".")[0])
+        name, base_weight = courses[num]
 
-    # -----------------------------
-    # High School input per quarter
-    # -----------------------------
-    qs = []
-    for q in range(1, quarters_done + 1):
-        qs.append(st.number_input(
-            f"{name} HS Quarter {q} grade:",
-            0.0, 100.0, 90.0,
-            key=f"{num}_q{q}"
-        ))
-    grades[name] = {"HS": qs, "weight": weight}
+        # If grades already exist, prefill them
+        if num in st.session_state.ms_grades:
+            sem1 = st.number_input(f"{name} Semester 1 grade", 0.0, 100.0,
+                                   value=st.session_state.ms_grades[num]["sem1"],
+                                   key=f"ms_{num}_1")
+            sem2 = st.number_input(f"{name} Semester 2 grade", 0.0, 100.0,
+                                   value=st.session_state.ms_grades[num]["sem2"],
+                                   key=f"ms_{num}_2")
+        else:
+            sem1 = st.number_input(f"{name} Semester 1 grade", 0.0, 100.0, 90.0,
+                                   key=f"ms_{num}_1")
+            sem2 = st.number_input(f"{name} Semester 2 grade", 0.0, 100.0, 90.0,
+                                   key=f"ms_{num}_2")
+
+        st.session_state.ms_grades[num] = {"sem1": sem1, "sem2": sem2}
+
+# -----------------------------
+# HIGH SCHOOL TAB
+# -----------------------------
+with tab2:
+    st.header("📚 High School Grades")
+    selected_hs = st.multiselect(
+        "Select your High School courses",
+        [f"{k}. {v[0]}" for k, v in courses.items()]
+    )
+
+    quarters_done = st.slider("How many quarters completed?", 1, 4, 2)
+
+    gt_year = None
+    hs_grades = {}
+
+    for item in selected_hs:
+        num = int(item.split(".")[0])
+        name, base_weight = courses[num]
+
+        if num == 9:
+            gt_year = st.radio("GT Humanities year", [1, 2], horizontal=True)
+            weight = 5.5 if gt_year == 1 else 6.0
+        else:
+            weight = base_weight
+
+        qs = []
+        for q in range(1, quarters_done + 1):
+            qs.append(
+                st.number_input(
+                    f"{name} Quarter {q} grade",
+                    0.0, 100.0, 90.0,
+                    key=f"hs_{num}_{q}"
+                )
+            )
+
+        avg = sum(qs) / len(qs)
+        hs_grades[name] = {
+            "Average": avg,
+            "Weighted GPA": weighted_gpa(avg, weight),
+            "Unweighted GPA": unweighted_gpa(avg)
+        }
 
 # -----------------------------
 # CALCULATE BUTTON
 # -----------------------------
 if st.button("📊 Calculate GPA", use_container_width=True):
-    weighted_final_list = []
-    unweighted_final_list = []
-    df_data = {}
+    all_grades = {}
 
-    for course_name, data in grades.items():
-        # Middle School GPA
-        if 'MS' in data:
-            avg_ms = sum(data['MS'])/len(data['MS'])
-            w_gpa_ms = weighted_gpa(avg_ms, data['weight'])
-            uw_gpa_ms = unweighted_gpa(avg_ms)
-            weighted_final_list.append(w_gpa_ms)
-            unweighted_final_list.append(uw_gpa_ms)
-            df_data[course_name + " MS"] = {"Weighted GPA": w_gpa_ms, "Unweighted GPA": uw_gpa_ms}
-        # High School GPA
-        if 'HS' in data:
-            avg_hs = sum(data['HS'])/len(data['HS'])
-            w_gpa_hs = weighted_gpa(avg_hs, data['weight'])
-            uw_gpa_hs = unweighted_gpa(avg_hs)
-            weighted_final_list.append(w_gpa_hs)
-            unweighted_final_list.append(uw_gpa_hs)
-            df_data[course_name + " HS"] = {"Weighted GPA": w_gpa_hs, "Unweighted GPA": uw_gpa_hs}
+    # Add Middle School grades
+    for num, g in st.session_state.ms_grades.items():
+        name, base_weight = courses[num]
+        avg = (g["sem1"] + g["sem2"]) / 2
+        all_grades[name] = {
+            "Average": avg,
+            "Weighted GPA": weighted_gpa(avg, base_weight),
+            "Unweighted GPA": unweighted_gpa(avg)
+        }
 
-    # Final GPAs
-    weighted_final = round(sum(weighted_final_list)/len(weighted_final_list), 2)
-    unweighted_final = round(sum(unweighted_final_list)/len(unweighted_final_list), 2)
+    # Add High School grades
+    all_grades.update(hs_grades)
 
-    st.success(f"🎯 **Weighted GPA:** {weighted_final}")
-    st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
+    if not all_grades:
+        st.warning("Please input at least one grade.")
+    else:
+        df = pd.DataFrame(all_grades).T
+        weighted_final = round(df["Weighted GPA"].mean(), 2)
+        unweighted_final = round(df["Unweighted GPA"].mean(), 2)
 
-    # -----------------------------
-    # GPA Chart
-    # -----------------------------
-    df = pd.DataFrame(df_data).T
-    st.subheader("📈 GPA Breakdown")
-    st.bar_chart(df[["Weighted GPA", "Unweighted GPA"]])
+        st.success(f"🎯 **Weighted GPA:** {weighted_final}")
+        st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
 
-    # -----------------------------
-    # SAVE HISTORY
-    # -----------------------------
-    user_data["history"].append({
-        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "Weighted GPA": weighted_final,
-        "Unweighted GPA": unweighted_final,
-        "grades": grades
-    })
+        st.subheader("📈 GPA Breakdown")
+        st.bar_chart(df[["Weighted GPA", "Unweighted GPA"]])
 
-    with open(user_file, "w") as f:
-        json.dump(user_data, f)
+        # Save history
+        record = {
+            "Name": student_name or "Anonymous",
+            "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "Weighted GPA": weighted_final,
+            "Unweighted GPA": unweighted_final
+        }
+        st.session_state.history.append(record)
 
 # -----------------------------
 # HISTORY + DOWNLOAD
 # -----------------------------
-if user_data["history"]:
+if st.session_state.history:
     st.header("🕒 GPA History")
-    hist_df = pd.DataFrame(user_data["history"])
+    hist_df = pd.DataFrame(st.session_state.history)
     st.dataframe(hist_df, use_container_width=True)
 
     csv = hist_df.to_csv(index=False).encode("utf-8")
@@ -202,12 +196,3 @@ if user_data["history"]:
         "gpa_history.csv",
         "text/csv"
     )
-
-# -----------------------------
-# INSTALL AS APP TIP
-# -----------------------------
-st.info(
-    "📱 **Install this as an app:**\n"
-    "• iPhone: Safari → Share → Add to Home Screen\n"
-    "• Android: Chrome → Add to Home Screen"
-)
