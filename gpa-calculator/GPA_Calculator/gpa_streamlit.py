@@ -87,7 +87,7 @@ def unweighted_gpa(avg):
     return 0
 
 # =============================
-# COURSES
+# COURSES (FIXED + COMPLETE)
 # =============================
 courses = {
     "Spanish 1": 5.0,
@@ -100,7 +100,14 @@ courses = {
     "AP Precalculus": 6.0,
     "Biology": 5.5,
     "Chemistry": 5.5,
-    "AP Human Geography": 6.0
+    "AP Human Geography": 6.0,
+    "GT Humanities / AP World": 6.0,
+    "AP Computer Science Principles": 6.0,
+    "Computer Science": 5.5,
+    "Survey of Business, Marketing & Finance": 5.0,
+    "Health": 5.0,
+    "Instruments": 5.0,
+    "Sports": 5.0
 }
 
 # =============================
@@ -168,14 +175,8 @@ with tabs[0]:
         taken = st.checkbox(course, value=bool(row[2]), key=f"ms_take_{course}")
 
         if taken:
-            s1 = st.number_input(
-                f"{course} – Semester 1",
-                0.0, 100.0, row[0], key=f"ms_s1_{course}"
-            )
-            s2 = st.number_input(
-                f"{course} – Semester 2",
-                0.0, 100.0, row[1], key=f"ms_s2_{course}"
-            )
+            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms_s1_{course}")
+            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms_s2_{course}")
         else:
             s1, s2 = None, None
 
@@ -247,7 +248,6 @@ with tabs[2]:
 
             if row and row[4]:
                 valid = [x for x in row[:4] if x is not None]
-
                 if valid:
                     avg = sum(valid) / len(valid)
                     weighted.append(weighted_gpa(avg, weight))
@@ -264,8 +264,8 @@ with tabs[2]:
 
             st.subheader("📊 GPA Insight")
             if w >= 5.5:
-                st.write("Your GPA is being boosted by strong performance in weighted courses.")
+                st.write("Your GPA is being boosted by strong performance in GPA-heavy courses.")
             elif w >= 4.5:
-                st.write("Your GPA is solid, but higher-weight classes have the biggest impact.")
+                st.write("Your GPA is solid, but higher-weight courses matter most.")
             else:
-                st.write("Lower performance in GPA-heavy courses is pulling your GPA down.")
+                st.write("Lower performance in weighted courses is pulling your GPA down.")
