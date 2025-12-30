@@ -1,4 +1,4 @@
-# GPA Calculator Modernized with Tabs, Gradient Background, and Login
+# GPA Calculator Modernized with Tabs, Gradient Background, Login, and GPA Analytics
 
 import streamlit as st
 import pandas as pd
@@ -180,5 +180,15 @@ if st.session_state.logged_in:
             st.success(f"🎯 **Weighted GPA:** {weighted_final}")
             st.success(f"📘 **Unweighted GPA:** {unweighted_final}")
             st.bar_chart(df[["Weighted GPA", "Unweighted GPA"]])
+
+            # -----------------------------
+            # ANALYTICS INSIGHTS
+            # -----------------------------
+            top_course = df["Weighted GPA"].idxmax()
+            bottom_course = df["Weighted GPA"].idxmin()
+            st.subheader("📈 Analytics / Insights")
+            st.markdown(f"- **Top contributor:** {top_course} ({df.loc[top_course, 'Weighted GPA']} GPA)")
+            st.markdown(f"- **Lowest contributor:** {bottom_course} ({df.loc[bottom_course, 'Weighted GPA']} GPA)")
+
         else:
             st.info("Select courses in the tabs above to see GPA results")
