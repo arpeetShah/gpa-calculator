@@ -4,6 +4,37 @@ import hashlib
 import random
 
 # =============================
+# WELCOME AESTHETIC SECTION
+# =============================
+st.markdown("""
+<div id="welcome-section" style="
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0a1a3c, #2b124f);
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    transition: opacity 1s;
+    ">
+    Welcome to EduSphere 🎓<br>
+    Your Education Companion
+</div>
+
+<script>
+window.addEventListener('scroll', function() {
+    const section = document.getElementById('welcome-section');
+    const fadePoint = 300; // pixels to start fade
+    const opacity = 1 - window.scrollY / fadePoint;
+    section.style.opacity = opacity < 0 ? 0 : opacity;
+});
+</script>
+""", unsafe_allow_html=True)
+
+# =============================
 # PAGE CONFIG
 # =============================
 st.set_page_config(
