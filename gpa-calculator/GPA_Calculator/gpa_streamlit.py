@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 # =============================
 # PAGE CONFIG
@@ -10,7 +11,7 @@ st.set_page_config(
 )
 
 # =============================
-# COURSES + WEIGHTS (ONLY COURSES YOU MENTIONED)
+# COURSES + WEIGHTS
 # =============================
 courses = {
     "Spanish 1": 5.0,
@@ -21,7 +22,7 @@ courses = {
     "Geometry": 5.5,
     "Algebra 2": 5.5,
     "AP Precalculus": 6.0,
-    "GT / AP World History": None,  # year decides weight
+    "GT / AP World History": None,
     "Biology": 5.5,
     "Chemistry": 5.5,
     "AP Human Geography": 6.0,
@@ -35,7 +36,7 @@ courses = {
 # GPA HELPERS
 # =============================
 def weighted_gpa(avg, weight):
-    return weight - ((100 - avg) * 0.1)
+    return round(weight - ((100 - avg) * 0.1), 2)
 
 def unweighted_gpa(avg):
     if avg >= 90: return 4
@@ -48,7 +49,6 @@ def unweighted_gpa(avg):
 # UI
 # =============================
 st.title("🎓 EduSphere GPA Calculator")
-
 tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
 # =============================
@@ -86,18 +86,13 @@ with tabs[1]:
     quarters = st.slider("Quarters completed", 1, 4, 2)
 
     hs_grades = {}
-    gt_year = None
 
     for course in hs_selected:
         st.subheader(course)
 
         if course == "GT / AP World History":
-            gt_year = st.radio(
-                "Which year?",
-                [1, 2],
-                horizontal=True
-            )
-            weight = 5.5 if gt_year == 1 else 6.0
+            year = st.radio("Which year?", [1, 2], horizontal=True)
+            weight = 5.5 if year == 1 else 6.0
         else:
             weight = courses[course]
 
@@ -115,38 +110,70 @@ with tabs[1]:
         hs_grades[course] = (avg, weight)
 
 # =============================
-# GPA + ANALYTICS (FIXED LOGIC)
+# GPA + ANALYTICS
 # =============================
 with tabs[2]:
     st.header("📊 GPA Results & Analytics")
 
     if st.button("🎯 Calculate GPA"):
-        total_weighted_points = 0
-        total_unweighted_points = 0
-        class_count = 0
+        rows = []
+
+        total_weighted = 0
+        total_unweighted = 0
+        count = 0
+
+        # ----- Middle School Table -----
+        for course, avg in ms_grades.items():
+            rows.append({
+                "School": "Middle",
+                "Course": course,
+                "Average": round(avg, 2),
+                "Weight": "N/A",
+                "GPA Impact": "N/A"
+            })
+
+        # ----- High School Table + GPA -----
+        impacts = {}
 
         for course, (avg, weight) in hs_grades.items():
-            if weight is None:
-                continue
+            gpa_val = weighted_gpa(avg, weight)
+            impacts[course] = gpa_val
 
-            total_weighted_points += weighted_gpa(avg, weight)
-            total_unweighted_points += unweighted_gpa(avg)
-            class_count += 1
+            rows.append({
+                "School": "High",
+                "Course": course,
+                "Average": round(avg, 2),
+                "Weight": weight,
+                "GPA Impact": gpa_val
+            })
 
-        if class_count == 0:
+            total_weighted += gpa_val
+            total_unweighted += unweighted_gpa(avg)
+            count += 1
+
+        if count == 0:
             st.warning("No high school courses selected.")
-        else:
-            final_weighted = round(total_weighted_points / class_count, 2)
-            final_unweighted = round(total_unweighted_points / class_count, 2)
+            st.stop()
 
-            st.success(f"🎓 **Weighted GPA:** {final_weighted}")
-            st.success(f"📘 **Unweighted GPA:** {final_unweighted}")
+        final_weighted = round(total_weighted / count, 2)
+        final_unweighted = round(total_unweighted / count, 2)
 
-            st.subheader("📈 GPA Analysis")
+        st.success(f"🎓 **Weighted GPA:** {final_weighted}")
+        st.success(f"📘 **Unweighted GPA:** {final_unweighted}")
 
-            if final_weighted >= 5.5:
-                st.write("Your GPA is being boosted heavily by AP/GT courses.")
-            elif final_weighted >= 5.0:
-                st.write("Strong GPA — AP courses are helping, but performance matters most.")
-            else:
-                st.write("Lower performance in high-weight courses is pulling your GPA down.")
+        # =============================
+        # ANALYTICS TABLE
+        # =============================
+        st.subheader("📋 Course GPA Breakdown")
+        df = pd.DataFrame(rows)
+        st.dataframe(df, use_container_width=True)
+
+        # =============================
+        # IMPACT ANALYSIS
+        # =============================
+        best = max(impacts, key=impacts.get)
+        worst = min(impacts, key=impacts.get)
+
+        st.subheader("📈 Impact Analysis")
+        st.write(f"✅ **Helping your GPA the most:** {best} ({impacts[best]})")
+        st.write(f"⚠️ **Bringing your GPA down the most:** {worst} ({impacts[worst]})")
