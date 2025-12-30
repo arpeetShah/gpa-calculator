@@ -12,36 +12,55 @@ st.set_page_config(
 )
 
 # -----------------------------
-# SIMPLE LOGIN SYSTEM
+# SESSION STATE INIT
 # -----------------------------
-st.title("📘 GPA Calculator Login")
+if "users" not in st.session_state:
+    st.session_state.users = {}  # {username: {"password":..., "ms_grades": {...}}}
 
-# Example credentials (username:password)
-credentials = {
-    "student1": "mypassword123",
-    "student2": "password456"
-}
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
 
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-    st.session_state.user = None
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-if not st.session_state.logged_in:
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
-    if st.button("Login"):
-        if username in credentials and credentials[username] == password:
-            st.session_state.logged_in = True
-            st.session_state.user = username
-            st.success(f"Welcome {username}!")
-        else:
-            st.error("Incorrect username or password")
-    st.stop()  # Stop execution if not logged in
+# -----------------------------
+# WELCOME / SIGN UP / LOGIN
+# -----------------------------
+if st.session_state.current_user is None:
+    st.title("📘 Welcome to GPA Calculator")
+
+    choice = st.radio("Login or Sign Up", ["Login", "Sign Up"])
+
+    if choice == "Sign Up":
+        st.subheader("Create a new account")
+        new_user = st.text_input("Username", key="signup_user")
+        new_pass = st.text_input("Password", type="password", key="signup_pass")
+        if st.button("Sign Up"):
+            if new_user in st.session_state.users:
+                st.error("Username already exists.")
+            elif new_user == "" or new_pass == "":
+                st.warning("Please enter a username and password.")
+            else:
+                st.session_state.users[new_user] = {"password": new_pass, "ms_grades": {}}
+                st.success("Account created! Please log in now.")
+    else:  # Login
+        st.subheader("Login to your account")
+        login_user = st.text_input("Username", key="login_user")
+        login_pass = st.text_input("Password", type="password", key="login_pass")
+        if st.button("Login"):
+            if login_user in st.session_state.users and st.session_state.users[login_user]["password"] == login_pass:
+                st.session_state.current_user = login_user
+                st.success(f"Welcome back {login_user}!")
+            else:
+                st.error("Incorrect username or password")
+
+    st.stop()  # Stop execution until user logs in
 
 # -----------------------------
 # USER IS LOGGED IN
 # -----------------------------
-st.title(f"📘 GPA Calculator ({st.session_state.user})")
+user = st.session_state.current_user
+st.title(f"📘 GPA Calculator ({user})")
 
 # -----------------------------
 # COURSE LIST + WEIGHTS
@@ -84,15 +103,6 @@ def unweighted_gpa(avg):
 
 
 # -----------------------------
-# SESSION STATE
-# -----------------------------
-if "history" not in st.session_state:
-    st.session_state.history = []
-
-if "ms_grades" not in st.session_state:
-    st.session_state.ms_grades = {}  # Save Middle School grades
-
-# -----------------------------
 # TABS
 # -----------------------------
 tab1, tab2 = st.tabs(["Middle School", "High School"])
@@ -107,16 +117,18 @@ with tab1:
         [f"{k}. {v[0]}" for k, v in courses.items()]
     )
 
+    ms_storage = st.session_state.users[user]["ms_grades"]
+
     for item in selected_ms:
         num = int(item.split(".")[0])
         name, base_weight = courses[num]
 
-        if num in st.session_state.ms_grades:
+        if num in ms_storage:
             sem1 = st.number_input(f"{name} Semester 1 grade",
-                                   value=st.session_state.ms_grades[num]["sem1"],
+                                   value=ms_storage[num]["sem1"],
                                    key=f"ms_{num}_1")
             sem2 = st.number_input(f"{name} Semester 2 grade",
-                                   value=st.session_state.ms_grades[num]["sem2"],
+                                   value=ms_storage[num]["sem2"],
                                    key=f"ms_{num}_2")
         else:
             sem1 = st.number_input(f"{name} Semester 1 grade", 0.0, 100.0, 90.0,
@@ -124,7 +136,7 @@ with tab1:
             sem2 = st.number_input(f"{name} Semester 2 grade", 0.0, 100.0, 90.0,
                                    key=f"ms_{num}_2")
 
-        st.session_state.ms_grades[num] = {"sem1": sem1, "sem2": sem2}
+        ms_storage[num] = {"sem1": sem1, "sem2": sem2}
 
 # -----------------------------
 # HIGH SCHOOL TAB
@@ -174,7 +186,7 @@ if st.button("📊 Calculate GPA", use_container_width=True):
     all_grades = {}
 
     # Add Middle School grades
-    for num, g in st.session_state.ms_grades.items():
+    for num, g in ms_storage.items():
         name, base_weight = courses[num]
         avg = (g["sem1"] + g["sem2"]) / 2
         all_grades[name] = {
@@ -201,7 +213,7 @@ if st.button("📊 Calculate GPA", use_container_width=True):
 
         # Save history
         record = {
-            "User": st.session_state.user,
+            "User": user,
             "Date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
             "Weighted GPA": weighted_final,
             "Unweighted GPA": unweighted_final
