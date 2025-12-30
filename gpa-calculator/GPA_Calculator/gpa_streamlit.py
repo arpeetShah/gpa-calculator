@@ -1,13 +1,92 @@
 import streamlit as st
-import pandas as pd
+import sqlite3
+import hashlib
 
-st.set_page_config(page_title="GPA Calculator", layout="centered")
+# =============================
+# PAGE CONFIG
+# =============================
+st.set_page_config(
+    page_title="EduSphere",
+    page_icon="🎓",
+    layout="wide"
+)
 
-st.title("GPA Calculator")
+# =============================
+# STYLES (UNCHANGED)
+# =============================
+st.markdown("""
+<style>
+body {
+    background: linear-gradient(135deg, #0a1a3c, #2b124f);
+    color: white;
+}
+.stTabs [data-baseweb="tab"] {
+    background: rgba(255,255,255,0.08);
+    border-radius: 25px;
+    padding: 12px 20px;
+    margin-right: 8px;
+    color: white;
+    font-weight: 600;
+}
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+}
+.stButton>button {
+    border-radius: 30px;
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    color: white;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# -----------------------------
-# COURSE LIST
-# -----------------------------
+# =============================
+# DATABASE
+# =============================
+conn = sqlite3.connect("gpa_users.db", check_same_thread=False)
+c = conn.cursor()
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    username TEXT PRIMARY KEY,
+    password TEXT
+)
+""")
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS grades (
+    username TEXT,
+    course TEXT,
+    section TEXT,
+    p1 REAL,
+    p2 REAL,
+    p3 REAL,
+    p4 REAL,
+    taken INTEGER,
+    PRIMARY KEY (username, course, section)
+)
+""")
+conn.commit()
+
+# =============================
+# HELPERS
+# =============================
+def hash_pw(pw):
+    return hashlib.sha256(pw.encode()).hexdigest()
+
+def weighted_gpa(avg, weight):
+    return max(weight - ((100 - avg) * 0.1), 0)
+
+def unweighted_gpa(avg):
+    if avg >= 90: return 4
+    if avg >= 80: return 3
+    if avg >= 70: return 2
+    if avg >= 60: return 1
+    return 0
+
+# =============================
+# COURSES
+# =============================
 courses = {
     "Spanish 1": 5.0,
     "Spanish 2": 5.0,
@@ -19,123 +98,127 @@ courses = {
     "AP Precalculus": 6.0,
     "Biology": 5.5,
     "Chemistry": 5.5,
-    "AP World History": 6.0,
-    "AP Human Geography": 6.0,
-    "Computer Science": 5.5,
-    "AP Computer Science Principles": 6.0,
-    "Health": 5.0,
-    "Instruments": 5.0,
+    "AP Human Geography": 6.0
 }
 
-# -----------------------------
-# GPA FUNCTIONS
-# -----------------------------
-def weighted_gpa(avg, weight):
-    return max(weight - ((100 - avg) * 0.1), 0)
+# =============================
+# SESSION
+# =============================
+if "user" not in st.session_state:
+    st.session_state.user = None
 
-def unweighted_gpa(avg):
-    if avg >= 90: return 4
-    if avg >= 80: return 3
-    if avg >= 70: return 2
-    if avg >= 60: return 1
-    return 0
+# =============================
+# AUTH
+# =============================
+if not st.session_state.user:
+    st.title("🎓 EduSphere")
 
-# -----------------------------
-# COURSE SELECTION
-# -----------------------------
-st.header("Select Courses Taken")
+    mode = st.radio("Welcome", ["Login", "Sign Up"], horizontal=True)
 
-selected_courses = {}
-for course in courses:
-    selected_courses[course] = st.checkbox(course)
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
 
-# -----------------------------
-# MIDDLE SCHOOL
-# -----------------------------
-st.header("Middle School Grades (2 Semesters)")
-
-ms_grades = {}
-for course, checked in selected_courses.items():
-    if checked:
-        sem1 = st.number_input(
-            f"{course} - Semester 1",
-            0, 100, 90,
-            key=f"ms_{course}_1"
-        )
-        sem2 = st.number_input(
-            f"{course} - Semester 2",
-            0, 100, 90,
-            key=f"ms_{course}_2"
-        )
-        ms_grades[course] = (sem1 + sem2) / 2
-
-# -----------------------------
-# HIGH SCHOOL
-# -----------------------------
-st.header("High School Grades")
-
-quarters_done = st.slider("Quarters completed", 1, 4, 2)
-
-hs_grades = {}
-for course, checked in selected_courses.items():
-    if checked:
-        qs = []
-        for q in range(1, quarters_done + 1):
-            qs.append(
-                st.number_input(
-                    f"{course} - Quarter {q}",
-                    0, 100, 90,
-                    key=f"hs_{course}_{q}"
-                )
-            )
-        hs_grades[course] = sum(qs) / len(qs)
-
-# -----------------------------
-# CALCULATE BUTTON
-# -----------------------------
-if st.button("Calculate GPA"):
-    records = []
-
-    for course, checked in selected_courses.items():
-        if checked:
-            weight = courses[course]
-
-            if course in ms_grades:
-                avg = ms_grades[course]
-                records.append({
-                    "Course": course,
-                    "Level": "Middle School",
-                    "Weighted GPA": weighted_gpa(avg, weight),
-                    "Unweighted GPA": unweighted_gpa(avg)
-                })
-
-            if course in hs_grades:
-                avg = hs_grades[course]
-                records.append({
-                    "Course": course,
-                    "Level": "High School",
-                    "Weighted GPA": weighted_gpa(avg, weight),
-                    "Unweighted GPA": unweighted_gpa(avg)
-                })
-
-    if not records:
-        st.warning("No courses selected.")
+    if mode == "Sign Up":
+        if st.button("Create Account"):
+            c.execute("SELECT * FROM users WHERE username=?", (username,))
+            if c.fetchone():
+                st.error("Username already exists")
+            else:
+                c.execute("INSERT INTO users VALUES (?,?)", (username, hash_pw(password)))
+                conn.commit()
+                st.success("Account created! Please login.")
     else:
-        df = pd.DataFrame(records)
+        if st.button("Login"):
+            c.execute("SELECT * FROM users WHERE username=? AND password=?",
+                      (username, hash_pw(password)))
+            if c.fetchone():
+                st.session_state.user = username
+                st.experimental_rerun()
+            else:
+                st.error("Invalid credentials")
 
-        weighted_final = round(df["Weighted GPA"].mean(), 2)
-        unweighted_final = round(df["Unweighted GPA"].mean(), 2)
+    st.stop()
 
-        st.success(f"Weighted GPA: {weighted_final}")
-        st.success(f"Unweighted GPA: {unweighted_final}")
+# =============================
+# MAIN
+# =============================
+st.title(f"👋 Welcome, {st.session_state.user}")
+tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
-        st.subheader("GPA Analysis")
-        if weighted_final >= 5.5:
-            st.write("Your GPA is very strong due to high-weight courses.")
-        elif weighted_final >= 4.5:
-            st.write("Your GPA is solid but could improve with stronger performance in weighted classes.")
+# =============================
+# MIDDLE SCHOOL
+# =============================
+with tabs[0]:
+    st.header("Middle School Grades")
+
+    for course in courses:
+        c.execute("""
+        SELECT p1, p2, taken FROM grades
+        WHERE username=? AND course=? AND section="MS"
+        """, (st.session_state.user, course))
+        row = c.fetchone() or (90.0, 90.0, 0)
+
+        taken = st.checkbox(f"{course}", value=bool(row[2]), key=f"ms_take_{course}")
+
+        if taken:
+            sem1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, row[0], key=f"ms1_{course}")
+            sem2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, row[1], key=f"ms2_{course}")
         else:
-            st.write("Your GPA is being lowered by course averages; focus on improving GPA-heavy courses.")
+            sem1, sem2 = None, None
 
-        st.subheader("Breakdown")
-        st.dataframe(df)
+        c.execute("""
+        INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?)
+        """, (st.session_state.user, course, "MS", sem1, sem2, None, None, int(taken)))
+    conn.commit()
+
+# =============================
+# HIGH SCHOOL
+# =============================
+with tabs[1]:
+    st.header("High School Grades")
+    quarters = st.slider("Quarters Completed", 1, 4, 2)
+
+    for course in courses:
+        c.execute("""
+        SELECT p1, p2, p3, p4, taken FROM grades
+        WHERE username=? AND course=? AND section="HS"
+        """, (st.session_state.user, course))
+        row = c.fetchone() or (90.0, 90.0, 90.0, 90.0, 0)
+
+        taken = st.checkbox(f"{course}", value=bool(row[4]), key=f"hs_take_{course}")
+
+        grades = []
+        if taken:
+            for i in range(quarters):
+                grades.append(
+                    st.number_input(
+                        f"{course} – Quarter {i+1}",
+                        0.0, 100.0, row[i],
+                        key=f"hs_{course}_{i}"
+                    )
+                )
+
+        padded = grades + [None] * (4 - len(grades))
+        c.execute("""
+        INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?)
+        """, (st.session_state.user, course, "HS", *padded, int(taken)))
+    conn.commit()
+
+# =============================
+# GPA
+# =============================
+with tabs[2]:
+    st.header("GPA Results & Analytics")
+
+    if st.button("🎯 Calculate GPA"):
+        weighted, unweighted = [], []
+
+        for course, weight in courses.items():
+            c.execute("""
+            SELECT p1, p2, p3, p4, taken FROM grades
+            WHERE username=? AND course=? AND section="HS"
+            """, (st.session_state.user, course))
+            row = c.fetchone()
+
+            if row and row[4]:
+                valid = [x for x in row[:4] if x is not
