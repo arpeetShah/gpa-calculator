@@ -570,21 +570,19 @@ with main_tabs[2]:
     # STUDY RECOMMENDATIONS (inside main_tabs[2])
     # =============================
     with main_tabs[2]:  # Your Quiz & Practice tab
-        st.header("📚 Smart Study Recommendations")
+        with main_tabs[2]:  # Quiz & Practice tab
+            st.header("📚 Smart Study Recommendations")
 
-        # Predefine weak_units to avoid linter warnings
-        weak_units = {}  # <-- Initialize here
+            if st.button("Show Study Recommendations", key="study_recs_button"):
+                weak_units = analyze_weak_units()  # Must return a dict
 
-        if st.button("Show Study Recommendations", key="study_recs_button"):
-            weak_units = analyze_weak_units()  # Should return a dictionary
-
-            if isinstance(weak_units, dict) and weak_units:
-                st.warning("You should focus on these units:")
-                for subject, units in weak_units.items():
-                    if isinstance(units, list) and units:
-                        st.write(f"**{subject}:** {', '.join(units)}")
-            else:
-                st.success("🎉 Great job! You are doing well across all units.")
+                if isinstance(weak_units, dict) and weak_units:
+                    st.warning("You should focus on these units:")
+                    for subject, units in weak_units.items():
+                        if isinstance(units, list) and units:
+                            st.write(f"**{subject}:** {', '.join(units)}")
+                else:
+                    st.success("🎉 Great job! You are doing well across all units.")
 
             # Show questions only after selections
             if unit and difficulty:
@@ -615,11 +613,6 @@ with main_tabs[2]:
                             st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
                     else:
                         st.warning("No questions available for this unit and difficulty.")
-
-        else:
-            st.warning("You should focus on these units:")
-            for subject, units in weak_units.items():
-                st.write(f"**{subject}:** {', '.join(units)}")
 
 # =============================
 # ORGANIZATION HELPER TAB
