@@ -606,10 +606,6 @@ with main_tabs[2]:
                     else:
                         st.warning("No questions available for this unit and difficulty.")
 
-    if st.button("Show Study Recommendations"):
-        weak_units = analyze_weak_units()
-        if not weak_units:
-            st.success("Great job! You are doing well across all units.")
         else:
             st.warning("You should focus on these units:")
             for subject, units in weak_units.items():
