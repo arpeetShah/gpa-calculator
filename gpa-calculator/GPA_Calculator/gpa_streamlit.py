@@ -569,9 +569,6 @@ with main_tabs[2]:
     # =============================
     # STUDY RECOMMENDATIONS (inside main_tabs[2])
     # =============================
-    with main_tabs[2]:  # Quiz & Practice tab
-        st.header("📝 Quiz & Practice")
-
         # ---------- 1️⃣ Show Questions ----------
         if math_level == "AP Precalculus":
             unit = st.selectbox("Select the Unit you want to practice:", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
