@@ -564,7 +564,7 @@ with main_tabs[2]:
                 }
             }
     with main_tabs[2]:  # Your Quiz & Practice tab
-        if st.button("Show Study Recommendations"):
+        if st.button("Show Study Recommendations", key="study_recs_button"):
             weak_units = analyze_weak_units()
             if not weak_units:
                 st.success("Great job! You are doing well across all units.")
