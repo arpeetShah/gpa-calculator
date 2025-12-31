@@ -566,19 +566,25 @@ with main_tabs[2]:
                     ]
                 }
             }
+    # =============================
+    # STUDY RECOMMENDATIONS (inside main_tabs[2])
+    # =============================
     with main_tabs[2]:  # Your Quiz & Practice tab
-        if st.button("Show Study Recommendations", key="study_recs_button"):
-            weak_units = analyze_weak_units()  # Should return a dict or None
+        st.header("📚 Smart Study Recommendations")
 
-            # Only iterate if it's a dict and not empty
-            if weak_units and isinstance(weak_units, dict):
+        # Predefine weak_units to avoid linter warnings
+        weak_units = {}  # <-- Initialize here
+
+        if st.button("Show Study Recommendations", key="study_recs_button"):
+            weak_units = analyze_weak_units()  # Should return a dictionary
+
+            if isinstance(weak_units, dict) and weak_units:
                 st.warning("You should focus on these units:")
                 for subject, units in weak_units.items():
-                    if units:  # Make sure the units list is not empty
+                    if isinstance(units, list) and units:
                         st.write(f"**{subject}:** {', '.join(units)}")
             else:
-                # Handles None, empty dict, or invalid structure
-                st.success("Great job! You are doing well across all units.")
+                st.success("🎉 Great job! You are doing well across all units.")
 
             # Show questions only after selections
             if unit and difficulty:
