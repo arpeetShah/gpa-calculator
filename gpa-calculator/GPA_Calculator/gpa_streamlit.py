@@ -309,78 +309,71 @@ with main_tabs[2]:
                 "Unit 1": {
                     "Easy": [
                         {"type": "mcq", "question": "Solve for x: x² − 5x + 6 = 0",
-                         "options": ["x = 2 or 3", "x = 1 or 6", "x = 0 or 6"],
-                         "answer": "x = 2 or 3"},
-
-                        {"type": "text",
-                         "question": "Find the zeros of f(x) = x² − 4",
-                         "answer": "2,-2"},
-
-                        {"type": "mcq",
-                         "question": "Simplify: (x² − 9)/(x + 3)",
-                         "options": ["x − 3", "x + 3", "x² + 3"],
-                         "answer": "x − 3"},
-
-                        {"type": "text",
-                         "question": "Does f(x) = −x² + 2x + 3 have a maximum or minimum?",
-                         "answer": "maximum"},
-
-                        {"type": "mcq",
-                         "question": "Which is a vertical asymptote of f(x) = 1/(x − 5)?",
-                         "options": ["x = 5", "x = −5", "x = 0"],
-                         "answer": "x = 5"}
+                         "options": ["x = 2 or 3", "x = 1 or 6", "x = 0 or 6"], "answer": "x = 2 or 3"},
+                        {"type": "text", "question": "Find the zeros of f(x) = x² − 4", "answer": "2,-2"},
                     ],
-
                     "Medium": [
-                        {"type": "mcq",
-                         "question": "Divide: (2x³ + 3x² − x + 5)/(x + 2)",
-                         "options": ["2x² − x + 3", "2x² + 7x + 15", "2x² − x + 1"],
-                         "answer": "2x² − x + 3"},
-
-                        {"type": "text",
-                         "question": "Solve: x³ − 6x² + 11x − 6 = 0",
-                         "answer": "1,2,3"},
-
-                        {"type": "mcq",
-                         "question": "End behavior of f(x) = −2x⁴ + 3x²",
-                         "options": [
-                             "f → −∞ as x → ∞",
-                             "f → ∞ as x → ∞",
-                             "f → 0 as x → ∞"
-                         ],
-                         "answer": "f → −∞ as x → ∞"}
+                        {"type": "mcq", "question": "Divide: (2x³ + 3x² − x + 5)/(x + 2)",
+                         "options": ["2x² − x + 3", "2x² + 7x + 15", "2x² − x + 1"], "answer": "2x² − x + 3"},
                     ],
-
                     "Hard": [
-                        {"type": "text",
-                         "question": "Find all real solutions of 2x⁴ − 3x³ − 11x² + 6x + 9 = 0",
+                        {"type": "text", "question": "Find all real solutions of 2x⁴ − 3x³ − 11x² + 6x + 9 = 0",
                          "answer": "-1,1,3/2,-1/2"},
-
-                        {"type": "mcq",
-                         "question": "Which is the horizontal asymptote of f(x) = (2x² + 3)/(x² + 1)?",
-                         "options": ["y = 2", "y = 0", "y = 3"],
-                         "answer": "y = 2"}
                     ]
                 },
-
-                # ✅ PLACEHOLDERS (prevents mismatch errors)
-                "Unit 2": {"Easy": [], "Medium": [], "Hard": []},
-                "Unit 3": {"Easy": [], "Medium": [], "Hard": []},
-                "Unit 4": {"Easy": [], "Medium": [], "Hard": []}
+                "Unit 2": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Solve for x: 2x − 5 = 7",
+                         "options": ["x = 6", "x = 1", "x = -1"], "answer": "x = 6"},
+                        {"type": "text", "question": "Simplify: (x² − 16)/(x − 4)", "answer": "x + 4"},
+                    ],
+                    "Medium": [
+                        {"type": "mcq", "question": "Factor completely: x² − 9x + 18",
+                         "options": ["(x−3)(x−6)", "(x−2)(x−9)", "(x−1)(x−18)"], "answer": "(x−3)(x−6)"},
+                    ],
+                    "Hard": [
+                        {"type": "text", "question": "Solve for x: x³ − 6x² + 11x − 6 = 0", "answer": "1,2,3"},
+                    ]
+                },
+                "Unit 3": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Find f(2) if f(x) = x² + 3x − 1",
+                         "options": ["9", "7", "5"], "answer": "7"},
+                    ],
+                    "Medium": [
+                        {"type": "text", "question": "Find f'(x) for f(x) = x³ − 5x² + 6x", "answer": "3x² − 10x + 6"},
+                    ],
+                    "Hard": [
+                        {"type": "mcq", "question": "End behavior of f(x) = −x³ + 4x²",
+                         "options": ["f → −∞ as x → ∞", "f → ∞ as x → ∞", "f → 0 as x → ∞"],
+                         "answer": "f → −∞ as x → ∞"},
+                    ]
+                },
+                "Unit 4": {
+                    "Easy": [
+                        {"type": "text", "question": "Factor completely: x³ − 3x² − 4x + 12",
+                         "answer": "(x−2)(x−2)(x+3)"},
+                    ],
+                    "Medium": [
+                        {"type": "mcq", "question": "Simplify: (x³ − 8)/(x−2)",
+                         "options": ["x² + 2x + 4", "x² − 2x + 4", "x² + 4"], "answer": "x² + 2x + 4"},
+                    ],
+                    "Hard": [
+                        {"type": "text", "question": "Determine the vertex of f(x) = −2x² + 4x + 1", "answer": "(1,3)"},
+                    ]
+                }
             }
 
             # =============================
             # DISPLAY QUESTIONS
             # =============================
             if st.session_state.show_questions:
-
                 selected_questions = questions[unit][difficulty]
 
                 if not selected_questions:
                     st.info("Questions for this unit are coming soon.")
                 else:
                     st.subheader(f"{unit} — {difficulty} Questions")
-
                     user_answers = {}
                     for i, q in enumerate(selected_questions, 1):
                         if q["type"] == "mcq":
