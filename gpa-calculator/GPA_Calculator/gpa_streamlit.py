@@ -1,6 +1,12 @@
 import streamlit as st
 import sqlite3
 
+def analyze_weak_units(unit=None, difficulty=None, score=None):
+    weak_units = {}
+    if score is not None and score < 2:  # Example threshold
+        weak_units["AP Precalculus"] = [unit]
+    return weak_units
+
 
 def analyze_weak_units():
     weak_units = {}
