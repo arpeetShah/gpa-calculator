@@ -279,6 +279,7 @@ with main_tabs[2]:
     with quiz_tabs[1]:
         st.header("AP Precalculus Quiz")
 
+        # Select course, unit, and difficulty
         math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
 
         if math_level == "AP Precalculus":
@@ -288,257 +289,255 @@ with main_tabs[2]:
             if "show_questions" not in st.session_state:
                 st.session_state.show_questions = False
 
-            if st.button("Show Questions"):
-                st.session_state.show_questions = True
-
-            if st.session_state.show_questions:
-                # Fully finished question bank
-                questions = {
-                    "Unit 1": {
-                        "Easy": [
-                            {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
-                             "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
-                            {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
-                            {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": ["x-3", "x+3", "x^2+3"],
-                             "answer": "x-3"},
-                            {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
-                             "answer": "maximum"},
-                            {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"],
-                             "answer": "7"},
-                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
-                             "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
-                            {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
-                             "answer": "7"},
-                            {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
-                             "answer": "(x-2)(x-2)(x+3)"},
-                            {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
-                             "options": ["3", "-2", "5"], "answer": "3"},
-                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
-                             "answer": "x<-2 or x>0 and x!=2"},
-                            {"type": "mcq", "question": "Simplify: x^2 - 4x + 4",
-                             "options": ["(x-2)^2", "x(x-4)", "x^2-2"], "answer": "(x-2)^2"},
-                            {"type": "text", "question": "Determine the y-intercept of f(x)=2x^2-3x+5", "answer": "5"}
-                        ],
-                        "Medium": [
-                            {"type": "mcq", "question": "Divide: (2x^3+3x^2-x+5)/(x+2)",
-                             "options": ["2x^2-x+3", "2x^2+7x+15", "2x^2-x+1"], "answer": "2x^2-x+3"},
-                            {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
-                             "answer": "(x-2)(x-2)(x+3)"},
-                            {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
-                             "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
-                            {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
-                             "answer": "7"},
-                            {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
-                             "options": ["3", "-2", "5"], "answer": "3"},
-                            {"type": "text", "question": "Solve: x^3 - 6x^2 + 11x - 6 = 0", "answer": "1,2,3"},
-                            {"type": "mcq", "question": "Simplify: (x^3 - 8)/(x-2)",
-                             "options": ["x^2+2x+4", "x^2-2x+4", "x^2+4"], "answer": "x^2+2x+4"},
-                            {"type": "text", "question": "Find f'(x) for f(x)=x^3-5x^2+6x", "answer": "3x^2-10x+6"},
-                            {"type": "mcq", "question": "End behavior of f(x)=-2x^4+3x^2",
-                             "options": ["f→-∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→-∞ as x→∞"},
-                            {"type": "text", "question": "Solve for x: (x^2-1)/(x+1) < 0", "answer": "x<-1 or 0<x<1"},
-                            {"type": "mcq", "question": "Factor: x^2 + 5x + 6",
-                             "options": ["(x+2)(x+3)", "(x+1)(x+6)", "(x+3)(x+3)"], "answer": "(x+2)(x+3)"},
-                            {"type": "text", "question": "Find the vertex of f(x)=x^2-4x+7", "answer": "(2,3)"}
-                        ],
-                        "Hard": [
-                            {"type": "text",
-                             "question": "Find all real solutions for x: 2x^4 - 3x^3 - 11x^2 + 6x + 9 = 0",
-                             "answer": "-1,1,3/2,-1/2"},
-                            {"type": "mcq", "question": "If f(x)=(x^2-4)/(x^2-9), holes in the graph?",
-                             "options": ["None", "x=2", "x=3"], "answer": "None"},
-                            {"type": "text", "question": "Find the rate of change at x=2 for f(x)=x^3 - 2x^2 + x",
-                             "answer": "7"},
-                            {"type": "mcq", "question": "End behavior of f(x)=-x^3+4x^2",
-                             "options": ["As x→∞, f(x)→ -∞", "As x→∞, f(x)→ ∞", "As x→∞, f(x)→ 0"],
-                             "answer": "As x→∞, f(x)→ -∞"},
-                            {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
-                             "answer": "x<-2 or x>0 and x!=2"},
-                            {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
-                            {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
-                             "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
-                            {"type": "text", "question": "Determine the vertex of f(x)=-2x^2+4x+1", "answer": "(1,3)"},
-                            {"type": "mcq", "question": "Which is the horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)",
-                             "options": ["y=2", "y=0", "y=3"], "answer": "y=2"},
-                            {"type": "text", "question": "Solve: x^3-6x^2+11x-6=0", "answer": "1,2,3"},
-                            {"type": "mcq", "question": "Simplify: (x^4 - 16)/(x^2-4)",
-                             "options": ["x^2+4", "x+4", "x^2-4"], "answer": "x^2+4"},
-                            {"type": "text", "question": "Find f'(x) for f(x)=2x^3-9x^2+12x-4", "answer": "6x^2-18x+12"}
-                        ]
-                    },
-                    "Unit 2": {
-                        "Easy": [
-                            {"type": "mcq", "question": "Simplify: (x+2)^2",
-                             "options": ["x^2+4x+4", "x^2+2", "x^2+2x+2"], "answer": "x^2+4x+4"},
-                            {"type": "text", "question": "Solve for x: x^2-9=0", "answer": "3,-3"},
-                            {"type": "mcq", "question": "Factor: x^2-5x+6",
-                             "options": ["(x-2)(x-3)", "(x+2)(x+3)", "(x-1)(x-6)"], "answer": "(x-2)(x-3)"},
-                            {"type": "text", "question": "Find zeros of f(x)=x^2-16", "answer": "4,-4"},
-                            {"type": "mcq", "question": "Simplify: (x^2-4)/(x+2)", "options": ["x-2", "x+2", "x^2-2"],
-                             "answer": "x-2"},
-                            {"type": "text", "question": "Determine y-intercept of f(x)=3x^2-2x+1", "answer": "1"},
-                            {"type": "mcq", "question": "Solve for x: x^2+4x+4=0", "options": ["x=-2", "x=2", "x=4"],
-                             "answer": "x=-2"},
-                            {"type": "text", "question": "Vertex of f(x)=x^2-6x+8", "answer": "(3,-1)"},
-                            {"type": "mcq", "question": "Simplify: x^2-6x+9",
-                             "options": ["(x-3)^2", "(x+3)^2", "(x-9)^2"], "answer": "(x-3)^2"},
-                            {"type": "text", "question": "Solve for x: x^2-1=0", "answer": "1,-1"},
-                            {"type": "mcq", "question": "Factor completely: x^2+5x+6",
-                             "options": ["(x+2)(x+3)", "(x+1)(x+6)", "(x+3)(x+3)"], "answer": "(x+2)(x+3)"},
-                            {"type": "text", "question": "Find x-intercept of f(x)=x^2-3x", "answer": "0,3"}
-                        ],
-                        "Medium": [
-                            {"type": "text", "question": "Factor: x^3+3x^2-4", "answer": "(x+4)(x-1)(x+1)"},
-                            {"type": "mcq", "question": "Simplify: (x^3+8)/(x+2)",
-                             "options": ["x^2-2x+4", "x^2+2x+4", "x^2+4"], "answer": "x^2+2x+4"},
-                            {"type": "text", "question": "Solve: x^3-3x^2-4x+12=0", "answer": "2,-1,3"},
-                            {"type": "mcq", "question": "End behavior of f(x)=-x^3+4x^2",
-                             "options": ["f→∞", "f→-∞", "f→0"], "answer": "f→-∞"},
-                            {"type": "text", "question": "Derivative of f(x)=x^3-3x^2+2x", "answer": "3x^2-6x+2"},
-                            {"type": "mcq", "question": "Simplify: x^3-27",
-                             "options": ["(x-3)(x^2+3x+9)", "(x+3)(x^2-3x+9)", "x^3-27"], "answer": "(x-3)(x^2+3x+9)"},
-                            {"type": "text", "question": "Find zeros of f(x)=x^3-6x^2+11x-6", "answer": "1,2,3"},
-                            {"type": "mcq", "question": "Factor: x^3+27",
-                             "options": ["(x+3)(x^2-3x+9)", "(x+3)(x^2+3x+9)", "x^3+27"], "answer": "(x+3)(x^2-3x+9)"},
-                            {"type": "text", "question": "Solve: x^3-1=0", "answer": "1,-1/2+√3/2 i,-1/2-√3/2 i"},
-                            {"type": "mcq", "question": "Simplify: (x^3-1)/(x-1)",
-                             "options": ["x^2+x+1", "x^2-x+1", "x^2+1"], "answer": "x^2+x+1"},
-                            {"type": "text", "question": "Derivative of f(x)=x^3+3x^2+3x+1", "answer": "3x^2+6x+3"},
-                            {"type": "mcq", "question": "Simplify: (x^3+1)/(x+1)",
-                             "options": ["x^2-x+1", "x^2+x+1", "x^2+1"], "answer": "x^2-x+1"}
-                        ],
-                        "Hard": [
-                            {"type": "mcq", "question": "End behavior of f(x)=-x^4+3x^2?", "options": ["-∞", "∞", "0"],
-                             "answer": "-∞"},
-                            {"type": "text", "question": "Find all real solutions: 2x^4-3x^3-11x^2+6x+9=0",
-                             "answer": "-1,1,3/2,-1/2"},
-                            {"type": "mcq", "question": "Simplify: (x^4-16)/(x^2-4)",
-                             "options": ["x^2+4", "x+4", "x^2-4"], "answer": "x^2+4"},
-                            {"type": "text", "question": "Derivative of f(x)=2x^3-9x^2+12x-4", "answer": "6x^2-18x+12"},
-                            {"type": "mcq", "question": "Horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)?",
-                             "options": ["y=2", "y=0", "y=3"], "answer": "y=2"},
-                            {"type": "text", "question": "Find f'(x) for f(x)=x^4-4x^3+6x^2-4x+1",
-                             "answer": "4x^3-12x^2+12x-4"},
-                            {"type": "mcq", "question": "Factor: x^4-1",
-                             "options": ["(x^2-1)(x^2+1)", "(x-1)^4", "x^4-1"], "answer": "(x^2-1)(x^2+1)"},
-                            {"type": "text", "question": "Solve: x^4-5x^2+4=0", "answer": "1,-1,2,-2"},
-                            {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
-                             "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
-                            {"type": "text", "question": "Determine vertex: f(x)=-2x^2+4x+1", "answer": "(1,3)"},
-                            {"type": "mcq", "question": "Solve: (x^2-1)/(x+1)>0",
-                             "options": ["x<-1 or 0<x<1", "x>1", "x<0"], "answer": "x<-1 or 0<x<1"},
-                            {"type": "text", "question": "Derivative of f(x)=x^4-4x^3+4x^2", "answer": "4x^3-12x^2+8x"}
-                        ]
-                    },
-                    "Unit 3": {
-                        "Easy": [
-                            {"type": "mcq", "question": "sin(30°)?", "options": ["1/2", "√3/2", "0"], "answer": "1/2"},
-                            {"type": "text", "question": "cos(60°)?", "answer": "1/2"},
-                            {"type": "mcq", "question": "tan(45°)?", "options": ["1", "0", "√3"], "answer": "1"},
-                            {"type": "text", "question": "Find sin(90°)", "answer": "1"},
-                            {"type": "mcq", "question": "cos(0°)?", "options": ["1", "0", "-1"], "answer": "1"},
-                            {"type": "text", "question": "tan(0°)?", "answer": "0"},
-                            {"type": "mcq", "question": "sin(0°)?", "options": ["0", "1", "-1"], "answer": "0"},
-                            {"type": "text", "question": "cos(90°)?", "answer": "0"},
-                            {"type": "mcq", "question": "tan(90°)?", "options": ["undefined", "0", "1"],
-                             "answer": "undefined"},
-                            {"type": "text", "question": "Find sin(45°)", "answer": "√2/2"},
-                            {"type": "mcq", "question": "Find cos(45°)", "options": ["√2/2", "1/2", "√3/2"],
-                             "answer": "√2/2"},
-                            {"type": "text", "question": "Find tan(30°)", "answer": "1/√3"}
-                        ],
-                                            "Medium":[
-                        {"type":"text","question":"Find sin(120°)","answer":"√3/2"},
-                        {"type":"mcq","question":"cos(135°)?","options":["-√2/2","√2/2","-1/2"],"answer":"-√2/2"},
-                        {"type":"text","question":"tan(225°)?","answer":"1"},
-                        {"type":"mcq","question":"sin(150°)?","options":["1/2","√3/2","-1/2"],"answer":"1/2"},
-                        {"type":"text","question":"Find cos(210°)","answer":"-√3/2"},
-                        {"type":"mcq","question":"tan(300°)?","options":["-√3","√3","1"],"answer":"-√3"},
-                        {"type":"text","question":"sin(330°)?","answer":"-1/2"},
-                        {"type":"mcq","question":"cos(225°)?","options":["-√2/2","√2/2","0"],"answer":"-√2/2"},
-                        {"type":"text","question":"tan(135°)?","answer":"-1"},
-                        {"type":"mcq","question":"Find sin(210°)?","options":["-1/2","1/2","-√3/2"],"answer":"-1/2"},
-                        {"type":"text","question":"cos(300°)?","answer":"1/2"},
-                        {"type":"mcq","question":"tan(60°)?","options":["√3","1","0"],"answer":"√3"}
+            # Full Precalculus Questions for Units 1-4
+            questions = {
+                "Unit 1": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
+                         "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
+                        {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
+                        {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": ["x-3", "x+3", "x^2+3"],
+                         "answer": "x-3"},
+                        {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
+                         "answer": "maximum"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"],
+                         "answer": "7"},
+                        {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
+                         "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                        {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
+                         "answer": "7"},
+                        {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
+                         "answer": "(x-2)(x-2)(x+3)"},
+                        {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
+                         "options": ["3", "-2", "5"], "answer": "3"},
+                        {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
+                         "answer": "x<-2 or x>0 and x!=2"},
+                        {"type": "mcq", "question": "What is f(0) for f(x)=2x^2-3x+1?", "options": ["1", "0", "-1"],
+                         "answer": "1"},
+                        {"type": "text", "question": "Find the x-intercepts of f(x)=x^2-6x+8", "answer": "2,4"}
                     ],
-                    "Hard":[
-                        {"type":"text","question":"Solve sin(x)=1/2 for 0≤x<360°","answer":"30°,150°"},
-                        {"type":"mcq","question":"Solve cos(x)= -√3/2 for 0≤x<360°","options":["150°,210°","30°,330°","60°,300°"],"answer":"150°,210°"},
-                        {"type":"text","question":"Solve tan(x)=1 for 0≤x<360°","answer":"45°,225°"},
-                        {"type":"mcq","question":"Find exact value: sin(5π/6)","options":["1/2","√3/2","-1/2"],"answer":"1/2"},
-                        {"type":"text","question":"cos(7π/6)?","answer":"-√3/2"},
-                        {"type":"mcq","question":"tan(11π/6)?","options":["-√3/3","√3/3","√3"],"answer":"-√3/3"},
-                        {"type":"text","question":"Solve 2sin(x)-1=0 for 0≤x<360°","answer":"30°,150°"},
-                        {"type":"mcq","question":"Solve cos(2x)=0 for 0≤x<360°","options":["45°,135°,225°,315°","90°,270°","0°,180°"],"answer":"45°,135°,225°,315°"},
-                        {"type":"text","question":"Solve sin(2x)=√3/2 for 0≤x<360°","answer":"30°,60°,210°,240°"},
-                        {"type":"mcq","question":"Solve cos(x/2)=√2/2 for 0≤x<360°","options":["90°,270°","45°,315°","60°,300°"],"answer":"90°,270°"},
-                        {"type":"text","question":"tan(7π/4)?","answer":"-1"},
-                        {"type":"mcq","question":"cos(5π/3)?","options":["1/2","-1/2","-√3/2"],"answer":"1/2"}
+                    "Medium": [
+                        {"type": "mcq", "question": "Divide: (2x^3+3x^2-x+5)/(x+2)",
+                         "options": ["2x^2-x+3", "2x^2+7x+15", "2x^2-x+1"], "answer": "2x^2-x+3"},
+                        {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
+                         "answer": "(x-2)(x-2)(x+3)"},
+                        {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
+                         "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                        {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
+                         "answer": "7"},
+                        {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
+                         "options": ["3", "-2", "5"], "answer": "3"},
+                        {"type": "text", "question": "Solve: x^3 - 6x^2 + 11x - 6 = 0", "answer": "1,2,3"},
+                        {"type": "mcq", "question": "Simplify: (x^3 - 8)/(x-2)",
+                         "options": ["x^2+2x+4", "x^2-2x+4", "x^2+4"], "answer": "x^2+2x+4"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-5x^2+6x", "answer": "3x^2-10x+6"},
+                        {"type": "mcq", "question": "End behavior of f(x)=-2x^4+3x^2",
+                         "options": ["f→-∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→-∞ as x→∞"},
+                        {"type": "text", "question": "Solve for x: (x^2-1)/(x+1) < 0", "answer": "x<-1 or 0<x<1"},
+                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2-2x+3", "options": ["6", "4", "3"],
+                         "answer": "6"},
+                        {"type": "text", "question": "Determine if f(x)=x^2-4x+3 opens up or down", "answer": "up"}
+                    ],
+                    "Hard": [
+                        {"type": "text", "question": "Find all real solutions for x: 2x^4 - 3x^3 - 11x^2 + 6x + 9 = 0",
+                         "answer": "-1,1,3/2,-1/2"},
+                        {"type": "mcq", "question": "If f(x)=(x^2-4)/(x^2-9), holes in the graph?",
+                         "options": ["None", "x=2", "x=3"], "answer": "None"},
+                        {"type": "text", "question": "Find the rate of change at x=2 for f(x)=x^3 - 2x^2 + x",
+                         "answer": "7"},
+                        {"type": "mcq", "question": "End behavior of f(x)=-x^3+4x^2",
+                         "options": ["As x→∞, f(x)→ -∞", "As x→∞, f(x)→ ∞", "As x→∞, f(x)→ 0"],
+                         "answer": "As x→∞, f(x)→ -∞"},
+                        {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
+                         "answer": "x<-2 or x>0 and x!=2"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                        {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
+                         "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                        {"type": "mcq", "question": "Which is the horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)",
+                         "options": ["y=2", "y=0", "y=3"], "answer": "y=2"},
+                        {"type": "text", "question": "Solve: x^3-6x^2+11x-6=0", "answer": "1,2,3"},
+                        {"type": "mcq", "question": "Find f(1) for f(x)=2x^3-3x^2+1", "options": ["0", "1", "2"],
+                         "answer": "0"},
+                        {"type": "text", "question": "Factor: x^3-7x^2+10x", "answer": "x(x-5)(x-2)"}
                     ]
                 },
-                "Unit 4": {
-                    "Easy":[
-                        {"type":"mcq","question":"Simplify: (2x+3)(x-4)","options":["2x^2-5x-12","2x^2-5x+12","2x^2+5x-12"],"answer":"2x^2-5x-12"},
-                        {"type":"text","question":"Factor: x^2-10x+25","answer":"(x-5)^2"},
-                        {"type":"mcq","question":"Simplify: (x+1)^2","options":["x^2+2x+1","x^2+1","x^2+x+1"],"answer":"x^2+2x+1"},
-                        {"type":"text","question":"Solve: x^2-16=0","answer":"4,-4"},
-                        {"type":"mcq","question":"Factor: x^2-9","options":["(x-3)(x+3)","x^2-3","x^2+3"],"answer":"(x-3)(x+3)"},
-                        {"type":"text","question":"Find the vertex of f(x)=x^2-8x+15","answer":"(4,-1)"},
-                        {"type":"mcq","question":"Solve: x^2+6x+9=0","options":["x=-3","x=3","x=6"],"answer":"x=-3"},
-                        {"type":"text","question":"Determine y-intercept of f(x)=3x^2-2x+1","answer":"1"},
-                        {"type":"mcq","question":"Simplify: x^2-4x+4","options":["(x-2)^2","x^2-2x+2","x^2+2"],"answer":"(x-2)^2"},
-                        {"type":"text","question":"Factor completely: x^3+3x^2-4","answer":"(x+4)(x-1)(x+1)"},
-                        {"type":"mcq","question":"Simplify: (x^3+8)/(x+2)","options":["x^2-2x+4","x^2+2x+4","x^2+4"],"answer":"x^2+2x+4"},
-                        {"type":"text","question":"Derivative of f(x)=x^3-3x^2+2x","answer":"3x^2-6x+2"}
+                "Unit 2": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Simplify: (x^2-16)/(x-4)", "options": ["x+4", "x-4", "x^2+4"],
+                         "answer": "x+4"},
+                        {"type": "text", "question": "Find the zeros of f(x)=x^2-5x+6", "answer": "2,3"},
+                        {"type": "mcq", "question": "Evaluate f(2) if f(x)=x^2+2x", "options": ["6", "8", "4"],
+                         "answer": "6"},
+                        {"type": "text", "question": "Factor: x^2+5x+6", "answer": "(x+2)(x+3)"},
+                        {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-3)?",
+                         "options": ["x=3", "x=-3", "x=0"], "answer": "x=3"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=x^2-4x+1", "answer": "(2,-3)"},
+                        {"type": "mcq", "question": "Find f(0) if f(x)=x^2-3x+2", "options": ["2", "0", "-2"],
+                         "answer": "2"},
+                        {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=0 to x=2",
+                         "answer": "2"},
+                        {"type": "mcq", "question": "Simplify: (x^2-25)/(x+5)", "options": ["x-5", "x+5", "x^2+5"],
+                         "answer": "x-5"},
+                        {"type": "text", "question": "Solve x^2-9=0", "answer": "3,-3"},
+                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2+2x+1", "options": ["0", "2", "-1"],
+                         "answer": "0"},
+                        {"type": "text", "question": "Determine if f(x)=-x^2+2x+3 opens up or down", "answer": "down"}
                     ],
-                    "Medium":[
-                        {"type":"text","question":"Solve x^3-6x^2+11x-6=0","answer":"1,2,3"},
-                        {"type":"mcq","question":"Simplify: (x^3-27)/(x-3)","options":["x^2+3x+9","x^2-3x+9","x^2+9"],"answer":"x^2+3x+9"},
-                        {"type":"text","question":"Factor completely: x^3+27","answer":"(x+3)(x^2-3x+9)"},
-                        {"type":"mcq","question":"Derivative: f(x)=x^3+3x^2+3x+1","options":["3x^2+6x+3","3x^2+3x+3","3x^2+3x+1"],"answer":"3x^2+6x+3"},
-                        {"type":"text","question":"End behavior of f(x)=-x^3+2x^2","answer":"-∞"},
-                        {"type":"mcq","question":"Horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)?","options":["y=2","y=0","y=3"],"answer":"y=2"},
-                        {"type":"text","question":"Solve 2x^4-3x^3-11x^2+6x+9=0","answer":"-1,1,3/2,-1/2"},
-                        {"type":"mcq","question":"Simplify: (x^4-16)/(x^2-4)","options":["x^2+4","x+4","x^2-4"],"answer":"x^2+4"},
-                        {"type":"text","question":"Derivative: f(x)=2x^3-9x^2+12x-4","answer":"6x^2-18x+12"},
-                        {"type":"mcq","question":"Factor: x^4-1","options":["(x^2-1)(x^2+1)","(x-1)^4","x^4-1"],"answer":"(x^2-1)(x^2+1)"},
-                        {"type":"text","question":"Solve: x^4-5x^2+4=0","answer":"1,-1,2,-2"},
-                        {"type":"mcq","question":"Simplify: (x^3+27)/(x+3)","options":["x^2-3x+9","x^2+3x+9","x^2-3x-9"],"answer":"x^2-3x+9"}
+                    "Medium": [
+                        {"type": "mcq", "question": "Divide: (x^3-2x^2+3x-4)/(x-1)",
+                         "options": ["x^2-x+2", "x^2+x+4", "x^2-x+1"], "answer": "x^2-x+2"},
+                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6", "answer": "(x-1)(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=3x^2-2x+1", "options": ["9", "7", "5"],
+                         "answer": "9"},
+                        {"type": "text", "question": "Solve x^3-3x^2-4x+12=0", "answer": "2,-1,3"},
+                        {"type": "mcq", "question": "End behavior of f(x)=x^4-2x^3", "options": ["f→∞", "f→-∞", "f→0"],
+                         "answer": "f→∞"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-3x^2", "answer": "3x^2-6x"},
+                        {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
+                         "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
+                        {"type": "text", "question": "Solve x^2+5x+6=0", "answer": "-2,-3"},
+                        {"type": "mcq", "question": "Find vertical asymptote of f(x)=1/(x+4)",
+                         "options": ["x=-4", "x=4", "x=0"], "answer": "x=-4"},
+                        {"type": "text", "question": "Determine the zeros of f(x)=x^2-6x+8", "answer": "2,4"},
+                        {"type": "mcq", "question": "Find f(-2) if f(x)=x^2+3x+2", "options": ["0", "-2", "6"],
+                         "answer": "0"},
+                        {"type": "text", "question": "Vertex of f(x)=x^2-2x-3", "answer": "(1,-4)"}
                     ],
-                    "Hard":[
-                        {"type":"text","question":"Derivative of f(x)=x^4-4x^3+4x^2","answer":"4x^3-12x^2+8x"},
-                        {"type":"mcq","question":"End behavior of f(x)=-x^4+3x^2?","options":["-∞","∞","0"],"answer":"-∞"},
-                        {"type":"text","question":"Solve: cos(2x)=√2/2 for 0≤x<360°","answer":"22.5°,67.5°,202.5°,247.5°"},
-                        {"type":"mcq","question":"Solve sin(2x)=1/2 for 0≤x<360°","options":["15°,75°,195°,255°","30°,150°,210°,330°","45°,135°,225°,315°"],"answer":"15°,75°,195°,255°"},
-                        {"type":"text","question":"Solve cos(x/2)=√2/2","answer":"90°,270°"},
-                        {"type":"mcq","question":"Solve tan(x)=1","options":["45°,225°","135°,315°","30°,210°"],"answer":"45°,225°"},
-                        {"type":"text","question":"Simplify: (x^3-1)/(x-1)","answer":"x^2+x+1"},
-                        {"type":"mcq","question":"Solve sin(x)=√3/2","options":["60°,120°","30°,150°","45°,135°"],"answer":"60°,120°"},
-                        {"type":"text","question":"Solve cos(x)=-1/2","answer":"120°,240°"},
-                        {"type":"mcq","question":"Simplify: (x^3+1)/(x+1)","options":["x^2-x+1","x^2+x+1","x^2+1"],"answer":"x^2-x+1"},
-                        {"type":"text","question":"Solve sin(2x)=√3/2","answer":"30°,60°,210°,240°"},
-                        {"type":"mcq","question":"cos(5π/3)?","options":["1/2","-1/2","-√3/2"],"answer":"1/2"}
+                    "Hard": [
+                        {"type": "text", "question": "Find all solutions of 2x^3-3x^2-11x+6=0", "answer": "-1,1,3"},
+                        {"type": "mcq", "question": "Simplify (x^3+8)/(x+2)",
+                         "options": ["x^2-2x+4", "x^2+2x+4", "x^2-2x-4"], "answer": "x^2-2x+4"},
+                        {"type": "text", "question": "Solve for x: x^3-6x^2+11x-6=0", "answer": "1,2,3"},
+                        {"type": "mcq", "question": "End behavior of f(x)=-x^3+2x^2", "options": ["f→-∞", "f→∞", "f→0"],
+                         "answer": "f→-∞"},
+                        {"type": "text", "question": "Find derivative f'(x)=3x^2-12x+5 at x=2", "answer": "-7"},
+                        {"type": "mcq", "question": "Simplify: (x^3-27)/(x-3)",
+                         "options": ["x^2+3x+9", "x^2-3x+9", "x^2-3x-9"], "answer": "x^2+3x+9"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                        {"type": "mcq", "question": "Identify leading coefficient of f(x)=5x^4-3x^3",
+                         "options": ["5", "-3", "3"], "answer": "5"},
+                        {"type": "text", "question": "Vertex of f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                        {"type": "mcq", "question": "Horizontal asymptote of f(x)=(3x^2+2)/(x^2+1)",
+                         "options": ["y=3", "y=0", "y=2"], "answer": "y=3"},
+                        {"type": "text", "question": "Solve x^3-7x^2+10x=0", "answer": "0,2,5"},
+                        {"type": "mcq", "question": "End behavior f(x)=2x^4-3x^2", "options": ["f→∞", "f→-∞", "f→0"],
+                         "answer": "f→∞"}
+                    ]
+                },
+                "Unit 3": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Simplify: (x^2-1)/(x-1)", "options": ["x+1","x-1","x^2+1"], "answer": "x+1"},
+                        {"type": "text", "question": "Find zeros of f(x)=x^2-9", "answer": "3,-3"},
+                        {"type": "mcq", "question": "Evaluate f(1) if f(x)=x^2+3x", "options": ["4","3","2"], "answer": "4"},
+                        {"type": "text", "question": "Factor x^2+7x+12", "answer": "(x+3)(x+4)"},
+                        {"type": "mcq", "question": "Vertical asymptote of f(x)=1/(x-2)?", "options": ["x=2","x=-2","x=0"], "answer": "x=2"},
+                        {"type": "text", "question": "Vertex of f(x)=x^2-6x+5", "answer": "(3,-4)"},
+                        {"type": "mcq", "question": "Find f(0) if f(x)=2x^2-4x+1", "options": ["1","0","-1"], "answer": "1"},
+                        {"type": "text", "question": "Average rate of change of f(x)=x^2 from x=1 to x=3", "answer": "4"},
+                        {"type": "mcq", "question": "Simplify: (x^2-16)/(x-4)", "options": ["x+4","x-4","x^2+4"], "answer": "x+4"},
+                        {"type": "text", "question": "Solve x^2-4x+3=0", "answer": "1,3"},
+                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2-2x+1", "options": ["4","2","0"], "answer": "4"},
+                        {"type": "text", "question": "Does f(x)=-x^2+2x+1 open up or down?", "answer": "down"}
+                    ],
+                    "Medium": [
+                        {"type": "mcq", "question": "Divide: (x^3-3x^2+2x-4)/(x-1)", "options": ["x^2-2x+4","x^2+2x+4","x^2-2x+2"], "answer": "x^2-2x+4"},
+                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6", "answer": "(x-1)(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=x^3-3x^2", "options": ["2","0","4"], "answer": "2"},
+                        {"type": "text", "question": "Solve x^3-3x^2-4x+12=0", "answer": "2,-1,3"},
+                        {"type": "mcq", "question": "End behavior of f(x)=x^4-2x^2", "options": ["f→∞","f→-∞","f→0"], "answer": "f→∞"},
+                        {"type": "text", "question": "Derivative f'(x)=3x^2-6x", "answer": "3x^2-6x"},
+                        {"type": "mcq", "question": "Simplify (x^3+27)/(x+3)", "options": ["x^2-3x+9","x^2+3x+9","x^2-3x-9"], "answer": "x^2-3x+9"},
+                        {"type": "text", "question": "Solve x^2+5x+6=0", "answer": "-2,-3"},
+                        {"type": "mcq", "question": "Vertical asymptote f(x)=1/(x+3)?", "options": ["x=-3","x=3","x=0"], "answer": "x=-3"},
+                        {"type": "text", "question": "Zeros of f(x)=x^2-5x+6", "answer": "2,3"},
+                        {"type": "mcq", "question": "f(-2) if f(x)=x^2+3x+2", "options": ["0","-2","6"], "answer": "0"},
+                        {"type": "text", "question": "Vertex f(x)=x^2-4x+3", "answer": "(2,-1)"}
+                    ],
+                    "Hard": [
+                        {"type": "text", "question": "Solve 2x^3-3x^2-11x+6=0", "answer": "-1,1,3"},
+                        {"type": "mcq", "question": "Simplify (x^3+8)/(x+2)", "options": ["x^2-2x+4","x^2+2x+4","x^2-2x-4"], "answer": "x^2-2x+4"},
+                        {"type": "text", "question": "Solve x^3-6x^2+11x-6=0", "answer": "1,2,3"},
+                        {"type": "mcq", "question": "End behavior f(x)=-x^3+2x^2", "options": ["f→-∞","f→∞","f→0"], "answer": "f→-∞"},
+                        {"type": "text", "question": "Derivative f'(x)=3x^2-12x+5 at x=2", "answer": "-7"},
+                        {"type": "mcq", "question": "Simplify: (x^3-27)/(x-3)", "options": ["x^2+3x+9","x^2-3x+9","x^2-3x-9"], "answer": "x^2+3x+9"},
+                        {"type": "text", "question": "Zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                        {"type": "mcq", "question": "Leading coefficient of f(x)=5x^4-3x^3", "options": ["5","-3","3"], "answer": "5"},
+                        {"type": "text", "question": "Vertex f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                        {"type": "mcq", "question": "Horizontal asymptote f(x)=(3x^2+2)/(x^2+1)?", "options": ["y=3","y=0","y=2"], "answer": "y=3"},
+                        {"type": "text", "question": "Solve x^3-7x^2+10x=0", "answer": "0,2,5"},
+                        {"type": "mcq", "question": "End behavior f(x)=2x^4-3x^2", "options": ["f→∞","f→-∞","f→0"], "answer": "f→∞"}
+
+                    ]
+                },
+                        "Unit 4": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Simplify: (x^2 - 16)/(x-4)", "options": ["x+4", "x-4", "x^2+4"], "answer": "x+4"},
+                        {"type": "text", "question": "Find the zeros of f(x)=x^2-9", "answer": "3,-3"},
+                        {"type": "mcq", "question": "Evaluate f(2) if f(x)=3x+5", "options": ["11","7","9"], "answer": "11"},
+                        {"type": "text", "question": "Solve for x: 2x-5=9", "answer": "7"},
+                        {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x+3)?", "options": ["x=-3","x=3","x=0"], "answer": "x=-3"},
+                        {"type": "text", "question": "Factor completely: x^2-5x+6", "answer": "(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Simplify: (x^2+5x+6)/(x+2)", "options": ["x+3","x+2","x+6"], "answer": "x+3"},
+                        {"type": "text", "question": "Find the domain of f(x)=1/(x-7)", "answer": "x!=7"},
+                        {"type": "mcq", "question": "Simplify: x^2-6x+9", "options": ["(x-3)^2","(x+3)^2","x(x-6)"], "answer": "(x-3)^2"},
+                        {"type": "text", "question": "Solve for x: x^2-4x=0", "answer": "0,4"},
+                        {"type": "mcq", "question": "Evaluate: f(0) if f(x)=2x+3", "options": ["3","2","0"], "answer": "3"},
+                        {"type": "text", "question": "Determine if f(x)=x^2+2x+1 has a maximum or minimum", "answer": "minimum"}
+                    ],
+                    "Medium": [
+                        {"type": "mcq", "question": "Divide: (x^3+3x^2-4)/(x+4)", "options": ["x^2-x+1","x^2+7x+16","x^2-3x+1"], "answer": "x^2-x+1"},
+                        {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=3", "answer": "4"},
+                        {"type": "mcq", "question": "Identify the leading coefficient of f(x)=5x^4-2x^3+7", "options": ["5","-2","7"], "answer": "5"},
+                        {"type": "text", "question": "Solve for x: x^2-7x+12=0", "answer": "3,4"},
+                        {"type": "mcq", "question": "Simplify: (x^2-1)/(x-1)", "options": ["x+1","x-1","x"], "answer": "x+1"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-3x^2+2x", "answer": "3x^2-6x+2"},
+                        {"type": "mcq", "question": "End behavior of f(x)=-x^4+2x^2", "options": ["f→-∞ as x→∞","f→∞ as x→∞","f→0 as x→∞"], "answer": "f→-∞ as x→∞"},
+                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6", "answer": "(x-1)(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Simplify: (x^3+8)/(x+2)", "options": ["x^2-2x+4","x^2+2x+4","x^2+4"], "answer": "x^2+2x+4"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=-x^2+4x-3", "answer": "(2,1)"},
+                        {"type": "mcq", "question": "Vertical asymptote of f(x)=1/(x-5)", "options": ["x=5","x=-5","x=0"], "answer": "x=5"},
+                        {"type": "text", "question": "Solve for x: x^2-5x=0", "answer": "0,5"}
+                    ],
+                    "Hard": [
+                        {"type": "text", "question": "Find all real solutions for x: x^4-5x^2+4=0", "answer": "1,-1,2,-2"},
+                        {"type": "mcq", "question": "If f(x)=(x^2-4)/(x^2-9), holes in the graph?", "options": ["None","x=2","x=3"], "answer": "None"},
+                        {"type": "text", "question": "Find the derivative of f(x)=2x^3-3x^2+4x-5", "answer": "6x^2-6x+4"},
+                        {"type": "mcq", "question": "End behavior of f(x)=-x^3+2x^2", "options": ["As x→∞, f(x)→ -∞","As x→∞, f(x)→ ∞","As x→∞, f(x)→ 0"], "answer": "As x→∞, f(x)→ -∞"},
+                        {"type": "text", "question": "Solve for x: (x^2-4)/(x^2-9)>0", "answer": "x<-3 or -3<x<-2 or 2<x<3 or x>3"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x^4-6x^2+8", "answer": "±√2, ±2"},
+                        {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)", "options": ["x^2-3x+9","x^2+3x+9","x^2-3x-9"], "answer": "x^2-3x+9"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=-3x^2+12x-5", "answer": "(2,7)"},
+                        {"type": "mcq", "question": "Horizontal asymptote of f(x)=(3x^2+2)/(x^2+1)", "options": ["y=3","y=2","y=1"], "answer": "y=3"},
+                        {"type": "text", "question": "Solve: x^3-7x^2+14x-8=0", "answer": "1,2,4"},
+                        {"type": "mcq", "question": "Simplify: (x^4-16)/(x^2-4)", "options": ["x^2+4","x^2-4","x+4"], "answer": "x^2+4"},
+                        {"type": "text", "question": "Derivative of f(x)=4x^4-8x^2+5", "answer": "16x^3-16x"}
                     ]
                 }
             }
 
-            # Display questions for selected unit/difficulty
-            if unit in questions and difficulty in questions[unit]:
-                st.subheader(f"{unit} Questions ({difficulty} level)")
-                user_answers = {}
-                for i, q in enumerate(questions[unit][difficulty], 1):
-                    if q["type"] == "mcq":
-                        user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
-                    else:
-                        user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
+            # Show questions only after selections
+            if unit and difficulty:
+                if st.button("Show Questions"):
+                    st.session_state.show_questions = True
 
-                if st.button("Submit Answers"):
-                    score = 0
-                    for i, q in enumerate(questions[unit][difficulty], 1):
-                        ans = str(user_answers[i]).strip().lower()
-                        correct = str(q["answer"]).strip().lower()
-                        if ans == correct:
-                            score += 1
-                    st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
-            else:
-                st.warning("No questions available for this unit and difficulty.")
+                if st.session_state.show_questions:
+                    if unit in questions and difficulty in questions[unit]:
+                        st.subheader(f"{unit} Questions ({difficulty} level)")
+                        user_answers = {}
+                        for i, q in enumerate(questions[unit][difficulty], 1):
+                            if q["type"] == "mcq":
+                                user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
+                            else:
+                                user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
+
+                        if st.button("Submit Answers"):
+                            score = 0
+                            for i, q in enumerate(questions[unit][difficulty], 1):
+                                ans = str(user_answers[i]).strip().lower()
+                                correct = str(q["answer"]).strip().lower()
+                                if ans == correct:
+                                    score += 1
+                            st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
+                    else:
+                        st.warning("No questions available for this unit and difficulty.")
