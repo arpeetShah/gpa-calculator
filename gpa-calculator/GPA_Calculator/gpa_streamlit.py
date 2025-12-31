@@ -284,6 +284,9 @@ with main_tabs[1]:
 # QUIZ TAB
 # =============================
 with main_tabs[2]:
+    unit = None
+    difficulty = None
+
     st.subheader("Quiz & Practice Problems")
 
     # Create sub-tabs for each subject
@@ -598,9 +601,6 @@ with main_tabs[2]:
                             if "quiz_scores" not in st.session_state:
                                 st.session_state.quiz_scores = {}
                             st.session_state.quiz_scores.setdefault(math_level, {})[unit] = score
-                        if st.button("Show Study Recommendations"):
-                            if "quiz_scores" not in st.session_state:
-                                st.session_state.quiz_scores = {}
 
                             st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
                     else:
