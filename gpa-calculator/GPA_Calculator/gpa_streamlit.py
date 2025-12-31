@@ -1,11 +1,34 @@
 import streamlit as st
 import sqlite3
 
+def get_study_tips(unit):
+    tips = {
+        "Unit 1": "Review factoring and basic quadratic equations. Use practice problems daily.",
+        "Unit 2": "Focus on functions and their graphs. Make flashcards for key formulas.",
+        "Unit 3": "Practice polynomial division and complex numbers.",
+        "Unit 4": "Work on rational expressions and asymptotes. Redo previous quizzes.",
+    }
+    return tips.get(unit, "Review the material for this unit.")
+
+if "quiz_scores" not in st.session_state:
+    st.session_state.quiz_scores = {}  # Example: {"AP Precalc": {"Unit 1": 10, ...}}
+
 if "show_questions" not in st.session_state:
     st.session_state.show_questions = False
 
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
+
+def analyze_weak_units():
+    weak_units = {}
+    if "quiz_scores" in st.session_state:
+        for subject, units in st.session_state.quiz_scores.items():
+            for unit, score in units.items():
+                # if score less than half of total questions, mark as weak
+                total_questions = 12  # adjust if you have different number per unit
+                if score < total_questions / 2:
+                    weak_units.setdefault(subject, []).append(unit)
+    return weak_units
 
 # =============================
 # PAGE CONFIG
@@ -515,6 +538,15 @@ with main_tabs[2]:
                     ]
                 }
             }
+    with main_tabs[2]:  # Your Quiz & Practice tab
+        if st.button("Show Study Recommendations"):
+            weak_units = analyze_weak_units()
+            if not weak_units:
+                st.success("Great job! You are doing well across all units.")
+            else:
+                st.warning("You should focus on these units:")
+                for subject, units in weak_units.items():
+                    st.write(f"**{subject}:** {', '.join(units)}")
 
             # Show questions only after selections
             if unit and difficulty:
@@ -538,6 +570,13 @@ with main_tabs[2]:
                                 correct = str(q["answer"]).strip().lower()
                                 if ans == correct:
                                     score += 1
+                            if "quiz_scores" not in st.session_state:
+                                st.session_state.quiz_scores = {}
+                            st.session_state.quiz_scores.setdefault(math_level, {})[unit] = score
+                        if st.button("Show Study Recommendations"):
+                            if "quiz_scores" not in st.session_state:
+                                st.session_state.quiz_scores = {}
+
                             st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
                     else:
                         st.warning("No questions available for this unit and difficulty.")
