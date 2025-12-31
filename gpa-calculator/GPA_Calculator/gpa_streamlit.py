@@ -587,9 +587,16 @@ with main_tabs[2]:
                     user_answers = {}
                     for i, q in enumerate(questions[unit][difficulty], 1):
                         if q["type"] == "mcq":
-                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
+                            user_answers[i] = st.radio(
+                                f"Q{i}: {q['question']}",
+                                q["options"],
+                                key=f"q_{unit}_{difficulty}_{i}"
+                            )
                         else:
-                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
+                            user_answers[i] = st.text_input(
+                                f"Q{i}: {q['question']}",
+                                key=f"q_{unit}_{difficulty}_{i}"
+                            )
 
                     # Submit button to grade
                     if st.button("Submit Answers", key="submit_answers_button"):
