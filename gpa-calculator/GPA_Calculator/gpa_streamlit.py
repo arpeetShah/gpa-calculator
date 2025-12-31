@@ -632,6 +632,7 @@ with main_tabs[2]:
 # ---------- 3️⃣ Study Recommendations ----------
 if st.button("Show Study Recommendations", key="study_recs_button"):
     weak_units = analyze_weak_units()  # Returns a dict
+    st.write("DEBUG weak_units:", weak_units)
 
     if isinstance(weak_units, dict) and weak_units:
         st.warning("You should focus on these units:")
