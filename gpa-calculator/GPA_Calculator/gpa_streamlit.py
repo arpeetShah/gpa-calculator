@@ -620,7 +620,7 @@ with main_tabs[2]:
                             user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
 
             # ---------- 2️⃣ Submit Answers ----------
-            if 'user_answers' in locals() and st.button("Submit Answers", key="submit_answers_button"):
+            if 'user_answers' in locals() and st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
                 score = 0
                 for i, q in enumerate(questions[unit][difficulty], 1):
                     ans = str(user_answers[i]).strip().lower()
