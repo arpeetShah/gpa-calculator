@@ -1,6 +1,31 @@
 import streamlit as st
 import sqlite3
 
+
+def analyze_weak_units():
+    weak_units = {}
+
+    # Loop through each unit and difficulty in your questions dictionary
+    for unit_name, difficulties in questions.items():
+        total_questions = 0
+        correct_answers = 0
+
+        for difficulty, qlist in difficulties.items():
+            for i, q in enumerate(qlist, 1):
+                key = f"q_{i}"  # This matches the keys you used in st.text_input or st.radio
+                if key in st.session_state:
+                    total_questions += 1
+                    ans = str(st.session_state[key]).strip().lower()
+                    correct = str(q["answer"]).strip().lower()
+                    if ans == correct:
+                        correct_answers += 1
+
+        # Mark unit as weak if less than 60% correct
+        if total_questions > 0 and correct_answers / total_questions < 0.6:
+            weak_units.setdefault("AP Precalculus", []).append(unit_name)
+
+    return weak_units
+
 def analyze_weak_units():
     weak_units = {}
 
