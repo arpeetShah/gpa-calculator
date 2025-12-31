@@ -1,6 +1,28 @@
 import streamlit as st
 import sqlite3
 
+def analyze_weak_units():
+    weak_units = {}
+
+    for result in st.session_state.quiz_results:
+        accuracy = result["score"] / result["total"]
+
+        # Consider anything below 70% as weak
+        if accuracy < 0.7:
+            subject = result["subject"]
+            unit = result["unit"]
+
+            if subject not in weak_units:
+                weak_units[subject] = set()
+
+            weak_units[subject].add(unit)
+
+    # Convert sets to lists for display
+    for subject in weak_units:
+        weak_units[subject] = list(weak_units[subject])
+
+    return weak_units
+
 def get_study_tips(unit):
     tips = {
         "Unit 1": "Review factoring and basic quadratic equations. Use practice problems daily.",
@@ -9,6 +31,9 @@ def get_study_tips(unit):
         "Unit 4": "Work on rational expressions and asymptotes. Redo previous quizzes.",
     }
     return tips.get(unit, "Review the material for this unit.")
+
+if "quiz_results" not in st.session_state:
+    st.session_state.quiz_results = []
 
 if "quiz_scores" not in st.session_state:
     st.session_state.quiz_scores = {}  # Example: {"AP Precalc": {"Unit 1": 10, ...}}
@@ -580,6 +605,15 @@ with main_tabs[2]:
                             st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
                     else:
                         st.warning("No questions available for this unit and difficulty.")
+
+    if st.button("Show Study Recommendations"):
+        weak_units = analyze_weak_units()
+        if not weak_units:
+            st.success("Great job! You are doing well across all units.")
+        else:
+            st.warning("You should focus on these units:")
+            for subject, units in weak_units.items():
+                st.write(f"**{subject}:** {', '.join(units)}")
 
 # =============================
 # ORGANIZATION HELPER TAB
