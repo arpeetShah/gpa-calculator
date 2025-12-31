@@ -1,6 +1,12 @@
 import streamlit as st
 import sqlite3
 
+if "show_questions" not in st.session_state:
+    st.session_state.show_questions = False
+
+if "submitted" not in st.session_state:
+    st.session_state.submitted = False
+
 # =============================
 # PAGE CONFIG
 # =============================
@@ -285,8 +291,42 @@ with main_tabs[2]:
 
             if st.button("Show Questions"):
                 st.session_state.show_questions = True
+                st.session_state.submitted = False
 
             if st.session_state.show_questions:
+                st.subheader(f"{unit} Questions ({difficulty} level)")
+
+                user_answers = {}
+
+                for i, q in enumerate(questions[unit][difficulty], 1):
+                    if q["type"] == "mcq":
+                        user_answers[i] = st.radio(
+                            f"Q{i}: {q['question']}",
+                            q["options"],
+                            key=f"{unit}_{difficulty}_q{i}"
+                        )
+                    else:
+                        user_answers[i] = st.text_input(
+                            f"Q{i}: {q['question']}",
+                            key=f"{unit}_{difficulty}_q{i}"
+                        )
+
+                if st.session_state.show_questions:
+                    if st.button("Submit Answers"):
+                        st.session_state.submitted = True
+
+                    if st.session_state.submitted:
+                        score = 0
+                        total = len(questions[unit][difficulty])
+
+                        for i, q in enumerate(questions[unit][difficulty], 1):
+                            user_ans = str(st.session_state.get(f"{unit}_{difficulty}_q{i}", "")).strip().lower()
+                            correct_ans = str(q["answer"]).strip().lower()
+
+                            if user_ans == correct_ans:
+                                score += 1
+
+                        st.success(f"✅ Your Score: {score} / {total}")
                 # Full questions dictionary (all your original questions preserved)
                 questions = {
                     "Unit 1": {
