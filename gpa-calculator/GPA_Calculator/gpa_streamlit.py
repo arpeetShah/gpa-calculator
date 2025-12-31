@@ -330,18 +330,9 @@ with main_tabs[2]:
     with quiz_tabs[1]:
         st.header("AP Precalculus Quiz")
 
-        # Select course, unit, and difficulty
-        math_level = st.selectbox("Select your Math course:", ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
+# Full Precalculus Questions for Units 1-4
+        questions = {
 
-        if math_level == "AP Precalculus":
-            unit = st.selectbox("Select the Unit you want to practice:", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
-            difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
-
-            if "show_questions" not in st.session_state:
-                st.session_state.show_questions = False
-
-            # Full Precalculus Questions for Units 1-4
-            questions = {
                 "Unit 1": {
                     "Easy": [
                         {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
@@ -565,17 +556,54 @@ with main_tabs[2]:
                         {"type": "text", "question": "Derivative of f(x)=4x^4-8x^2+5", "answer": "16x^3-16x"}
                     ]
                 }
+
+
             }
+
+        math_level = st.selectbox("Select your Math course:",
+                                      ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
+
+        if math_level == "AP Precalculus":
+            unit = st.selectbox("Select the Unit you want to practice:",
+                                    ["Unit 1", "Unit 2", "Unit 3", "Unit 4"], key="unit_select")
+            difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"], key="difficulty_radio")
+
+
+
+            if "show_questions" not in st.session_state:
+                    st.session_state.show_questions = False
+
+                # ==========================
+                # 4️⃣ Button to show questions
+                # ==========================
+            if unit and difficulty:
+                if st.button("Show Questions", key="show_questions_button"):
+                        st.session_state.show_questions = True
+
+                # ==========================
+                # 5️⃣ Display questions only if flag is True
+                # ==========================
+                if st.session_state.show_questions:
+                    user_answers = {}
+                    for i, q in enumerate(questions[unit][difficulty], 1):
+                        if q["type"] == "mcq":
+                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
+                        else:
+                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
+
+                    # Submit button to grade
+                    if st.button("Submit Answers", key="submit_answers_button"):
+                        score = 0
+                        for i, q in enumerate(questions[unit][difficulty], 1):
+                            ans = str(user_answers[i]).strip().lower()
+                            correct = str(q["answer"]).strip().lower()
+                            if ans == correct:
+                                score += 1
+                        st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
     # =============================
     # STUDY RECOMMENDATIONS (inside main_tabs[2])
     # =============================
-        # ---------- 1️⃣ Show Questions ----------
-        if math_level == "AP Precalculus":
-            unit = st.selectbox("Select the Unit you want to practice:", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
-            difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
-
-            if unit and difficulty:
-                if st.button("Show Questions", key="show_questions_button"):
+    # ---------- 1️⃣ Show Questions ----------
                     # Display questions (your existing questions code)
                     user_answers = {}
                     for i, q in enumerate(questions[unit][difficulty], 1):
@@ -594,17 +622,17 @@ with main_tabs[2]:
                         score += 1
                 st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
 
-        # ---------- 3️⃣ Study Recommendations ----------
-        if st.button("Show Study Recommendations", key="study_recs_button"):
-            weak_units = analyze_weak_units()  # Returns a dict
+# ---------- 3️⃣ Study Recommendations ----------
+if st.button("Show Study Recommendations", key="study_recs_button"):
+    weak_units = analyze_weak_units()  # Returns a dict
 
-            if isinstance(weak_units, dict) and weak_units:
-                st.warning("You should focus on these units:")
-                for subject, units in weak_units.items():
-                    if isinstance(units, list) and units:
-                        st.write(f"**{subject}:** {', '.join(units)}")
-            else:
-                st.success("🎉 Great job! You are doing well across all units.")
+    if isinstance(weak_units, dict) and weak_units:
+        st.warning("You should focus on these units:")
+        for subject, units in weak_units.items():
+            if isinstance(units, list) and units:
+                st.write(f"**{subject}:** {', '.join(units)}")
+    else:
+        st.success("🎉 Great job! You are doing well across all units.")
 # ORGANIZATION HELPER TAB
 # =============================
 with main_tabs[3]:
