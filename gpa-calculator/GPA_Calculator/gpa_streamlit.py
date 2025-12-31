@@ -288,75 +288,101 @@ with main_tabs[2]:
 
             unit = st.selectbox(
                 "Select the Unit you want to practice:",
-                ["Unit 1", "Unit 2", "Unit 3", "Unit 4"],
-                key="precalc_unit"
+                ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]
             )
 
             difficulty = st.radio(
                 "Select difficulty level:",
-                ["Easy", "Medium", "Hard"],
-                key="precalc_diff"
+                ["Easy", "Medium", "Hard"]
             )
 
-            # Reset show_questions when unit or difficulty changes
-            if "last_unit" not in st.session_state:
-                st.session_state.last_unit = unit
-                st.session_state.last_diff = difficulty
+            if "show_questions" not in st.session_state:
                 st.session_state.show_questions = False
 
-            if unit != st.session_state.last_unit or difficulty != st.session_state.last_diff:
-                st.session_state.show_questions = False
-                st.session_state.last_unit = unit
-                st.session_state.last_diff = difficulty
+            if st.button("Show Questions"):
+                st.session_state.show_questions = True
 
             # =============================
-            # QUESTIONS DICTIONARY (UNCHANGED)
+            # QUESTION BANK
             # =============================
             questions = {
                 "Unit 1": {
                     "Easy": [
-                        {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
-                         "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
-                        {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
-                        {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)",
-                         "options": ["x-3", "x+3", "x^2+3"], "answer": "x-3"},
-                        {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
-                         "answer": "maximum"},
-                        {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1",
-                         "options": ["9", "7", "5"], "answer": "7"},
-                        {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
-                         "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
-                        {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
-                         "answer": "7"},
-                        {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
-                         "answer": "(x-2)(x-2)(x+3)"},
-                        {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
-                         "options": ["3", "-2", "5"], "answer": "3"},
-                        {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
-                         "answer": "x<-2 or x>0 and x!=2"}
-                    ],
-                    "Medium": [...],  # KEEP YOUR EXISTING MEDIUM QUESTIONS
-                    "Hard": [...]  # KEEP YOUR EXISTING HARD QUESTIONS
-                }
-            }
+                        {"type": "mcq", "question": "Solve for x: x² − 5x + 6 = 0",
+                         "options": ["x = 2 or 3", "x = 1 or 6", "x = 0 or 6"],
+                         "answer": "x = 2 or 3"},
 
-            # =============================
-            # SHOW QUESTIONS BUTTON
-            # =============================
-            if st.button("Show Questions"):
-                st.session_state.show_questions = True
+                        {"type": "text",
+                         "question": "Find the zeros of f(x) = x² − 4",
+                         "answer": "2,-2"},
+
+                        {"type": "mcq",
+                         "question": "Simplify: (x² − 9)/(x + 3)",
+                         "options": ["x − 3", "x + 3", "x² + 3"],
+                         "answer": "x − 3"},
+
+                        {"type": "text",
+                         "question": "Does f(x) = −x² + 2x + 3 have a maximum or minimum?",
+                         "answer": "maximum"},
+
+                        {"type": "mcq",
+                         "question": "Which is a vertical asymptote of f(x) = 1/(x − 5)?",
+                         "options": ["x = 5", "x = −5", "x = 0"],
+                         "answer": "x = 5"}
+                    ],
+
+                    "Medium": [
+                        {"type": "mcq",
+                         "question": "Divide: (2x³ + 3x² − x + 5)/(x + 2)",
+                         "options": ["2x² − x + 3", "2x² + 7x + 15", "2x² − x + 1"],
+                         "answer": "2x² − x + 3"},
+
+                        {"type": "text",
+                         "question": "Solve: x³ − 6x² + 11x − 6 = 0",
+                         "answer": "1,2,3"},
+
+                        {"type": "mcq",
+                         "question": "End behavior of f(x) = −2x⁴ + 3x²",
+                         "options": [
+                             "f → −∞ as x → ∞",
+                             "f → ∞ as x → ∞",
+                             "f → 0 as x → ∞"
+                         ],
+                         "answer": "f → −∞ as x → ∞"}
+                    ],
+
+                    "Hard": [
+                        {"type": "text",
+                         "question": "Find all real solutions of 2x⁴ − 3x³ − 11x² + 6x + 9 = 0",
+                         "answer": "-1,1,3/2,-1/2"},
+
+                        {"type": "mcq",
+                         "question": "Which is the horizontal asymptote of f(x) = (2x² + 3)/(x² + 1)?",
+                         "options": ["y = 2", "y = 0", "y = 3"],
+                         "answer": "y = 2"}
+                    ]
+                },
+
+                # ✅ PLACEHOLDERS (prevents mismatch errors)
+                "Unit 2": {"Easy": [], "Medium": [], "Hard": []},
+                "Unit 3": {"Easy": [], "Medium": [], "Hard": []},
+                "Unit 4": {"Easy": [], "Medium": [], "Hard": []}
+            }
 
             # =============================
             # DISPLAY QUESTIONS
             # =============================
             if st.session_state.show_questions:
 
-                if unit in questions and difficulty in questions[unit]:
+                selected_questions = questions[unit][difficulty]
 
+                if not selected_questions:
+                    st.info("Questions for this unit are coming soon.")
+                else:
                     st.subheader(f"{unit} — {difficulty} Questions")
-                    user_answers = {}
 
-                    for i, q in enumerate(questions[unit][difficulty], 1):
+                    user_answers = {}
+                    for i, q in enumerate(selected_questions, 1):
                         if q["type"] == "mcq":
                             user_answers[i] = st.radio(
                                 f"Q{i}: {q['question']}",
@@ -371,11 +397,8 @@ with main_tabs[2]:
 
                     if st.button("Submit Answers"):
                         score = 0
-                        for i, q in enumerate(questions[unit][difficulty], 1):
+                        for i, q in enumerate(selected_questions, 1):
                             if str(user_answers[i]).strip().lower() == str(q["answer"]).strip().lower():
                                 score += 1
 
-                        st.success(f"✅ You scored {score} / {len(questions[unit][difficulty])}")
-
-                else:
-                    st.error("Questions exist, but unit/difficulty mismatch.")
+                        st.success(f"🎯 You scored {score} / {len(selected_questions)}")
