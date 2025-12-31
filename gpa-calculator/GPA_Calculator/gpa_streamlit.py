@@ -568,24 +568,16 @@ with main_tabs[2]:
             }
     with main_tabs[2]:  # Your Quiz & Practice tab
         if st.button("Show Study Recommendations", key="study_recs_button"):
-            weak_units = analyze_weak_units()  # Make sure this returns a dictionary
+            weak_units = analyze_weak_units()  # Should return a dict or None
 
-            # Check if weak_units is a non-empty dictionary
+            # Only iterate if it's a dict and not empty
             if weak_units and isinstance(weak_units, dict):
                 st.warning("You should focus on these units:")
                 for subject, units in weak_units.items():
-                    # Ensure units is a list
-                    if units:
+                    if units:  # Make sure the units list is not empty
                         st.write(f"**{subject}:** {', '.join(units)}")
-            elif weak_units:  # weak_units exists but maybe not a dict
-                st.warning("You should focus on these units:")
-                # If weak_units is not a dict, try iterating safely
-                try:
-                    for subject, units in weak_units.items():
-                        st.write(f"**{subject}:** {', '.join(units)}")
-                except Exception:
-                    st.write("Check the weak_units data structure.")
             else:
+                # Handles None, empty dict, or invalid structure
                 st.success("Great job! You are doing well across all units.")
 
             # Show questions only after selections
