@@ -569,52 +569,45 @@ with main_tabs[2]:
     # =============================
     # STUDY RECOMMENDATIONS (inside main_tabs[2])
     # =============================
-    with main_tabs[2]:  # Your Quiz & Practice tab
-        with main_tabs[2]:  # Quiz & Practice tab
-            st.header("📚 Smart Study Recommendations")
+    with main_tabs[2]:  # Quiz & Practice tab
+        st.header("📝 Quiz & Practice")
 
-            if st.button("Show Study Recommendations", key="study_recs_button"):
-                weak_units = analyze_weak_units()  # Must return a dict
+        # ---------- 1️⃣ Show Questions ----------
+        if math_level == "AP Precalculus":
+            unit = st.selectbox("Select the Unit you want to practice:", ["Unit 1", "Unit 2", "Unit 3", "Unit 4"])
+            difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"])
 
-                if isinstance(weak_units, dict) and weak_units:
-                    st.warning("You should focus on these units:")
-                    for subject, units in weak_units.items():
-                        if isinstance(units, list) and units:
-                            st.write(f"**{subject}:** {', '.join(units)}")
-                else:
-                    st.success("🎉 Great job! You are doing well across all units.")
-
-            # Show questions only after selections
             if unit and difficulty:
-                if st.button("Show Questions"):
-                    st.session_state.show_questions = True
+                if st.button("Show Questions", key="show_questions_button"):
+                    # Display questions (your existing questions code)
+                    user_answers = {}
+                    for i, q in enumerate(questions[unit][difficulty], 1):
+                        if q["type"] == "mcq":
+                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
+                        else:
+                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
 
-                if st.session_state.show_questions:
-                    if unit in questions and difficulty in questions[unit]:
-                        st.subheader(f"{unit} Questions ({difficulty} level)")
-                        user_answers = {}
-                        for i, q in enumerate(questions[unit][difficulty], 1):
-                            if q["type"] == "mcq":
-                                user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
-                            else:
-                                user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
+            # ---------- 2️⃣ Submit Answers ----------
+            if 'user_answers' in locals() and st.button("Submit Answers", key="submit_answers_button"):
+                score = 0
+                for i, q in enumerate(questions[unit][difficulty], 1):
+                    ans = str(user_answers[i]).strip().lower()
+                    correct = str(q["answer"]).strip().lower()
+                    if ans == correct:
+                        score += 1
+                st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
 
-                        if st.button("Submit Answers"):
-                            score = 0
-                            for i, q in enumerate(questions[unit][difficulty], 1):
-                                ans = str(user_answers[i]).strip().lower()
-                                correct = str(q["answer"]).strip().lower()
-                                if ans == correct:
-                                    score += 1
-                            if "quiz_scores" not in st.session_state:
-                                st.session_state.quiz_scores = {}
-                            st.session_state.quiz_scores.setdefault(math_level, {})[unit] = score
+        # ---------- 3️⃣ Study Recommendations ----------
+        if st.button("Show Study Recommendations", key="study_recs_button"):
+            weak_units = analyze_weak_units()  # Returns a dict
 
-                            st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
-                    else:
-                        st.warning("No questions available for this unit and difficulty.")
-
-# =============================
+            if isinstance(weak_units, dict) and weak_units:
+                st.warning("You should focus on these units:")
+                for subject, units in weak_units.items():
+                    if isinstance(units, list) and units:
+                        st.write(f"**{subject}:** {', '.join(units)}")
+            else:
+                st.success("🎉 Great job! You are doing well across all units.")
 # ORGANIZATION HELPER TAB
 # =============================
 with main_tabs[3]:
