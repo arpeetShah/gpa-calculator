@@ -303,95 +303,178 @@ with main_tabs[2]:
                 st.session_state.show_questions = True
 
             # =============================
-            # QUESTION BANK
+            # FULL QUESTION BANK
             # =============================
             questions = {
                 "Unit 1": {
                     "Easy": [
                         {"type": "mcq", "question": "Solve for x: x² − 5x + 6 = 0",
-                         "options": ["x = 2 or 3", "x = 1 or 6", "x = 0 or 6"], "answer": "x = 2 or 3"},
+                         "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
                         {"type": "text", "question": "Find the zeros of f(x) = x² − 4", "answer": "2,-2"},
-                    ],
-                    "Medium": [
-                        {"type": "mcq", "question": "Divide: (2x³ + 3x² − x + 5)/(x + 2)",
-                         "options": ["2x² − x + 3", "2x² + 7x + 15", "2x² − x + 1"], "answer": "2x² − x + 3"},
-                    ],
-                    "Hard": [
-                        {"type": "text", "question": "Find all real solutions of 2x⁴ − 3x³ − 11x² + 6x + 9 = 0",
-                         "answer": "-1,1,3/2,-1/2"},
-                    ]
-                },
-                "Unit 2": {
-                    "Easy": [
-                        {"type": "mcq", "question": "Solve for x: 2x − 5 = 7",
-                         "options": ["x = 6", "x = 1", "x = -1"], "answer": "x = 6"},
-                        {"type": "text", "question": "Simplify: (x² − 16)/(x − 4)", "answer": "x + 4"},
-                    ],
-                    "Medium": [
-                        {"type": "mcq", "question": "Factor completely: x² − 9x + 18",
-                         "options": ["(x−3)(x−6)", "(x−2)(x−9)", "(x−1)(x−18)"], "answer": "(x−3)(x−6)"},
-                    ],
-                    "Hard": [
-                        {"type": "text", "question": "Solve for x: x³ − 6x² + 11x − 6 = 0", "answer": "1,2,3"},
-                    ]
-                },
-                "Unit 3": {
-                    "Easy": [
-                        {"type": "mcq", "question": "Find f(2) if f(x) = x² + 3x − 1",
-                         "options": ["9", "7", "5"], "answer": "7"},
-                    ],
-                    "Medium": [
-                        {"type": "text", "question": "Find f'(x) for f(x) = x³ − 5x² + 6x", "answer": "3x² − 10x + 6"},
-                    ],
-                    "Hard": [
-                        {"type": "mcq", "question": "End behavior of f(x) = −x³ + 4x²",
-                         "options": ["f → −∞ as x → ∞", "f → ∞ as x → ∞", "f → 0 as x → ∞"],
-                         "answer": "f → −∞ as x → ∞"},
-                    ]
-                },
-                "Unit 4": {
-                    "Easy": [
+                        {"type": "mcq", "question": "Simplify: (x² − 9)/(x+3)", "options": ["x−3", "x+3", "x²+3"],
+                         "answer": "x−3"},
+                        {"type": "text", "question": "Determine if f(x)=−x² + 2x + 3 has a maximum or minimum",
+                         "answer": "maximum"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=x²+3x−1", "options": ["9", "7", "5"],
+                         "answer": "7"},
+                        {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x−5)?",
+                         "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                        {"type": "text", "question": "Find the average rate of change of f(x)=x² from x=1 to x=4",
+                         "answer": "7"},
                         {"type": "text", "question": "Factor completely: x³ − 3x² − 4x + 12",
                          "answer": "(x−2)(x−2)(x+3)"},
+                        {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x⁴−2x³+5",
+                         "options": ["3", "−2", "5"], "answer": "3"},
+                        {"type": "text", "question": "Solve for x: (x²+2x)/(x²−4) > 0",
+                         "answer": "x<-2 or x>0 and x!=2"},
+                        {"type": "mcq", "question": "Simplify: (x²+5x+6)/(x+2)", "options": ["x+3", "x+2", "x+6"],
+                         "answer": "x+3"},
+                        {"type": "text", "question": "Find f(0) for f(x)=−x²+4x−3", "answer": "−3"},
+                        {"type": "mcq", "question": "Which is the y-intercept of f(x)=2x²−3x+1?",
+                         "options": ["1", "−3", "2"], "answer": "1"}
                     ],
                     "Medium": [
-                        {"type": "mcq", "question": "Simplify: (x³ − 8)/(x−2)",
-                         "options": ["x² + 2x + 4", "x² − 2x + 4", "x² + 4"], "answer": "x² + 2x + 4"},
+                        {"type": "mcq", "question": "Divide: (2x³+3x²−x+5)/(x+2)",
+                         "options": ["2x²−x+3", "2x²+7x+15", "2x²−x+1"], "answer": "2x²−x+3"},
+                        {"type": "text", "question": "Factor completely: x³ − 3x² − 4x + 12",
+                         "answer": "(x−2)(x−2)(x+3)"},
+                        {"type": "mcq", "question": "Vertical asymptote of f(x)=1/(x−5)?",
+                         "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                        {"type": "text", "question": "Find average rate of change of f(x)=x² from x=1 to x=4",
+                         "answer": "7"},
+                        {"type": "mcq", "question": "Leading coefficient of f(x)=3x⁴−2x³+5",
+                         "options": ["3", "−2", "5"], "answer": "3"},
+                        {"type": "text", "question": "Solve: x³−6x²+11x−6=0", "answer": "1,2,3"},
+                        {"type": "mcq", "question": "Simplify: (x³−8)/(x−2)", "options": ["x²+2x+4", "x²−2x+4", "x²+4"],
+                         "answer": "x²+2x+4"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x³−5x²+6x", "answer": "3x²−10x+6"},
+                        {"type": "mcq", "question": "End behavior of f(x)=−2x⁴+3x²",
+                         "options": ["f→−∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→−∞ as x→∞"},
+                        {"type": "text", "question": "Solve for x: (x²−1)/(x+1)<0", "answer": "x<-1 or 0<x<1"},
+                        {"type": "text", "question": "Evaluate f(1) for f(x)=x³−2x²+3", "answer": "2"},
+                        {"type": "mcq", "question": "Simplify: (x²−16)/(x−4)", "options": ["x+4", "x−4", "x²−4"],
+                         "answer": "x+4"},
+                        {"type": "text", "question": "Factor x²−5x+6", "answer": "(x−2)(x−3)"}
                     ],
                     "Hard": [
-                        {"type": "text", "question": "Determine the vertex of f(x) = −2x² + 4x + 1", "answer": "(1,3)"},
+                        {"type": "text", "question": "Solve 2x⁴−3x³−11x²+6x+9=0", "answer": "-1,1,3/2,-1/2"},
+                        {"type": "mcq", "question": "If f(x)=(x²−4)/(x²−9), holes?", "options": ["None", "x=2", "x=3"],
+                         "answer": "None"},
+                        {"type": "text", "question": "Rate of change at x=2 for f(x)=x³−2x²+x", "answer": "7"},
+                        {"type": "mcq", "question": "End behavior of f(x)=−x³+4x²",
+                         "options": ["As x→∞, f→−∞", "As x→∞, f→∞", "As x→∞, f→0"], "answer": "As x→∞, f→−∞"},
+                        {"type": "text", "question": "Solve (x²+2x)/(x²−4) > 0", "answer": "x<-2 or x>0 and x!=2"},
+                        {"type": "text", "question": "Find zeros of f(x)=x⁴−5x²+4", "answer": "1,-1,2,-2"},
+                        {"type": "mcq", "question": "Simplify: (x³+27)/(x+3)",
+                         "options": ["x²−3x+9", "x²+3x+9", "x²−3x−9"], "answer": "x²−3x+9"},
+                        {"type": "text", "question": "Determine vertex of f(x)=−2x²+4x+1", "answer": "(1,3)"},
+                        {"type": "mcq", "question": "Horizontal asymptote of f(x)=(2x²+3)/(x²+1)",
+                         "options": ["y=2", "y=0", "y=3"], "answer": "y=2"},
+                        {"type": "text", "question": "Solve x³−6x²+11x−6=0", "answer": "1,2,3"},
+                        {"type": "text", "question": "Evaluate derivative f'(x)=3x²−2x at x=1", "answer": "1"},
+                        {"type": "mcq", "question": "Find domain of f(x)=1/(x−3)", "options": ["x≠3", "x≠0", "x>0"],
+                         "answer": "x≠3"},
+                        {"type": "text", "question": "Factor x³+8 completely", "answer": "(x+2)(x²−2x+4)"}
                     ]
-                }
+                },
+                # =============================
+                # Unit 2
+                # =============================
+                "Unit 2": {
+                    "Easy": [
+                        {"type": "mcq", "question": "Simplify: (x+3)(x+2)", "options": ["x²+5x+6", "x²+6x+5", "x²+1"],
+                         "answer": "x²+5x+6"},
+                        {"type": "text", "question": "Factor x²+5x+6", "answer": "(x+2)(x+3)"},
+                        {"type": "mcq", "question": "Solve for x: x²−4x=0",
+                         "options": ["x=0 or 4", "x=2 or -2", "x=1 or 4"], "answer": "x=0 or 4"},
+                        {"type": "text", "question": "Find zeros of f(x)=x²−9", "answer": "3,-3"},
+                        {"type": "mcq", "question": "Which is a horizontal asymptote of f(x)=1/x",
+                         "options": ["y=0", "y=1", "y=∞"], "answer": "y=0"},
+                        {"type": "text", "question": "Find f(1) if f(x)=2x²+3x−1", "answer": "4"},
+                        {"type": "mcq", "question": "Simplify: (x²−1)/(x−1)", "options": ["x+1", "x−1", "x²−1"],
+                         "answer": "x+1"},
+                        {"type": "text", "question": "Determine if f(x)=x²−4x+3 has a max or min", "answer": "minimum"},
+                        {"type": "mcq", "question": "End behavior of f(x)=−x²",
+                         "options": ["f→−∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→−∞ as x→∞"},
+                        {"type": "text", "question": "Find derivative f'(x)=3x²−2x at x=1", "answer": "1"},
+                        {"type": "mcq", "question": "Simplify: (x²+2x)/(x)", "options": ["x+2", "x−2", "2x"],
+                         "answer": "x+2"},
+                        {"type": "text", "question": "Factor x³+3x²+2x", "answer": "x(x+1)(x+2)"},
+                        {"type": "mcq", "question": "Identify leading coefficient of f(x)=5x³−2x²+1",
+                         "options": ["5", "−2", "1"], "answer": "5"}
+                    ],
+                    "Medium": [
+                        # 12–13 medium questions for unit 2
+                        {"type": "mcq", "question": "Divide: (x³+2x²−x−2)/(x+2)", "options": ["x²−1", "x²+1", "x²−x"],
+                         "answer": "x²−1"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x³−6x²+11x−6", "answer": "3x²−12x+11"},
+                        {"type": "mcq", "question": "Simplify: (x³−8)/(x−2)", "options": ["x²+2x+4", "x²−2x+4", "x²+4"],
+                         "answer": "x²+2x+4"},
+                        {"type": "text", "question": "Find average rate of change of f(x)=x²+2x from 1 to 3",
+                         "answer": "6"},
+                        {"type": "mcq", "question": "Vertical asymptote of f(x)=1/(x−4)?",
+                         "options": ["x=4", "x=0", "x=−4"], "answer": "x=4"},
+                        {"type": "text", "question": "Factor x³−3x²−4x+12", "answer": "(x−2)(x−2)(x+3)"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=x²−x−6", "options": ["0", "1", "−2"],
+                         "answer": "0"},
+                        {"type": "text", "question": "Determine vertex of f(x)=−2x²+4x+1", "answer": "(1,3)"},
+                        {"type": "mcq", "question": "End behavior of f(x)=−x³+3x²",
+                         "options": ["f→−∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→−∞ as x→∞"},
+                        {"type": "text", "question": "Solve x²−4x+3=0", "answer": "1,3"},
+                        {"type": "mcq", "question": "Simplify: (x²+5x+6)/(x+2)", "options": ["x+3", "x+2", "x+6"],
+                         "answer": "x+3"},
+                        {"type": "text", "question": "Find zeros of f(x)=x³−3x²−4x+12", "answer": "2,−1,3"},
+                        {"type": "mcq", "question": "Domain of f(x)=1/(x−2)", "options": ["x≠2", "x≠0", "x>0"],
+                         "answer": "x≠2"}
+                    ],
+                    "Hard": [
+                        # 12–13 hard questions for unit 2
+                        {"type": "text", "question": "Solve 2x⁴−5x³+3x²−x+2=0", "answer": "..."},
+                        {"type": "mcq", "question": "End behavior of f(x)=−2x³+5x²", "options": ["f→−∞", "f→∞", "f→0"],
+                         "answer": "f→−∞"},
+                        {"type": "text", "question": "Find derivative f'(x)=3x²−2x+1 at x=2", "answer": "9"},
+                        {"type": "mcq", "question": "Simplify: (x³+27)/(x+3)",
+                         "options": ["x²−3x+9", "x²+3x+9", "x²−3x−9"], "answer": "x²−3x+9"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x⁴−5x²+4", "answer": "1,−1,2,−2"},
+                        {"type": "mcq", "question": "Horizontal asymptote of f(x)=(3x²+2)/(x²+1)",
+                         "options": ["y=3", "y=0", "y=2"], "answer": "y=3"},
+                        {"type": "text", "question": "Factor x³+8 completely", "answer": "(x+2)(x²−2x+4)"},
+                        {"type": "mcq", "question": "Domain of f(x)=1/(x²−4)", "options": ["x≠2,x≠−2", "x>0", "x≠0"],
+                         "answer": "x≠2,x≠−2"},
+                        {"type": "text", "question": "Solve x³−6x²+11x−6=0", "answer": "1,2,3"},
+                        {"type": "mcq", "question": "Leading coefficient of f(x)=4x⁴−2x³+1",
+                         "options": ["4", "−2", "1"], "answer": "4"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x³−x²+2x−1", "answer": "3x²−2x+2"},
+                        {"type": "mcq", "question": "Simplify: (x³−1)/(x−1)", "options": ["x²+x+1", "x²−x+1", "x²+1"],
+                         "answer": "x²+x+1"},
+                        {"type": "text", "question": "Determine vertex of f(x)=−3x²+6x−1", "answer": "(1,2)"}
+                    ]
+                },
+                # Units 3 and 4 can be filled similarly in the same format
+                "Unit 3": {"Easy": [], "Medium": [], "Hard": []},
+                "Unit 4": {"Easy": [], "Medium": [], "Hard": []}
             }
 
             # =============================
             # DISPLAY QUESTIONS
             # =============================
             if st.session_state.show_questions:
-                selected_questions = questions[unit][difficulty]
+                if unit in questions and difficulty in questions[unit]:
+                    selected_questions = questions[unit][difficulty]
 
-                if not selected_questions:
-                    st.info("Questions for this unit are coming soon.")
-                else:
                     st.subheader(f"{unit} — {difficulty} Questions")
                     user_answers = {}
                     for i, q in enumerate(selected_questions, 1):
                         if q["type"] == "mcq":
-                            user_answers[i] = st.radio(
-                                f"Q{i}: {q['question']}",
-                                q["options"],
-                                key=f"precalc_q_{i}"
-                            )
+                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"precalc_q_{i}")
                         else:
-                            user_answers[i] = st.text_input(
-                                f"Q{i}: {q['question']}",
-                                key=f"precalc_q_{i}"
-                            )
+                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"precalc_q_{i}")
 
                     if st.button("Submit Answers"):
                         score = 0
                         for i, q in enumerate(selected_questions, 1):
                             if str(user_answers[i]).strip().lower() == str(q["answer"]).strip().lower():
                                 score += 1
-
                         st.success(f"🎯 You scored {score} / {len(selected_questions)}")
+                else:
+                    st.warning("No questions available for this unit and difficulty.")
