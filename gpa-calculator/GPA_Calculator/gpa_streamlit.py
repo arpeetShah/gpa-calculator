@@ -638,12 +638,28 @@ if math_level == "AP Precalculus":
                 correct = str(q["answer"]).strip().lower()
                 if ans == correct:
                     score += 1
+
+            st.session_state.last_score = score
+            st.session_state.last_unit = unit
+            st.session_state.last_difficulty = difficulty
+
             st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
 
 # ---------- 3️⃣ Study Recommendations ----------
 if st.button("Show Study Recommendations", key="study_recs_button"):
-    weak_units = analyze_weak_units()  # Returns a dict
-    st.write("DEBUG weak_units:", weak_units)
+    # ✅ Get last quiz results
+    last_unit = st.session_state.get("last_unit")
+    last_difficulty = st.session_state.get("last_difficulty")
+    last_score = st.session_state.get("last_score")
+
+    # Pass them to your analyze function
+    weak_units = analyze_weak_units(
+        unit=last_unit,
+        difficulty=last_difficulty,
+        score=last_score
+    )
+
+    st.write("DEBUG weak_units:", weak_units)  # For testing
 
     if isinstance(weak_units, dict) and weak_units:
         st.warning("You should focus on these units:")
