@@ -585,74 +585,60 @@ with main_tabs[2]:
 
             }
 
-        math_level = st.selectbox("Select your Math course:",
-                                      ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"])
+math_level = st.selectbox(
+    "Select your Math course:",
+    ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"]
+)
 
-        if math_level == "AP Precalculus":
-            unit = st.selectbox("Select the Unit you want to practice:",
-                                    ["Unit 1", "Unit 2", "Unit 3", "Unit 4"], key="unit_select")
-            difficulty = st.radio("Select difficulty level:", ["Easy", "Medium", "Hard"], key="difficulty_radio")
+if math_level == "AP Precalculus":
+    unit = st.selectbox(
+        "Select the Unit you want to practice:",
+        ["Unit 1", "Unit 2", "Unit 3", "Unit 4"],
+        key="unit_select"
+    )
+    difficulty = st.radio(
+        "Select difficulty level:",
+        ["Easy", "Medium", "Hard"],
+        key="difficulty_radio"
+    )
 
+    # Initialize show_questions flag
+    if "show_questions" not in st.session_state:
+        st.session_state.show_questions = False
 
+    # Button to show questions
+    if unit and difficulty:
+        if st.button("Show Questions", key="show_questions_button"):
+            st.session_state.show_questions = True
 
-            if "show_questions" not in st.session_state:
-                    st.session_state.show_questions = False
+    # Display questions only if flag is True
+    if st.session_state.show_questions:
+        # Initialize user_answers in session_state
+        if "user_answers" not in st.session_state:
+            st.session_state.user_answers = {}
 
-                # ==========================
-                # 4️⃣ Button to show questions
-                # ==========================
-            if unit and difficulty:
-                if st.button("Show Questions", key="show_questions_button"):
-                        st.session_state.show_questions = True
+        for i, q in enumerate(questions[unit][difficulty], 1):
+            if q["type"] == "mcq":
+                st.session_state.user_answers[i] = st.radio(
+                    f"Q{i}: {q['question']}",
+                    q["options"],
+                    key=f"q_{unit}_{difficulty}_{i}"
+                )
+            else:
+                st.session_state.user_answers[i] = st.text_input(
+                    f"Q{i}: {q['question']}",
+                    key=f"q_{unit}_{difficulty}_{i}"
+                )
 
-                # ==========================
-                # 5️⃣ Display questions only if flag is True
-                # ==========================
-                if st.session_state.show_questions:
-                    user_answers = {}
-                    for i, q in enumerate(questions[unit][difficulty], 1):
-                        if q["type"] == "mcq":
-                            user_answers[i] = st.radio(
-                                f"Q{i}: {q['question']}",
-                                q["options"],
-                                key=f"q_{unit}_{difficulty}_{i}"
-                            )
-                        else:
-                            user_answers[i] = st.text_input(
-                                f"Q{i}: {q['question']}",
-                                key=f"q_{unit}_{difficulty}_{i}"
-                            )
-
-                    # Submit button to grade
-                    if st.button("Submit Answers", key="submit_answers_button"):
-                        score = 0
-                        for i, q in enumerate(questions[unit][difficulty], 1):
-                            ans = str(user_answers[i]).strip().lower()
-                            correct = str(q["answer"]).strip().lower()
-                            if ans == correct:
-                                score += 1
-                        st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
-    # =============================
-    # STUDY RECOMMENDATIONS (inside main_tabs[2])
-    # =============================
-    # ---------- 1️⃣ Show Questions ----------
-                    # Display questions (your existing questions code)
-                    user_answers = {}
-                    for i, q in enumerate(questions[unit][difficulty], 1):
-                        if q["type"] == "mcq":
-                            user_answers[i] = st.radio(f"Q{i}: {q['question']}", q["options"], key=f"q_{i}")
-                        else:
-                            user_answers[i] = st.text_input(f"Q{i}: {q['question']}", key=f"q_{i}")
-
-            # ---------- 2️⃣ Submit Answers ----------
-            if 'user_answers' in locals() and st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
-                score = 0
-                for i, q in enumerate(questions[unit][difficulty], 1):
-                    ans = str(user_answers[i]).strip().lower()
-                    correct = str(q["answer"]).strip().lower()
-                    if ans == correct:
-                        score += 1
-                st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
+        # Submit button to grade answers
+        if st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
+            score = 0
+            for i, q in enumerate(questions[unit][difficulty], 1):
+                ans = str(st.session_state.user_answers.get(i, "")).strip().lower()
+                correct = str(q["answer"]).strip().lower()
+                if ans == correct:
+                    score += 1
+            st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
 
 # ---------- 3️⃣ Study Recommendations ----------
 if st.button("Show Study Recommendations", key="study_recs_button"):
