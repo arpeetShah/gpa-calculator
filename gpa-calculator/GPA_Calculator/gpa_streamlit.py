@@ -671,11 +671,7 @@ if st.button("Show Study Recommendations", key="study_recs_button"):
     last_score = st.session_state.get("last_score")
 
     # Pass them to your analyze function
-    weak_units = analyze_weak_units(
-        unit=last_unit,
-        difficulty=last_difficulty,
-        score=last_score
-    )
+    weak_units = analyze_weak_units()
 
     st.write("DEBUG weak_units:", weak_units)  # For testing
 
