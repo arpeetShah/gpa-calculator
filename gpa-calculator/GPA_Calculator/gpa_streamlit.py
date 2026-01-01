@@ -9,7 +9,19 @@ def analyze_weak_units(unit=None, difficulty=None, score=None):
 
 
 def analyze_weak_units():
-    weak_units = {}
+    unit = st.session_state.get("last_unit")
+    difficulty = st.session_state.get("last_difficulty")
+    score = st.session_state.get("last_score")
+
+    if unit is None or score is None:
+        return {}
+
+    weak = {}
+
+    if score < 2:   # example threshold
+        weak["AP Precalculus"] = [unit]
+
+    return weak
 
     # Loop through each unit and difficulty in your questions dictionary
     for unit_name, difficulties in questions.items():
