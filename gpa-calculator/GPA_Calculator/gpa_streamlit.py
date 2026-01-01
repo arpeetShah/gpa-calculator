@@ -603,85 +603,85 @@ with main_tabs[2]:
 
             }
 
-math_level = st.selectbox(
-    "Select your Math course:",
-    ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"]
-)
+        math_level = st.selectbox(
+            "Select your Math course:",
+            ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"]
+        )
 
-if math_level == "AP Precalculus":
-    unit = st.selectbox(
-        "Select the Unit you want to practice:",
-        ["Unit 1", "Unit 2", "Unit 3", "Unit 4"],
-        key="unit_select"
-    )
-    difficulty = st.radio(
-        "Select difficulty level:",
-        ["Easy", "Medium", "Hard"],
-        key="difficulty_radio"
-    )
+        if math_level == "AP Precalculus":
+            unit = st.selectbox(
+                "Select the Unit you want to practice:",
+                ["Unit 1", "Unit 2", "Unit 3", "Unit 4"],
+                key="unit_select"
+            )
+            difficulty = st.radio(
+                "Select difficulty level:",
+                ["Easy", "Medium", "Hard"],
+             key="difficulty_radio"
+         )
 
     # Initialize show_questions flag
-    if "show_questions" not in st.session_state:
-        st.session_state.show_questions = False
+            if "show_questions" not in st.session_state:
+                st.session_state.show_questions = False
 
     # Button to show questions
-    if unit and difficulty:
-        if st.button("Show Questions", key="show_questions_button"):
-            st.session_state.show_questions = True
+            if unit and difficulty:
+                if st.button("Show Questions", key="show_questions_button"):
+                    st.session_state.show_questions = True
 
     # Display questions only if flag is True
-    if st.session_state.show_questions:
+            if st.session_state.show_questions:
         # Initialize user_answers in session_state
-        if "user_answers" not in st.session_state:
-            st.session_state.user_answers = {}
+                if "user_answers" not in st.session_state:
+                    st.session_state.user_answers = {}
 
-        for i, q in enumerate(questions[unit][difficulty], 1):
-            if q["type"] == "mcq":
-                st.session_state.user_answers[i] = st.radio(
-                    f"Q{i}: {q['question']}",
-                    q["options"],
-                    key=f"q_{unit}_{difficulty}_{i}"
-                )
-            else:
-                st.session_state.user_answers[i] = st.text_input(
-                    f"Q{i}: {q['question']}",
-                    key=f"q_{unit}_{difficulty}_{i}"
-                )
+                for i, q in enumerate(questions[unit][difficulty], 1):
+                    if q["type"] == "mcq":
+                        st.session_state.user_answers[i] = st.radio(
+                            f"Q{i}: {q['question']}",
+                            q["options"],
+                            key=f"q_{unit}_{difficulty}_{i}"
+                        )
+                    else:
+                        st.session_state.user_answers[i] = st.text_input(
+                            f"Q{i}: {q['question']}",
+                            key=f"q_{unit}_{difficulty}_{i}"
+                        )
 
         # Submit button to grade answers
-        if st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
-            score = 0
-            for i, q in enumerate(questions[unit][difficulty], 1):
-                ans = str(st.session_state.user_answers.get(i, "")).strip().lower()
-                correct = str(q["answer"]).strip().lower()
-                if ans == correct:
-                    score += 1
+                if st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
+                    score = 0
+                    for i, q in enumerate(questions[unit][difficulty], 1):
+                        ans = str(st.session_state.user_answers.get(i, "")).strip().lower()
+                        correct = str(q["answer"]).strip().lower()
+                        if ans == correct:
+                            score += 1
 
-            st.session_state.last_score = score
-            st.session_state.last_unit = unit
-            st.session_state.last_difficulty = difficulty
+                    st.session_state.last_score = score
+                    st.session_state.last_unit = unit
+                    st.session_state.last_difficulty = difficulty
 
-            st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
+                    st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
 
 # ---------- 3️⃣ Study Recommendations ----------
-if st.button("Show Study Recommendations", key="study_recs_button"):
-    # ✅ Get last quiz results
-    last_unit = st.session_state.get("last_unit")
-    last_difficulty = st.session_state.get("last_difficulty")
-    last_score = st.session_state.get("last_score")
+        if st.button("Show Study Recommendations", key="study_recs_button"):
+            # ✅ Get last quiz results
+            last_unit = st.session_state.get("last_unit")
+            last_difficulty = st.session_state.get("last_difficulty")
+            last_score = st.session_state.get("last_score")
 
-    # Pass them to your analyze function
-    weak_units = analyze_weak_units()
+            # Pass them to your analyze function
+            weak_units = analyze_weak_units()
 
-    st.write("DEBUG weak_units:", weak_units)  # For testing
+            st.write("DEBUG weak_units:", weak_units)  # For testing
 
-    if isinstance(weak_units, dict) and weak_units:
-        st.warning("You should focus on these units:")
-        for subject, units in weak_units.items():
-            if isinstance(units, list) and units:
-                st.write(f"**{subject}:** {', '.join(units)}")
-    else:
-        st.success("🎉 Great job! You are doing well across all units.")
+            if isinstance(weak_units, dict) and weak_units:
+                st.warning("You should focus on these units:")
+                for subject, units in weak_units.items():
+                    if isinstance(units, list) and units:
+                        st.write(f"**{subject}:** {', '.join(units)}")
+            else:
+                st.success("🎉 Great job! You are doing well across all units.")
 # ORGANIZATION HELPER TAB
 # =============================
 with main_tabs[3]:
