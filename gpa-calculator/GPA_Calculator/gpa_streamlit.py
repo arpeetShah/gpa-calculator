@@ -1,7 +1,5 @@
 import streamlit as st
 import sqlite3
-
-st.image("https://images.unsplash.com/photo‑1503676260728‑1c00da094a0b", use_column_width=True)
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -202,7 +200,7 @@ with main_tabs[1]:
     st.header("📊 GPA Calculator")
 
     st.image(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Grade_point_average_diagram.svg/640px-Grade_point_average_diagram.svg.png",
+        "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=900&q=80",
         use_column_width=True
     )
 
