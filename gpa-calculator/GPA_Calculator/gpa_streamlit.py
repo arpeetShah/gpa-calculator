@@ -1,7 +1,7 @@
 import streamlit as st
 import sqlite3
 
-
+st.image("https://images.unsplash.com/photo‑1503676260728‑1c00da094a0b", use_column_width=True)
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -360,23 +360,23 @@ with main_tabs[2]:
                         {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
                          "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
                         {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
-                        {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": ["x-3", "x+3", "x^2+3"],
+                        {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": [ "x+3", "x-3","x^2+3"],
                          "answer": "x-3"},
                         {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
                          "answer": "maximum"},
                         {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"],
                          "answer": "7"},
                         {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
-                         "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
+                         "options": [ "x=-5", "x=0", "x=5"], "answer": "x=5"},
                         {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
                          "answer": "7"},
                         {"type": "text", "question": "Factor completely: x^3 - 3x^2 - 4x + 12",
                          "answer": "(x-2)(x-2)(x+3)"},
                         {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
-                         "options": ["3", "-2", "5"], "answer": "3"},
+                         "options": [ "-2", "3", "5"], "answer": "3"},
                         {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
                          "answer": "x<-2 or x>0 and x!=2"},
-                        {"type": "mcq", "question": "What is f(0) for f(x)=2x^2-3x+1?", "options": ["1", "0", "-1"],
+                        {"type": "mcq", "question": "What is f(0) for f(x)=2x^2-3x+1?", "options": [ "0", "1", "-1"],
                          "answer": "1"},
                         {"type": "text", "question": "Find the x-intercepts of f(x)=x^2-6x+8", "answer": "2,4"}
                     ],
