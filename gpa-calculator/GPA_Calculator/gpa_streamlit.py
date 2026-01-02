@@ -202,7 +202,6 @@ with main_tabs[1]:
     st.image(
         "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=900&q=80",
         width=200,
-        use_column_width=True
     )
 
     sub_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
