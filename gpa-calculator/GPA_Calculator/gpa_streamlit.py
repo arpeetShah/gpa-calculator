@@ -25,12 +25,40 @@ def analyze_weak_units():
 # ---------- Study Tips ----------
 def get_study_tips(unit):
     tips = {
-        "Unit 1": "Review factoring and basic quadratic equations. Use practice problems daily.",
-        "Unit 2": "Focus on functions and their graphs. Make flashcards for key formulas.",
-        "Unit 3": "Practice polynomial division and complex numbers.",
-        "Unit 4": "Work on rational expressions and asymptotes. Redo previous quizzes.",
+        "Unit 1": (
+            "🔴 You are struggling with foundational algebra skills.\n"
+            "• Review linear equations and inequalities\n"
+            "• Practice solving equations step by step\n"
+            "• Focus on understanding slope and intercept form\n"
+            "• Use 10–15 practice problems per day"
+        ),
+
+        "Unit 2": (
+            "🔴 You are having trouble with functions and their graphs.\n"
+            "• Review function notation (f(x))\n"
+            "• Practice identifying domain and range\n"
+            "• Work on graph transformations (shifts, stretches, reflections)\n"
+            "• Re-draw graphs by hand to build intuition"
+        ),
+
+        "Unit 3": (
+            "🔴 You are struggling with polynomial and rational functions.\n"
+            "• Review factoring techniques\n"
+            "• Practice polynomial division\n"
+            "• Focus on zeros, end behavior, and asymptotes\n"
+            "• Rework missed quiz questions carefully"
+        ),
+
+        "Unit 4": (
+            "🔴 You are having difficulty with advanced modeling and applications.\n"
+            "• Slow down on word problems and underline key info\n"
+            "• Practice setting up equations before solving\n"
+            "• Review past homework and quizzes\n"
+            "• Explain problems out loud to check understanding"
+        ),
     }
-    return tips.get(unit, "Review the material for this unit.")
+
+    return tips.get(unit, "Review class notes and redo missed problems.")
 
 
 # ---------- Session State Defaults ----------
@@ -625,23 +653,19 @@ with main_tabs[2]:
 
 # ---------- 3️⃣ Study Recommendations ----------
         if st.button("Show Study Recommendations", key="study_recs_button"):
-            # ✅ Get last quiz results
-            last_unit = st.session_state.get("last_unit")
-            last_difficulty = st.session_state.get("last_difficulty")
-            last_score = st.session_state.get("last_score")
+            st.subheader("📌 Personalized Study Recommendations")
 
-            # Pass them to your analyze function
             weak_units = analyze_weak_units()
 
-            st.write("DEBUG weak_units:", weak_units)  # For testing
-
-            if isinstance(weak_units, dict) and weak_units:
-                st.warning("You should focus on these units:")
-                for subject, units in weak_units.items():
-                    if isinstance(units, list) and units:
-                        st.write(f"**{subject}:** {', '.join(units)}")
+            if not weak_units:
+                st.success("🎉 Great job! No weak units detected.")
             else:
-                st.success("🎉 Great job! You are doing well across all units.")
+                for subject, units in weak_units.items():
+                    st.markdown(f"### {subject}")
+
+                    for unit in units:
+                        st.markdown(f"**🔹 {unit}**")
+                        st.write(get_study_tips(unit))
 # ORGANIZATION HELPER TAB
 # =============================
 with main_tabs[3]:
