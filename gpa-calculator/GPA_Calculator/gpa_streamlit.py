@@ -2,6 +2,7 @@ import streamlit as st
 import sqlite3
 
 
+# ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
 
@@ -20,74 +21,8 @@ def analyze_weak_units():
 
     return weak
 
-if "quiz_history" not in st.session_state:
-    st.session_state.quiz_history = []
 
-def analyze_weak_units(unit=None, difficulty=None, score=None):
-    weak_units = {}
-    if score is not None and score < 2:  # Example threshold
-        weak_units["AP Precalculus"] = [unit]
-    return weak_units
-
-
-def analyze_weak_units():
-    unit = st.session_state.get("last_unit")
-    difficulty = st.session_state.get("last_difficulty")
-    score = st.session_state.get("last_score")
-
-    if unit is None or score is None:
-        return {}
-
-    weak = {}
-
-    if score < 2:   # example threshold
-        weak["AP Precalculus"] = [unit]
-
-    return weak
-
-    # Loop through each unit and difficulty in your questions dictionary
-    for unit_name, difficulties in questions.items():
-        total_questions = 0
-        correct_answers = 0
-
-        for difficulty, qlist in difficulties.items():
-            for i, q in enumerate(qlist, 1):
-                key = f"q_{i}"  # This matches the keys you used in st.text_input or st.radio
-                if key in st.session_state:
-                    total_questions += 1
-                    ans = str(st.session_state[key]).strip().lower()
-                    correct = str(q["answer"]).strip().lower()
-                    if ans == correct:
-                        correct_answers += 1
-
-        # Mark unit as weak if less than 60% correct
-        if total_questions > 0 and correct_answers / total_questions < 0.6:
-            weak_units.setdefault("AP Precalculus", []).append(unit_name)
-
-    return weak_units
-
-def analyze_weak_units():
-    weak_units = {}
-
-    for result in st.session_state.quiz_results:
-        accuracy = result["score"] / result["total"]
-
-        # Consider anything below 70% as weak
-        if accuracy < 0.7:
-            subject = result["subject"]
-            unit = result["unit"]
-
-            if subject not in weak_units:
-                weak_units[subject] = set()
-
-            weak_units[subject].add(unit)
-
-    # Convert sets to lists for display
-    for subject in weak_units:
-        weak_units[subject] = list(weak_units[subject])
-
-    return weak_units
-
+# ---------- Study Tips ----------
 def get_study_tips(unit):
     tips = {
         "Unit 1": "Review factoring and basic quadratic equations. Use practice problems daily.",
@@ -97,28 +32,22 @@ def get_study_tips(unit):
     }
     return tips.get(unit, "Review the material for this unit.")
 
+
+# ---------- Session State Defaults ----------
+if "quiz_history" not in st.session_state:
+    st.session_state.quiz_history = []
+
 if "quiz_results" not in st.session_state:
     st.session_state.quiz_results = []
 
 if "quiz_scores" not in st.session_state:
-    st.session_state.quiz_scores = {}  # Example: {"AP Precalc": {"Unit 1": 10, ...}}
+    st.session_state.quiz_scores = {}
 
 if "show_questions" not in st.session_state:
     st.session_state.show_questions = False
 
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
-
-def analyze_weak_units():
-    weak_units = {}
-    if "quiz_scores" in st.session_state:
-        for subject, units in st.session_state.quiz_scores.items():
-            for unit, score in units.items():
-                # if score less than half of total questions, mark as weak
-                total_questions = 12  # adjust if you have different number per unit
-                if score < total_questions / 2:
-                    weak_units.setdefault(subject, []).append(unit)
-    return weak_units
 
 # =============================
 # PAGE CONFIG
