@@ -200,7 +200,7 @@ with main_tabs[1]:
     st.header("📊 GPA Calculator")
 
     st.image(
-        "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
         use_column_width=True
     )
 
