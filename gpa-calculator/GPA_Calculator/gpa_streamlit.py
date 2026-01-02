@@ -199,7 +199,12 @@ with main_tabs[0]:
 # GPA TAB
 # =============================
 with main_tabs[1]:
-    st.subheader("GPA Tracker")
+    st.header("📊 GPA Calculator")
+
+    st.image(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Grade_point_average_diagram.svg/640px-Grade_point_average_diagram.svg.png",
+        use_column_width=True
+    )
 
     sub_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
