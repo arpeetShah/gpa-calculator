@@ -1,6 +1,28 @@
 import streamlit as st
 import sqlite3
 
+
+def analyze_weak_units():
+    weak = {}
+
+    for attempt in st.session_state.quiz_history:
+        percent = attempt["score"] / attempt["total"]
+
+        if percent < 0.7:  # below 70% = weak
+            subject = attempt["subject"]
+            unit = attempt["unit"]
+
+            if subject not in weak:
+                weak[subject] = []
+
+            if unit not in weak[subject]:
+                weak[subject].append(unit)
+
+    return weak
+
+if "quiz_history" not in st.session_state:
+    st.session_state.quiz_history = []
+
 def analyze_weak_units(unit=None, difficulty=None, score=None):
     weak_units = {}
     if score is not None and score < 2:  # Example threshold
@@ -662,6 +684,15 @@ with main_tabs[2]:
                     st.session_state.last_difficulty = difficulty
 
                     st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
+
+                    # SAVE quiz result
+                    st.session_state.quiz_history.append({
+                        "subject": "AP Precalculus",
+                        "unit": unit,
+                        "difficulty": difficulty,
+                        "score": score,
+                        "total": len(questions[unit][difficulty])
+                    })
 
 # ---------- 3️⃣ Study Recommendations ----------
         if st.button("Show Study Recommendations", key="study_recs_button"):
