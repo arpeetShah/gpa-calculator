@@ -1,5 +1,8 @@
 import streamlit as st
 import sqlite3
+
+ms_year = st.radio("Select Middle School Year:", [1, 2], key="ms_year")
+hs_year = st.radio("Select High School Year:", [1, 2], key="hs_year")
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -282,14 +285,14 @@ with main_tabs[1]:
             # MS GPA
             for course, (s1, s2) in ms_course_grades.items():
                 avg = (s1 + s2)/2
-                weight = courses[course] if courses[course] is not None else 5.0
+                weight = courses[course][ms_year]
                 weighted.append(weighted_gpa(avg, weight))
                 unweighted.append(unweighted_gpa(avg))
 
             # HS GPA
             for course, grades in hs_course_grades.items():
                 avg = sum(grades)/len(grades)
-                weight = courses[course] if courses[course] is not None else 5.0
+                weight = courses[course][hs_year]
                 weighted.append(weighted_gpa(avg, weight))
                 unweighted.append(unweighted_gpa(avg))
 
