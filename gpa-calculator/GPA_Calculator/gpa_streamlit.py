@@ -328,24 +328,38 @@ with main_tabs[1]:
             weighted, unweighted = [], []
 
             # Middle School
-            for course, (s1, s2) in ms_course_grades.items():
-                avg = (s1 + s2) / 2
-                weight = courses.get(course, 5.0)
+            for course, grades in ms_course_grades.items():
+                avg = sum(grades) / len(grades)
+
+                # Determine weight
+                if course == "GT / AP World History":
+                    year = st.session_state.get(f"{course}_year", 1)  # default to year 1
+                    weight = courses[course][year]
+                else:
+                    weight = courses.get(course, 5.0)
+
                 weighted.append(weighted_gpa(avg, weight))
                 unweighted.append(unweighted_gpa(avg))
 
             # High School
             for course, grades in hs_course_grades.items():
                 avg = sum(grades) / len(grades)
-                weight = courses.get(course, 5.0)
+
+                # Determine weight
+                if course == "GT / AP World History":
+                    year = st.session_state.get(f"{course}_year", 1)
+                    weight = courses[course][year]
+                else:
+                    weight = courses.get(course, 5.0)
+
                 weighted.append(weighted_gpa(avg, weight))
                 unweighted.append(unweighted_gpa(avg))
 
             if not weighted:
                 st.warning("No courses selected.")
             else:
-                w = round(sum(weighted)/len(weighted),2)
-                uw = round(sum(unweighted)/len(unweighted),2)
+                w = round(sum(weighted) / len(weighted), 2)
+                uw = round(sum(unweighted) / len(unweighted), 2)
                 st.success(f"🎓 Weighted GPA: {w}")
                 st.success(f"📘 Unweighted GPA: {uw}")
 
