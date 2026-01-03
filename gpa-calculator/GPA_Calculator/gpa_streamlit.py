@@ -163,6 +163,7 @@ courses = {
     "GT / AP World History": {1: 5.5, 2: 6.0},
     "Biology": 5.5,
     "Chemistry": 5.5,
+    "AP Chemistry": 6.0,
     "AP Human Geography": 6.0,
     "Sports": 5.0,
     "Health": 5.0,
@@ -219,6 +220,7 @@ with main_tabs[1]:
     with sub_tabs[0]:
         st.header("Middle School Grades")
 
+        # Select the courses taken in MS
         ms_selected = st.multiselect(
             "Select the courses you took (MS)",
             options=list(courses.keys()),
@@ -226,28 +228,51 @@ with main_tabs[1]:
         )
 
         ms_course_grades = {}
+
         for course in ms_selected:
-            # If Health, only one semester; otherwise two semesters
+            # Determine number of semesters (Health = 1, others = 2)
             semesters = 1 if course == "Health" else 2
 
-        ms_course_grades = {}
-        for course in ms_selected:
-            s1 = st.number_input(f"{course} – Semester 1", 0.0, 100.0, key=f"ms_s1_{course}")
-            s2 = st.number_input(f"{course} – Semester 2", 0.0, 100.0, key=f"ms_s2_{course}")
-            ms_course_grades[course] = (s1, s2)
+            # Collect grades dynamically based on semesters
+            grades = []
+            for i in range(semesters):
+                grades.append(
+                    st.number_input(
+                        f"{course} – Semester {i + 1}",
+                        0.0,
+                        100.0,
+                        key=f"ms_s{i + 1}_{course}"
+                    )
+                )
 
+            # Save grades in dictionary
+            ms_course_grades[course] = tuple(grades)
+
+            # Handle AP World year selection
             gt_year = None
             if course == "GT / AP World History":
-                year = st.selectbox(f"Select year for {course}:", [1, 2], key=f"{course}_year")
-                weight = courses[course][year]
+                gt_year = st.selectbox(
+                    f"Select year for {course}:",
+                    [1, 2],
+                    key=f"{course}_year"
+                )
+                weight = courses[course][gt_year]
             else:
                 weight = courses[course]
 
+            # Insert into database
+            if semesters == 1:
+                s1 = grades[0]
+                s2 = None
+            else:
+                s1, s2 = grades
+
             c.execute("""
-            INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
+                INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
             """, (
                 course, "MS", s1, s2, None, None, None, None, gt_year
             ))
+
         conn.commit()
 
     # =============================
