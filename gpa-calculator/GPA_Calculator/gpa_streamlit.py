@@ -246,29 +246,43 @@ with main_tabs[1]:
     # =============================
     # HIGH SCHOOL
     # =============================
-    with sub_tabs[1]:
+    with main_tabs[0]:  # High School tab
         st.header("High School Grades")
 
+        # 1️⃣ Ask once for all quarters
+        hs_quarters = st.number_input(
+            "Enter how many quarters have been completed this year:",
+            min_value=1,
+            max_value=4,
+            value=4,
+            step=1
+        )
+
+        # 2️⃣ Select courses
         hs_selected = st.multiselect(
             "Select the courses you took (HS)",
             options=list(courses.keys()),
             key="hs_courses"
         )
 
+        # 3️⃣ Enter grades per course (use hs_quarters for all)
         hs_course_grades = {}
         for course in hs_selected:
-            quarters = st.slider(f"Quarters Completed – {course}", 1, 4, 2, key=f"hs_quarters_{course}")
             q_grades = []
-            for i in range(quarters):
-                q_grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, key=f"hs_q{i+1}_{course}"))
+            for i in range(hs_quarters):
+                q_grades.append(
+                    st.number_input(f"{course} – Quarter {i + 1}", 0.0, 100.0, key=f"hs_q{i + 1}_{course}")
+                )
             hs_course_grades[course] = q_grades
 
-            gt_year = None
+        # 4️⃣ Weight per course (handle AP World separately)
+        hs_course_weights = {}
+        for course in hs_selected:
             if course == "GT / AP World History":
                 year = st.selectbox(f"Select year for {course}:", [1, 2], key=f"{course}_year")
-                weight = courses[course][year]
+                hs_course_weights[course] = courses[course][year]
             else:
-                weight = courses[course]
+                hs_course_weights[course] = courses[course] if courses[course] is not None else 5.0
 
             padded = q_grades + [None] * (4 - len(q_grades))
             c.execute("""
