@@ -199,6 +199,7 @@ with main_tabs[0]:
 # =============================
 with main_tabs[1]:
     st.header("📊 GPA Calculator")
+    gpa_subtabs = st.tabs(["Middle School GPA", "High School GPA", "Results"])
 
     st.markdown(
         """
@@ -246,10 +247,10 @@ with main_tabs[1]:
     # =============================
     # HIGH SCHOOL
     # =============================
-    with main_tabs[0]:  # High School tab
-        st.header("High School Grades")
+    with gpa_subtabs[1]:  # HS GPA subtab
+        st.subheader("High School Grades")
 
-        # 1️⃣ Ask once for all quarters
+        # Ask once for all quarters
         hs_quarters = st.number_input(
             "Enter how many quarters have been completed this year:",
             min_value=1,
@@ -258,14 +259,14 @@ with main_tabs[1]:
             step=1
         )
 
-        # 2️⃣ Select courses
+        # Select courses
         hs_selected = st.multiselect(
             "Select the courses you took (HS)",
             options=list(courses.keys()),
             key="hs_courses"
         )
 
-        # 3️⃣ Enter grades per course (use hs_quarters for all)
+        # Input grades per course
         hs_course_grades = {}
         for course in hs_selected:
             q_grades = []
@@ -275,7 +276,7 @@ with main_tabs[1]:
                 )
             hs_course_grades[course] = q_grades
 
-        # 4️⃣ Weight per course (handle AP World separately)
+        # Set weights
         hs_course_weights = {}
         for course in hs_selected:
             if course == "GT / AP World History":
