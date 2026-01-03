@@ -1,8 +1,6 @@
 import streamlit as st
 import sqlite3
 
-ms_year = st.radio("Select Middle School Year:", [1, 2], key="ms_year")
-hs_year = st.radio("Select High School Year:", [1, 2], key="hs_year")
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -154,27 +152,23 @@ def unweighted_gpa(avg):
 # COURSES
 # =============================
 courses = {
-    "Spanish 1": {1: 5.0, 2: 5.0},
-    "Spanish 2": {1: 5.0, 2: 5.0},
-    "Spanish 3": {1: 5.5, 2: 5.5},
-    "Spanish 4 AP": {1: 6.0, 2: 6.0},
-
-    "Algebra 1": {1: 5.5, 2: 5.5},
-    "Geometry": {1: 5.5, 2: 5.5},
-    "Algebra 2": {1: 5.5, 2: 5.5},
-    "AP Precalculus": {1: 6.0, 2: 6.0},
-
+    "Spanish 1": 5.0,
+    "Spanish 2": 5.0,
+    "Spanish 3": 5.5,
+    "Spanish 4 AP": 6.0,
+    "Algebra 1": 5.5,
+    "Geometry": 5.5,
+    "Algebra 2": 5.5,
+    "AP Precalculus": 6.0,
     "GT / AP World History": {1: 5.5, 2: 6.0},
-
-    "Biology": {1: 5.5, 2: 5.5},
-    "Chemistry": {1: 5.5, 2: 5.5},
-    "AP Human Geography": {1: 6.0, 2: 6.0},
-
-    "Sports": {1: 5.0, 2: 5.0},
-    "Health": {1: 5.0, 2: 5.0},
-    "Computer Science": {1: 5.5, 2: 5.5},
-    "AP Computer Science": {1: 6.0, 2: 6.0},
-    "Instruments": {1: 5.0, 2: 5.0},
+    "Biology": 5.5,
+    "Chemistry": 5.5,
+    "AP Human Geography": 6.0,
+    "Sports": 5.0,
+    "Health": 5.0,
+    "Computer Science": 5.5,
+    "AP Computer Science": 6.0,
+    "Instruments": 5.0
 }
 
 # =============================
@@ -237,7 +231,10 @@ with main_tabs[1]:
 
             gt_year = None
             if course == "GT / AP World History":
-                gt_year = st.text_input(f"Year for {course}", key="ms_gt_year")
+                year = st.selectbox(f"Select year for {course}:", [1, 2], key=f"{course}_year")
+                weight = courses[course][year]
+            else:
+                weight = courses[course]
 
             c.execute("""
             INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
@@ -268,7 +265,10 @@ with main_tabs[1]:
 
             gt_year = None
             if course == "GT / AP World History":
-                gt_year = st.text_input(f"Year for {course}", key="hs_gt_year")
+                year = st.selectbox(f"Select year for {course}:", [1, 2], key=f"{course}_year")
+                weight = courses[course][year]
+            else:
+                weight = courses[course]
 
             padded = q_grades + [None] * (4 - len(q_grades))
             c.execute("""
@@ -286,17 +286,17 @@ with main_tabs[1]:
         if st.button("🎯 Calculate GPA"):
             weighted, unweighted = [], []
 
-            # MS GPA
+            # Middle School
             for course, (s1, s2) in ms_course_grades.items():
-                avg = (s1 + s2)/2
-                weight = courses[course][ms_year]
+                avg = (s1 + s2) / 2
+                weight = courses.get(course, 5.0)
                 weighted.append(weighted_gpa(avg, weight))
                 unweighted.append(unweighted_gpa(avg))
 
-            # HS GPA
+            # High School
             for course, grades in hs_course_grades.items():
-                avg = sum(grades)/len(grades)
-                weight = courses[course][hs_year]
+                avg = sum(grades) / len(grades)
+                weight = courses.get(course, 5.0)
                 weighted.append(weighted_gpa(avg, weight))
                 unweighted.append(unweighted_gpa(avg))
 
