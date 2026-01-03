@@ -168,7 +168,9 @@ courses = {
     "Health": 5.0,
     "Computer Science": 5.5,
     "AP Computer Science": 6.0,
-    "Instruments": 5.0
+    "Instruments": 5.0,
+    "English 1": 5.5,
+    "Engineering": 5.0
 }
 
 # =============================
@@ -222,6 +224,11 @@ with main_tabs[1]:
             options=list(courses.keys()),
             key="ms_courses"
         )
+
+        ms_course_grades = {}
+        for course in ms_selected:
+            # If Health, only one semester; otherwise two semesters
+            semesters = 1 if course == "Health" else 2
 
         ms_course_grades = {}
         for course in ms_selected:
