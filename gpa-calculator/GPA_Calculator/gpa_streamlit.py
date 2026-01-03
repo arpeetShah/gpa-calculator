@@ -154,23 +154,27 @@ def unweighted_gpa(avg):
 # COURSES
 # =============================
 courses = {
-    "Spanish 1": 5.0,
-    "Spanish 2": 5.0,
-    "Spanish 3": 5.5,
-    "Spanish 4 AP": 6.0,
-    "Algebra 1": 5.5,
-    "Geometry": 5.5,
-    "Algebra 2": 5.5,
-    "AP Precalculus": 6.0,
+    "Spanish 1": {1: 5.0, 2: 5.0},
+    "Spanish 2": {1: 5.0, 2: 5.0},
+    "Spanish 3": {1: 5.5, 2: 5.5},
+    "Spanish 4 AP": {1: 6.0, 2: 6.0},
+
+    "Algebra 1": {1: 5.5, 2: 5.5},
+    "Geometry": {1: 5.5, 2: 5.5},
+    "Algebra 2": {1: 5.5, 2: 5.5},
+    "AP Precalculus": {1: 6.0, 2: 6.0},
+
     "GT / AP World History": {1: 5.5, 2: 6.0},
-    "Biology": 5.5,
-    "Chemistry": 5.5,
-    "AP Human Geography": 6.0,
-    "Sports": 5.0,
-    "Health": 5.0,
-    "Computer Science": 5.5,
-    "AP Computer Science": 6.0,
-    "Instruments": 5.0
+
+    "Biology": {1: 5.5, 2: 5.5},
+    "Chemistry": {1: 5.5, 2: 5.5},
+    "AP Human Geography": {1: 6.0, 2: 6.0},
+
+    "Sports": {1: 5.0, 2: 5.0},
+    "Health": {1: 5.0, 2: 5.0},
+    "Computer Science": {1: 5.5, 2: 5.5},
+    "AP Computer Science": {1: 6.0, 2: 6.0},
+    "Instruments": {1: 5.0, 2: 5.0},
 }
 
 # =============================
