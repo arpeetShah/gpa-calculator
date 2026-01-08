@@ -203,15 +203,6 @@ with main_tabs[0]:
 with main_tabs[1]:
     st.header("📊 GPA Calculator")
 
-    st.markdown(
-        """
-        <div style="text-align: center; margin-left: 50px;">
-            <img src="https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=900&q=80" width="200">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
     sub_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
 
     # =============================
