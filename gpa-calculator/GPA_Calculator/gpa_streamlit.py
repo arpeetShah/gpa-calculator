@@ -171,6 +171,7 @@ courses = {
     "AP Computer Science": 6.0,
     "Instruments": 5.0,
     "English 1": 5.5,
+    "Surv Bus Mark Fin": 5.0,
     "Engineering": 5.0
 }
 
