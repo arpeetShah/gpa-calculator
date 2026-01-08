@@ -212,7 +212,6 @@ with main_tabs[1]:
     with sub_tabs[0]:
         st.header("Middle School Grades")
 
-        # Select the courses taken in MS
         ms_selected = st.multiselect(
             "Select the courses you took (MS)",
             options=list(courses.keys()),
@@ -225,22 +224,21 @@ with main_tabs[1]:
             # Determine number of semesters (Health = 1, others = 2)
             semesters = 1 if course == "Health" else 2
 
-            # Collect grades dynamically based on semesters
+            # Collect grades dynamically
             grades = []
             for i in range(semesters):
                 grades.append(
                     st.number_input(
                         f"{course} – Semester {i + 1}",
-                        0.0,
-                        100.0,
+                        min_value=0.0,
+                        max_value=100.0,
                         key=f"ms_s{i + 1}_{course}"
                     )
                 )
 
-            # Save grades in dictionary
             ms_course_grades[course] = tuple(grades)
 
-            # Handle AP World year selection
+            # Handle AP World year
             gt_year = None
             if course == "GT / AP World History":
                 gt_year = st.selectbox(
@@ -252,21 +250,17 @@ with main_tabs[1]:
             else:
                 weight = courses[course]
 
-            # Prepare values for SQLite (always 9 columns)
+            # Prepare values for SQLite insert (make exactly 9 values)
             s1 = grades[0]
             s2 = grades[1] if semesters == 2 else None
-            padded = [None, None]  # placeholder for remaining DB columns
+            extra = [None, None, None, None]  # HS quarters placeholders
 
             c.execute("""
                 INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
             """, (
-                course,  # 1 - course name
-                "MS",  # 2 - school level
-                s1,  # 3 - semester 1
-                s2,  # 4 - semester 2
-                *padded,  # 5-8 - extra placeholders
-                gt_year  # 9 - AP World year
+                course, "MS", s1, s2, *extra, gt_year
             ))
+
         conn.commit()
 
     # =============================
@@ -275,9 +269,9 @@ with main_tabs[1]:
     with sub_tabs[1]:
         st.header("High School Grades")
 
-        # Ask once for how many quarters have been completed
-        hs_quarters_done = st.number_input(
-            "Enter how many quarters have been completed this year for all courses:",
+        # Ask once for total quarters completed
+        hs_quarters = st.number_input(
+            "Enter how many quarters have been completed this year:",
             min_value=1,
             max_value=4,
             value=4,
@@ -293,21 +287,29 @@ with main_tabs[1]:
         hs_course_grades = {}
 
         for course in hs_selected:
-            # Get quarter grades
+            # Collect quarter grades for each course
+            quarters = st.slider(
+                f"Quarters Completed – {course}",
+                min_value=1,
+                max_value=hs_quarters,
+                value=hs_quarters,
+                key=f"hs_quarters_{course}"
+            )
+
             q_grades = []
-            for i in range(hs_quarters_done):
+            for i in range(quarters):
                 q_grades.append(
                     st.number_input(
                         f"{course} – Quarter {i + 1}",
-                        0.0,
-                        100.0,
+                        min_value=0.0,
+                        max_value=100.0,
                         key=f"hs_q{i + 1}_{course}"
                     )
                 )
 
             hs_course_grades[course] = q_grades
 
-            # Handle AP World year selection
+            # Handle AP World year
             gt_year = None
             if course == "GT / AP World History":
                 gt_year = st.selectbox(
@@ -319,19 +321,16 @@ with main_tabs[1]:
             else:
                 weight = courses[course]
 
-            # Pad to 4 quarters for DB storage
+            # Pad to 4 quarters for DB
             padded = q_grades + [None] * (4 - len(q_grades))
 
-            # Insert into SQLite (9 columns)
+            # Insert into SQLite (exactly 9 values)
             c.execute("""
                 INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
             """, (
-                course,  # 1 - course name
-                "HS",  # 2 - school level
-                None, None,  # 3-4 - MS semester placeholders
-                *padded,  # 5-8 - quarters
-                gt_year  # 9 - AP World year
+                course, "HS", None, None, padded[0], padded[1], padded[2], padded[3], gt_year
             ))
+
         conn.commit()
 
     # =============================
