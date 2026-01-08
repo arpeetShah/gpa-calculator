@@ -220,7 +220,7 @@ with main_tabs[1]:
     with sub_tabs[0]:
         st.header("Middle School Grades")
 
-        # Select the courses taken in MS
+        # Select MS courses
         ms_selected = st.multiselect(
             "Select the courses you took (MS)",
             options=list(courses.keys()),
@@ -233,7 +233,7 @@ with main_tabs[1]:
             # Determine number of semesters (Health = 1, others = 2)
             semesters = 1 if course == "Health" else 2
 
-            # Collect grades dynamically based on semesters
+            # Collect semester grades
             grades = []
             for i in range(semesters):
                 grades.append(
@@ -245,7 +245,6 @@ with main_tabs[1]:
                     )
                 )
 
-            # Save grades in dictionary
             ms_course_grades[course] = tuple(grades)
 
             # Handle AP World year selection
@@ -272,48 +271,73 @@ with main_tabs[1]:
             """, (
                 course, "MS", s1, s2, None, None, None, None, gt_year
             ))
-
         conn.commit()
 
     # =============================
     # HIGH SCHOOL
     # =============================
-    with sub_tabs[1]:  # or your HS GPA tab
+    with sub_tabs[1]:
         st.header("High School Grades")
 
         # Ask once for all courses
-        hs_quarters = st.number_input(
-            "Enter how many quarters have been completed this year:",
-            min_value=1,
-            max_value=4,
-            value=4,
-            step=1
-        )
-
         hs_selected = st.multiselect(
             "Select the courses you took (HS)",
             options=list(courses.keys()),
             key="hs_courses"
         )
 
-        hs_course_grades = {}
-        for course in hs_selected:
-            quarters = st.slider(f"Quarters Completed – {course}", 1, 4, 2, key=f"hs_quarters_{course}")
-            q_grades = []
-            for i in range(quarters):
-                q_grades.append(st.number_input(f"{course} – Quarter {i+1}", 0.0, 100.0, key=f"hs_q{i+1}_{course}"))
-            hs_course_grades[course] = q_grades
+        # Ask once how many quarters have been completed (applies to all courses)
+        hs_quarters = st.number_input(
+            "Enter how many quarters have been completed this year (applies to all courses):",
+            min_value=1,
+            max_value=4,
+            value=4,
+            step=1
+        )
 
+        hs_course_grades = {}
+
+        for course in hs_selected:
+            # Input each quarter grade
+            q_grades = []
+            for i in range(hs_quarters):
+                q_grades.append(
+                    st.number_input(
+                        f"{course} – Quarter {i + 1}",
+                        0.0,
+                        100.0,
+                        key=f"hs_q{i + 1}_{course}"
+                    )
+                )
+
+            # Convert quarters into semesters (every 2 quarters = 1 semester)
+            semesters = []
+            for j in range(0, len(q_grades), 2):
+                if j + 1 < len(q_grades):
+                    sem_grade = (q_grades[j] + q_grades[j + 1]) / 2
+                else:
+                    sem_grade = q_grades[j]  # odd quarter count, treat last as single
+                semesters.append(sem_grade)
+
+            hs_course_grades[course] = semesters
+
+            # Handle AP World year selection
             gt_year = None
             if course == "GT / AP World History":
-                year = st.selectbox(f"Select year for {course}:", [1, 2], key=f"{course}_year")
-                weight = courses[course][year]
+                gt_year = st.selectbox(
+                    f"Select year for {course}:",
+                    [1, 2],
+                    key=f"{course}_year"
+                )
+                weight = courses[course][gt_year]
             else:
                 weight = courses[course]
 
-            padded = q_grades + [None] * (4 - len(q_grades))
+            # Pad semesters to 2 if less than 2 (optional, for DB consistency)
+            padded = semesters + [None] * (2 - len(semesters))
+
             c.execute("""
-            INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
+                INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
             """, (
                 course, "HS", None, None, *padded, gt_year
             ))
