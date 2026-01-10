@@ -397,9 +397,13 @@ if section == "🏠 Home & Intro":
         )
 
 elif section == "📚 School Tools":
-    tools_tabs = st.tabs(["📊 GPA", "📝 Quiz & Practice", "🔗 Resource Hub"])
+    tools_tabs = st.tabs([
+        "📊 GPA",
+        "📝 Quiz & Practice",
+        "🔗 Resource Hub",
+        "❓ What-If GPA"
+    ])
     # ⬆️ everything under this elif must be indented one level
-    # put your GPA + Quiz code in here
 
     with tools_tabs[0]:
         st.header("📊 GPA Calculator")
@@ -1190,6 +1194,194 @@ elif section == "📚 School Tools":
                             # If more than 9 in this category, tell the user
                             if len(filtered) > max_tiles:
                                 st.caption(f"+ {len(filtered) - max_tiles} more saved resources in this category.")
+
+    # =============================
+    # TAB 3: WHAT-IF GPA CALCULATOR
+    # =============================
+    with tools_tabs[3]:
+        st.subheader("❓ What-If GPA Calculator")
+
+        st.markdown(
+            "See how your **overall weighted GPA** changes if you add new classes with certain grades."
+            "<br><br>"
+            "This uses the same 6.0 scale and weight system as your main GPA calculator.",
+            unsafe_allow_html=True,
+        )
+
+        mode = st.radio(
+            "Choose a mode:",
+            ["Single new class", "Full new semester"],
+            key="whatif_gpa_mode",
+        )
+
+        st.markdown("---")
+
+        # -------- Shared inputs --------
+        current_gpa = st.number_input(
+            "Current weighted GPA (on 6.0 scale)",
+            min_value=0.0,
+            max_value=6.0,
+            value=5.0,
+            step=0.01,
+            key="whatif_current_gpa",
+        )
+
+        completed_semesters = st.number_input(
+            "How many semester classes have you already completed in total?",
+            min_value=0,
+            max_value=200,
+            value=10,
+            step=1,
+            key="whatif_completed_semesters",
+        )
+
+        # If they have 0 completed, treat total points as 0
+        current_total_points = current_gpa * completed_semesters if completed_semesters > 0 else 0.0
+
+        # ---------- MODE 1: Single new class ----------
+        if mode == "Single new class":
+            st.markdown("### 🎯 Single Class Simulation")
+
+            course_name = st.selectbox(
+                "Pick the class you want to simulate:",
+                list(courses.keys()),
+                key="whatif_single_course",
+            )
+
+            # Handle AP World year (different weights)
+            ap_world_year = None
+            if course_name == "GT / AP World History":
+                ap_world_year = st.selectbox(
+                    "Which year of AP World is this?",
+                    [1, 2],
+                    key="whatif_single_apworld_year",
+                )
+                course_weight = courses[course_name][ap_world_year]
+            else:
+                course_weight = courses[course_name]
+
+            predicted_grade = st.number_input(
+                "Predicted semester grade for this class (%)",
+                min_value=0.0,
+                max_value=150.0,
+                value=95.0,
+                step=0.5,
+                key="whatif_single_predicted",
+            )
+
+            if st.button("Calculate new GPA (single class)", key="whatif_single_calc"):
+                # GPA for this one class on 6.0 scale
+                class_gpa = weighted_gpa(predicted_grade, course_weight)
+                class_gpa = round(class_gpa, 3)
+
+                new_total_points = current_total_points + class_gpa
+                new_total_classes = completed_semesters + 1
+
+                new_cum_gpa = new_total_points / new_total_classes if new_total_classes > 0 else 0.0
+                new_cum_gpa = round(new_cum_gpa, 3)
+
+                st.success(
+                    f"That **{predicted_grade:.1f}%** in **{course_name}** "
+                    f"counts as about **{class_gpa:.3f}** on the 6.0 scale."
+                )
+                st.info(
+                    f"Your overall weighted GPA would change from **{current_gpa:.3f}** "
+                    f"to about **{new_cum_gpa:.3f}**."
+                )
+
+        # ---------- MODE 2: Full new semester ----------
+        else:
+            st.markdown("### 📚 Full New Semester Simulation")
+
+            num_classes = st.slider(
+                "How many classes are you taking this semester?",
+                min_value=1,
+                max_value=8,
+                value=4,
+                step=1,
+                key="whatif_sem_num_classes",
+            )
+
+            st.caption("Fill in each class below with the class name and the semester grade you think you'll get.")
+
+            # Collect class configs
+            class_configs = []
+
+            for i in range(1, num_classes + 1):
+                st.markdown(f"**Class {i}**")
+
+                course_name = st.selectbox(
+                    f"Class {i} name",
+                    list(courses.keys()),
+                    key=f"whatif_sem_course_{i}",
+                )
+
+                ap_world_year = None
+                if course_name == "GT / AP World History":
+                    ap_world_year = st.selectbox(
+                        f"AP World year for Class {i}",
+                        [1, 2],
+                        key=f"whatif_sem_apworld_year_{i}",
+                    )
+                    course_weight = courses[course_name][ap_world_year]
+                else:
+                    course_weight = courses[course_name]
+
+                predicted_grade = st.number_input(
+                    f"Predicted semester grade for Class {i} (%)",
+                    min_value=0.0,
+                    max_value=150.0,
+                    value=93.0,
+                    step=0.5,
+                    key=f"whatif_sem_grade_{i}",
+                )
+
+                class_configs.append(
+                    {
+                        "name": course_name,
+                        "weight": course_weight,
+                        "grade": predicted_grade,
+                        "ap_year": ap_world_year,
+                    }
+                )
+
+                st.markdown("---")
+
+            if st.button("Calculate new GPA for this whole semester", key="whatif_sem_calc"):
+                new_points = []
+                breakdown_lines = []
+
+                for cfg in class_configs:
+                    class_gpa = weighted_gpa(cfg["grade"], cfg["weight"])
+                    class_gpa = round(class_gpa, 3)
+                    new_points.append(class_gpa)
+
+                    breakdown_lines.append(
+                        f"{cfg['name']}: {cfg['grade']:.1f}% "
+                        f"with weight {cfg['weight']} → {class_gpa:.3f} GPA points"
+                    )
+
+                total_new_points = sum(new_points)
+                total_classes_added = len(new_points)
+
+                total_points_all = current_total_points + total_new_points
+                total_classes_all = completed_semesters + total_classes_added
+
+                new_cum_gpa = total_points_all / total_classes_all if total_classes_all > 0 else 0.0
+                new_cum_gpa = round(new_cum_gpa, 3)
+
+                st.success(
+                    f"With these predicted grades, this semester would add **{total_new_points:.3f}** "
+                    f"GPA points across **{total_classes_added}** classes."
+                )
+                st.info(
+                    f"Your overall weighted GPA would go from **{current_gpa:.3f}** "
+                    f"to about **{new_cum_gpa:.3f}**."
+                )
+
+                st.markdown("#### Class-by-class breakdown")
+                for line in breakdown_lines:
+                    st.text(line)
 elif section == "🧠 Daily & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
 
