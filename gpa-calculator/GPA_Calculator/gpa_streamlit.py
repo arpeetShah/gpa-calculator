@@ -244,15 +244,16 @@ c = conn.cursor()
 
 c.execute("""
 CREATE TABLE IF NOT EXISTS grades (
-    course TEXT,
-    section TEXT,
+    username TEXT,
+    course   TEXT,
+    section  TEXT,
     semester1 REAL,
     semester2 REAL,
     q1 REAL,
     q2 REAL,
     q3 REAL,
     q4 REAL,
-    gt_year TEXT
+    gt_year  TEXT
 )
 """)
 conn.commit()
@@ -569,6 +570,9 @@ elif section == "📚 School Tools":
     with tools_tabs[0]:
         st.header("📊 GPA Calculator")
 
+        # Who is this data for? (change this to your real login name if you have one)
+        current_user = st.session_state.get("current_user", "guest")
+
         # Top summary card
         st.markdown(
             """
@@ -586,6 +590,10 @@ elif section == "📚 School Tools":
         )
 
         gpa_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📈 Results & Analytics"])
+
+        # We’ll fill these from the MS / HS tabs so Results can use them
+        ms_course_grades = {}
+        hs_course_grades = {}
 
         # =============================
         # MIDDLE SCHOOL TAB
@@ -607,27 +615,46 @@ elif section == "📚 School Tools":
                 unsafe_allow_html=True,
             )
 
+            # --- 1) Load any saved MS grades for this user from the DB ---
+            saved_ms = {}
+            for course, s1, s2, gt_year in c.execute(
+                    """
+                    SELECT course, semester1, semester2, gt_year
+                    FROM grades
+                    WHERE username = ? AND section = 'MS'
+                    """,
+                    (current_user,),
+            ):
+                vals = []
+                if s1 is not None:
+                    vals.append(s1)
+                if s2 is not None:
+                    vals.append(s2)
+                saved_ms[course] = vals  # list of 1 or 2 sem grades
+
+            # --- 2) Multiselect with saved courses pre-selected ---
             ms_selected = st.multiselect(
                 "Select the courses you took (MS)",
                 options=list(courses.keys()),
+                default=list(saved_ms.keys()),
                 key="ms_courses",
             )
 
-            # stored for Results tab
-            ms_course_grades = {}
-
+            # --- 3) Inputs + saving to DB ---
             for course in ms_selected:
                 # Determine number of semesters (Health = 1, others = 2)
                 semesters = 1 if course == "Health" else 2
+                previous = saved_ms.get(course, [])
 
-                # Collect grades dynamically
                 grades = []
                 for i in range(semesters):
+                    default_val = previous[i] if i < len(previous) else 0.0
                     grades.append(
                         st.number_input(
                             f"{course} – Semester {i + 1}",
                             min_value=0.0,
                             max_value=100.0,
+                            value=float(default_val),
                             key=f"ms_s{i + 1}_{course}",
                         )
                     )
@@ -646,21 +673,26 @@ elif section == "📚 School Tools":
                 else:
                     weight = courses[course]
 
-                # Prepare values for SQLite insert (exactly 9 values)
+                # Save to DB (semester1, semester2; quarters are None for MS)
                 s1 = grades[0]
                 s2 = grades[1] if semesters == 2 else None
-                extra = [None, None, None, None]  # HS quarter placeholders
 
                 c.execute(
                     """
-                    INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
+                    INSERT OR REPLACE INTO grades
+                    (username, course, section, semester1, semester2, q1, q2, q3, q4, gt_year)
+                    VALUES (?,?,?,?,?,?,?,?,?,?)
                     """,
                     (
+                        current_user,
                         course,
                         "MS",
                         s1,
                         s2,
-                        *extra,
+                        None,
+                        None,
+                        None,
+                        None,
                         gt_year,
                     ),
                 )
@@ -697,32 +729,49 @@ elif section == "📚 School Tools":
                 key="hs_quarters_overall",
             )
 
+            # --- 1) Load saved HS grades for this user ---
+            saved_hs = {}
+            for course, q1, q2, q3, q4, gt_year in c.execute(
+                    """
+                    SELECT course, q1, q2, q3, q4, gt_year
+                    FROM grades
+                    WHERE username = ? AND section = 'HS'
+                    """,
+                    (current_user,),
+            ):
+                vals = [g for g in (q1, q2, q3, q4) if g is not None]
+                saved_hs[course] = vals
+
+            # --- 2) Multiselect with saved HS courses pre-selected ---
             hs_selected = st.multiselect(
                 "Select the courses you took (HS)",
                 options=list(courses.keys()),
+                default=list(saved_hs.keys()),
                 key="hs_courses",
             )
 
-            # stored for Results tab
-            hs_course_grades = {}
-
+            # --- 3) Inputs + saving to DB ---
             for course in hs_selected:
-                # Collect quarter grades for each course
+                previous = saved_hs.get(course, [])
+
+                # How many quarters you want to enter for this course
                 quarters = st.slider(
                     f"Quarters Completed – {course}",
                     min_value=1,
                     max_value=hs_quarters,
-                    value=hs_quarters,
+                    value=len(previous) if previous else hs_quarters,
                     key=f"hs_quarters_{course}",
                 )
 
                 q_grades = []
                 for i in range(quarters):
+                    default_val = previous[i] if i < len(previous) else 0.0
                     q_grades.append(
                         st.number_input(
                             f"{course} – Quarter {i + 1}",
                             min_value=0.0,
                             max_value=100.0,
+                            value=float(default_val),
                             key=f"hs_q{i + 1}_{course}",
                         )
                     )
@@ -744,12 +793,15 @@ elif section == "📚 School Tools":
                 # Pad to 4 quarters for DB
                 padded = q_grades + [None] * (4 - len(q_grades))
 
-                # Insert into SQLite (exactly 9 values)
+                # Save to DB
                 c.execute(
                     """
-                    INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
+                    INSERT OR REPLACE INTO grades
+                    (username, course, section, semester1, semester2, q1, q2, q3, q4, gt_year)
+                    VALUES (?,?,?,?,?,?,?,?,?,?)
                     """,
                     (
+                        current_user,
                         course,
                         "HS",
                         None,
@@ -818,8 +870,7 @@ elif section == "📚 School Tools":
                 for course, q_grades in hs_course_grades.items():
                     # Group quarters into semesters (Q1+Q2, Q3+Q4)
                     for sem_index in range(0, len(q_grades), 2):
-                        sem_quarters = q_grades[sem_index : sem_index + 2]
-
+                        sem_quarters = q_grades[sem_index: sem_index + 2]
                         if not sem_quarters:
                             continue
 
@@ -862,7 +913,6 @@ elif section == "📚 School Tools":
                     with st.expander("📖 See full GPA calculation breakdown"):
                         for line in breakdown_text:
                             st.text(line)
-
 
     with tools_tabs[1]:
         unit = None
