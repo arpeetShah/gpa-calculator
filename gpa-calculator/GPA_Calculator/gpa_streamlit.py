@@ -404,13 +404,14 @@ elif section == "📚 School Tools":
             st.header("High School Grades")
 
             # Ask once for max quarters completed this year
-            hs_quarters = st.number_input(
+            hs_quarters = int(st.number_input(
                 "Enter how many quarters have been completed this year:",
                 min_value=1,
                 max_value=4,
                 value=4,
-                step=1
-            )
+                step=1,
+                format="%d"
+            ))
 
             hs_selected = st.multiselect(
                 "Select the courses you took (HS)",
