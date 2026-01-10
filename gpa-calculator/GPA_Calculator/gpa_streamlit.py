@@ -264,18 +264,24 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    st.subheader("Welcome to EduSphere!")
-    st.write(
-        "Hey! I created this app/website for YOU to have a convenient way to track your educational path. "
-        "There is no platform (until now) which allows you to get your cumulative GPA, and that was the inspiration for this. "
-        "Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! "
-        "Additionally, you do not need to give any personal credentials; you just manually input your grades and no one "
-        "(including me) will have access to your personal information and grades."
-    )
-    st.image(
-        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80",
-        use_column_width=True
-    )
+    # Create two columns: left (text) and right (image)
+    col1, col2 = st.columns([3, 2])  # 3:2 ratio = text a bit wider
+
+    with col1:
+        st.subheader("Welcome to EduSphere!")
+        st.write(
+            "Hey! I created this app/website for YOU to have a convenient way to track your educational path. "
+            "There is no platform (until now) which allows you to get your cumulative GPA, and that was the inspiration for this. "
+            "Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! "
+            "Additionally, you do not need to give any personal credentials; you just manually input your grades and no one "
+            "(including me) will have access to your personal information and grades."
+        )
+
+    with col2:
+        st.image(
+            "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80",
+            use_column_width=True
+        )
 
 # =============================
 # TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
