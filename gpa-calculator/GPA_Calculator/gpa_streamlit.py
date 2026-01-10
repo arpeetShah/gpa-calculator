@@ -963,104 +963,125 @@ elif section == "📚 School Tools":
                             st.write(get_study_tips(unit))
 
     with tools_tabs[2]:
-        st.header("🔗 Resource Hub")
+        with tools_tabs[2]:
+            st.subheader("🔗 Resource Hub")
 
-        st.write(
-            "Save your most useful school links here so you’re not hunting through bookmarks "
-            "or old tabs every time."
-        )
+            # Make sure the list exists
+            if "resources" not in st.session_state:
+                st.session_state.resources = []
 
-        col_left, col_right = st.columns([2, 3])
+            # Slightly smaller left column so it doesn't dominate
+            col_left, col_right = st.columns([1.4, 2.6])
 
-        # LEFT: add a new resource
-        with col_left:
-            st.subheader("➕ Add a resource")
+            # ---------- LEFT: Add resource (compact) ----------
+            with col_left:
+                st.markdown("**Add a resource**")
+                st.caption("Save links to tools you use a lot (Desmos, Quizlet, docs, etc.).")
 
-            res_title = st.text_input(
-                "Resource name",
-                placeholder="Ex: Desmos Graphing Calculator",
-                key="res_title"
-            )
-
-            res_url = st.text_input(
-                "Link (URL)",
-                placeholder="Ex: https://www.desmos.com/calculator",
-                key="res_url"
-            )
-
-            res_category = st.selectbox(
-                "Category",
-                ["Math", "Science", "History / AP World", "Language / Spanish",
-                 "College / Testing", "School Portals", "Tools", "Other"],
-                key="res_category"
-            )
-
-            if st.button("Save resource", key="res_save_button"):
-                title = res_title.strip()
-                url = res_url.strip()
-
-                if title and url:
-                    # 🔒 Make sure the URL is absolute (has http/https)
-                    if not (url.startswith("http://") or url.startswith("https://")):
-                        url = "https://" + url  # default to https
-
-                    st.session_state.resources.append(
-                        {
-                            "title": title,
-                            "url": url,
-                            "category": res_category,
-                        }
-                    )
-                    st.success("✅ Resource saved!")
-                else:
-                    st.warning("Please enter both a name and a link.")
-
-        # RIGHT: show saved resources
-        with col_right:
-            st.subheader("📚 Your saved links")
-
-            resources = st.session_state.resources
-
-            if not resources:
-                st.info("No resources saved yet. Add a few on the left!")
-            else:
-                categories = sorted({r["category"] for r in resources})
-                selected_cats = st.multiselect(
-                    "Filter by category (optional):",
-                    categories,
-                    default=categories,
+                res_title = st.text_input(
+                    "Name",
+                    placeholder="Ex: Desmos Graphing Calculator",
+                    key="res_title",
                 )
 
-                filtered = [
-                    r for r in resources
-                    if not selected_cats or r["category"] in selected_cats
-                ]
+                res_url = st.text_input(
+                    "Link",
+                    placeholder="Ex: desmos.com/calculator",
+                    key="res_url",
+                )
 
-                for r in filtered:
-                    st.markdown(
-                        f"""
-                        <div style="
-                            padding:8px 10px;
-                            margin-bottom:6px;
-                            border-radius:10px;
-                            background:rgba(15,23,42,0.7);
-                            border:1px solid rgba(148,163,184,0.8);
-                        ">
-                            <div style="font-size:13px; font-weight:700; margin-bottom:2px;">
-                                {r['title']}
-                            </div>
-                            <div style="font-size:11px; opacity:0.85; margin-bottom:4px;">
-                                Category: <strong>{r['category']}</strong>
-                            </div>
-                            <div style="font-size:12px;">
-                                🔗 <a href="{r['url']}" target="_blank" style="color:#bfdbfe;">
-                                    {r['url']}
-                                </a>
-                            </div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
+                res_category = st.selectbox(
+                    "Category",
+                    ["Math", "Science", "Spanish", "APs", "Research", "Other"],
+                    key="res_category",
+                )
+
+                if st.button("Save resource", key="res_save_button"):
+                    title = res_title.strip()
+                    url = res_url.strip()
+
+                    if title and url:
+                        # 🔒 Force full URL so it opens outside Streamlit
+                        if not (url.startswith("http://") or url.startswith("https://")):
+                            url = "https://" + url
+
+                        st.session_state.resources.append(
+                            {
+                                "title": title,
+                                "url": url,
+                                "category": res_category,
+                            }
+                        )
+                        st.success("✅ Resource saved!")
+                    else:
+                        st.warning("Please enter both a name and a link.")
+
+            # ---------- RIGHT: Gradient tiles grid ----------
+            with col_right:
+                st.markdown("**Your saved resources**")
+
+                if not st.session_state.resources:
+                    st.caption("No resources yet. Add a few on the left!")
+                else:
+                    # Optional: filter by category
+                    categories = ["All"] + sorted(
+                        list({r["category"] for r in st.session_state.resources})
                     )
+                    selected_cat = st.selectbox(
+                        "Filter by category",
+                        categories,
+                        index=0,
+                        key="res_filter_cat",
+                    )
+
+                    if selected_cat == "All":
+                        filtered = st.session_state.resources
+                    else:
+                        filtered = [r for r in st.session_state.resources if r["category"] == selected_cat]
+
+                    # Build tiles (≈ 3 per row, responsive)
+                    tiles_html = '<div style="display:flex; flex-wrap:wrap; gap:12px;">'
+
+                    for r in filtered:
+                        tiles_html += f"""
+                        <a href="{r['url']}" target="_blank" style="text-decoration:none; flex:1 1 calc(33.33% - 12px); min-width:190px; max-width:260px;">
+                            <div style="
+                                height: 110px;
+                                padding: 10px 12px;
+                                border-radius: 16px;
+                                background: linear-gradient(135deg, rgba(79,70,229,0.35), rgba(147,51,234,0.45));
+                                border: 1px solid rgba(148,163,184,0.7);
+                                box-shadow: 0 10px 22px rgba(15,23,42,0.75);
+                                cursor: pointer;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+                            ">
+                                <div>
+                                    <div style="font-size:13px; font-weight:600; color:#e5e7eb; margin-bottom:4px;">
+                                        {r['title']}
+                                    </div>
+                                    <div style="font-size:11px; opacity:0.8; color:#c7d2fe; margin-bottom:4px;">
+                                        {r['category']}
+                                    </div>
+                                </div>
+                                <div style="
+                                    font-size:10px;
+                                    opacity:0.65;
+                                    color:#9ca3af;
+                                    white-space:nowrap;
+                                    overflow:hidden;
+                                    text-overflow:ellipsis;
+                                ">
+                                    {r['url']}
+                                </div>
+                            </div>
+                        </a>
+                        """
+
+                    tiles_html += "</div>"
+
+                    st.markdown(tiles_html, unsafe_allow_html=True)
 
 elif section == "🧠 Focus & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
