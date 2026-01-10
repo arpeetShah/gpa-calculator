@@ -292,7 +292,7 @@ if section == "🏠 Home & Intro":
                     gap:6px;
                 ">
                     <span style="font-size:15px;">📱</span>
-                    <span><strong>Phone:</strong> 469-996-1729</span>
+                    <span><strong>Phone:</strong> 469-XXX-1729</span>
                 </div>
                 <div style="
                     padding:7px 12px;
