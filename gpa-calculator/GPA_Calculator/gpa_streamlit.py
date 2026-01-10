@@ -198,9 +198,6 @@ main_tabs = st.tabs([
 # =============================
 # FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
 # =============================
-# =============================
-# FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
-# =============================
 p1 = st.session_state.get("dash_task1", "").strip()
 p2 = st.session_state.get("dash_task2", "").strip()
 p3 = st.session_state.get("dash_task3", "").strip()
@@ -215,12 +212,12 @@ if p3:
 
 if items:
     items_html = "".join(
-        f'<li style="font-weight:700; font-size:14px; line-height:1.5; margin-bottom:6px;">{t}</li>'
+        f'<li style="font-weight:600; margin-bottom:2px;">{t}</li>'
         for t in items
     )
 else:
     items_html = (
-        '<li style="opacity:0.75; font-weight:500; font-size:13px; line-height:1.4;">'
+        '<li style="opacity:0.75; font-weight:500;">'
         'Set your top 3 in the Daily Dashboard tab.'
         '</li>'
     )
@@ -230,32 +227,32 @@ box_html = f"""
     position: fixed;
     top: 80px;
     right: 20px;
-    width: 300px;  /* wider box */
+    width: 230px;
     background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(30,64,175,0.9));
-    border-radius: 20px;
-    padding: 16px 18px;  /* more padding */
-    border: 1px solid rgba(148, 163, 184, 0.7);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.4);
-    font-size: 13px;
+    border-radius: 16px;
+    padding: 10px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+    font-size: 12px;
     color: #e5e7eb;
     z-index: 999;
 ">
-    <div style="text-align:center; margin-bottom:8px;">
+    <div style="text-align:center; margin-bottom:6px;">
         <span style="
             display:inline-block;
-            padding:6px 14px;
+            padding:4px 10px;
             border-radius:999px;
             background: radial-gradient(circle at top, #f97316, #ec4899);
             color:white;
-            font-size:12px;
-            font-weight:850;
-            letter-spacing:0.14em;
+            font-size:11px;
+            font-weight:800;
+            letter-spacing:0.12em;
             text-transform:uppercase;
         ">
             Today&apos;s Focus
         </span>
     </div>
-    <ul style="margin-top:6px; padding-left:20px; margin-bottom:0;">
+    <ul style="margin-top:4px; padding-left:18px; margin-bottom:0;">
         {items_html}
     </ul>
 </div>
