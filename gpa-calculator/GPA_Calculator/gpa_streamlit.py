@@ -2,6 +2,25 @@ import streamlit as st
 import sqlite3
 from datetime import date
 
+# =============== PER-USER STORAGE HELPER ===============
+def get_user_list(key: str):
+    """
+    Returns a list that belongs to the current logged-in user for a given key.
+    Example: get_user_list("org_tasks"), get_user_list("idea_vault").
+    Internally stored as st.session_state[key][username] = [...]
+    """
+    user = st.session_state.get("current_user")
+    if not user:
+        return []
+
+    if key not in st.session_state:
+        st.session_state[key] = {}          # this will be a dict: { username: [ ... ] }
+
+    if user not in st.session_state[key]:
+        st.session_state[key][user] = []    # create empty list for this user
+
+    return st.session_state[key][user]
+
 st.markdown(
     """
     <style>
@@ -1685,9 +1704,8 @@ elif section == "🧠 Daily & Planning":
     with focus_tabs[1]:
         st.header("📅 Organization Helper")
 
-        # --- Session state for saved tasks ---
-        if "org_tasks" not in st.session_state:
-            st.session_state.org_tasks = []  # each task will be a dict
+        # Get this user's task list
+        org_tasks = get_user_list("org_tasks")
 
         col_left, col_right = st.columns([2, 3])
 
@@ -1731,7 +1749,7 @@ elif section == "🧠 Daily & Planning":
 
             if st.button("Add to planner", key="org_add_button"):
                 if task_title.strip():
-                    st.session_state.org_tasks.append({
+                    org_tasks.append({
                         "date": task_date,
                         "course": task_course,
                         "title": task_title.strip(),
@@ -1753,11 +1771,7 @@ elif section == "🧠 Daily & Planning":
                 key="org_view_date"
             )
 
-            # Filter tasks for that day
-            tasks_for_day = [
-                t for t in st.session_state.org_tasks
-                if t["date"] == view_date
-            ]
+            tasks_for_day = [t for t in org_tasks if t["date"] == view_date]
 
             if tasks_for_day:
                 for t in tasks_for_day:
@@ -1784,9 +1798,8 @@ elif section == "🧠 Daily & Planning":
             st.markdown("---")
             st.subheader("📚 All Planned Tasks")
 
-            if st.session_state.org_tasks:
-                # Show all tasks in a simple text list
-                for t in st.session_state.org_tasks:
+            if org_tasks:
+                for t in org_tasks:
                     st.write(
                         f"- {t['date']} • {t['course']} • {t['title']} "
                         f"({t['type']}, {t['priority']}, ~{t['est']} min)"
@@ -1820,12 +1833,10 @@ elif section == "🌱 Personal Growth":
         st.subheader("💡 Idea Vault")
 
         # make sure list exists in session_state
-        if "idea_vault" not in st.session_state:
-            st.session_state.idea_vault = []
+        idea_list = get_user_list("idea_vault")  # 👈 per-user list
 
         col_left, col_right = st.columns([3, 2])
 
-        # ---- LEFT: add new idea ----
         with col_left:
             idea_title = st.text_input(
                 "Idea title",
@@ -1856,7 +1867,7 @@ elif section == "🌱 Personal Growth":
 
             if st.button("Save idea", key="save_idea"):
                 if idea_title.strip():
-                    st.session_state.idea_vault.append(
+                    idea_list.append(
                         {
                             "title": idea_title.strip(),
                             "desc": idea_desc.strip(),
@@ -1868,42 +1879,39 @@ elif section == "🌱 Personal Growth":
                 else:
                     st.warning("Give your idea a short title so future-you knows what it was 🙂")
 
-        # ---- RIGHT: show recent ideas ----
         with col_right:
             st.markdown("### 🗂 Recent Ideas")
 
-            if not st.session_state.idea_vault:
+            if not idea_list:
                 st.caption("No ideas yet. Whenever you get a random thought, drop it here instead of losing it.")
             else:
-                # show last 5 ideas, newest first
-                for idea in reversed(st.session_state.idea_vault[-5:]):
+                for idea in reversed(idea_list[-5:]):
                     dots = "•" * idea["importance"]
                     st.markdown(
                         f"""
-                        <div style="
-                            padding:8px 10px;
-                            margin-bottom:6px;
-                            border-radius:10px;
-                            background:rgba(15,23,42,0.7);
-                            border:1px solid rgba(148,163,184,0.8);
-                        ">
-                            <div style="font-size:13px; font-weight:700;">
-                                {idea['title']}
+                            <div style="
+                                padding:8px 10px;
+                                margin-bottom:6px;
+                                border-radius:10px;
+                                background:rgba(15,23,42,0.7);
+                                border:1px solid rgba(148,163,184,0.8);
+                            ">
+                                <div style="font-size:13px; font-weight:700;">
+                                    {idea['title']}
+                                </div>
+                                <div style="font-size:11px; opacity:0.8; margin:2px 0 4px 0;">
+                                    Tag: <strong>{idea['tag']}</strong> &nbsp;&nbsp; Priority: <span>{dots}</span>
+                                </div>
+                                <div style="font-size:12px; opacity:0.9;">
+                                    {idea['desc'] if idea['desc'] else "<i>No extra details yet.</i>"}
+                                </div>
                             </div>
-                            <div style="font-size:11px; opacity:0.8; margin:2px 0 4px 0;">
-                                Tag: <strong>{idea['tag']}</strong> &nbsp;&nbsp; Priority: <span>{dots}</span>
-                            </div>
-                            <div style="font-size:12px; opacity:0.9;">
-                                {idea['desc'] if idea['desc'] else "<i>No extra details yet.</i>"}
-                            </div>
-                        </div>
-                        """,
+                            """,
                         unsafe_allow_html=True,
                     )
 
-                if len(st.session_state.idea_vault) > 5:
-                    st.caption(f"+ {len(st.session_state.idea_vault) - 5} more saved ideas in your vault.")
-
+                if len(idea_list) > 5:
+                    st.caption(f"+ {len(idea_list) - 5} more saved ideas in your vault.")
 elif section == "🎯 Tutoring":
     st.header("🎯 Tutoring with Arpeet")
 
