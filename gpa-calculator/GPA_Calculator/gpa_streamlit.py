@@ -264,120 +264,33 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Three columns: About Me | About App | Image
+    # Three columns: About Me | About the App | Image
     col_me, col_app, col_image = st.columns([3, 3, 4])
 
     # ---------- COLUMN 1: About Me ----------
     with col_me:
-        st.markdown(
-            """
-            <div style="
-                background: radial-gradient(circle at top left, rgba(59,130,246,0.28), rgba(15,23,42,0.95));
-                border-radius: 18px;
-                padding: 16px 16px 14px 16px;
-                border: 1px solid rgba(148,163,184,0.7);
-                box-shadow: 0 14px 30px rgba(0,0,0,0.55);
-            ">
-                <div style="
-                    font-size: 11px;
-                    letter-spacing: 0.18em;
-                    text-transform: uppercase;
-                    color: #a5b4fc;
-                    margin-bottom: 6px;
-                ">
-                    ABOUT ME
-                </div>
-
-                <h4 style="
-                    margin: 0 0 6px 0;
-                    font-size: 17px;
-                ">
-                    Hi, I&apos;m <span style="color:#bfdbfe;">[Your Name]</span> 👋
-                </h4>
-
-                <p style="
-                    font-size: 12px;
-                    line-height: 1.6;
-                    opacity: 0.9;
-                    margin: 4px 0 8px 0;
-                ">
-                    • [Short sentence about your grade / school]<br>
-                    • [What you care about – e.g. organization, balance]<br>
-                    • [Why you built EduSphere in one line]
-                </p>
-
-                <p style="
-                    font-size: 11px;
-                    opacity: 0.8;
-                    margin-top: 6px;
-                ">
-                    I made this so students (including me) have one place to
-                    plan, track, and breathe a little easier.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        st.subheader("👋 About Me")
+        st.write(
+            "Hi, I'm **[Your Name]**.\n"
+            "- [Short sentence about your grade / school]\n"
+            "- I care about things like **[organization / balance / learning]**\n"
+            "- I built EduSphere so students (including me) have *one* place to plan and track school."
         )
 
     # ---------- COLUMN 2: About the App ----------
     with col_app:
-        st.markdown(
-            """
-            <div style="
-                background: radial-gradient(circle at top, rgba(129,140,248,0.3), rgba(15,23,42,0.96));
-                border-radius: 18px;
-                padding: 16px 16px 14px 16px;
-                border: 1px solid rgba(96,165,250,0.7);
-                box-shadow: 0 14px 30px rgba(0,0,0,0.55);
-            ">
-                <div style="
-                    font-size: 11px;
-                    letter-spacing: 0.18em;
-                    text-transform: uppercase;
-                    color: #7dd3fc;
-                    margin-bottom: 6px;
-                ">
-                    ABOUT THE APP
-                </div>
-
-                <h4 style="
-                    margin: 0 0 6px 0;
-                    font-size: 17px;
-                ">
-                    What is <span style="color:#bfdbfe;">EduSphere</span>?
-                </h4>
-
-                <p style="
-                    font-size: 12px;
-                    line-height: 1.6;
-                    opacity: 0.9;
-                    margin: 4px 0 8px 0;
-                ">
-                    EduSphere is your personal school hub where you can:
-                </p>
-
-                <ul style="
-                    font-size: 12px;
-                    padding-left: 18px;
-                    margin: 0 0 8px 0;
-                    line-height: 1.6;
-                ">
-                    <li>📊 See GPA & performance in one place</li>
-                    <li>📝 Practice quizzes to actually understand topics</li>
-                    <li>🧠 Plan your day and set 3 key priorities</li>
-                </ul>
-
-                <p style="
-                    font-size: 11px;
-                    opacity: 0.8;
-                    margin-top: 6px;
-                ">
-                    No logins. No data tracking. Just simple tools that work for you.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        st.subheader("📦 What is EduSphere?")
+        st.write(
+            "EduSphere is your personal school hub where you can:\n"
+            "- 📊 See your GPA & progress in one place\n"
+            "- 📝 Practice quizzes to actually understand topics\n"
+            "- 🧠 Plan your day and set your top 3 priorities\n"
         )
+        st.info(
+            "✨ You don’t have to fix everything today — just organize it.\n"
+            "This is your space to plan, reset, and move closer to your goals."
+        )
+        st.caption("No logins. No data tracking. Just tools that work for you.")
 
     # ---------- COLUMN 3: Image ----------
     with col_image:
