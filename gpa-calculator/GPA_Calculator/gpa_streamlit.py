@@ -244,19 +244,28 @@ courses = {
 # =============================
 # MAIN TITLE + TABS
 # =============================
-st.title("🎓 EduSphere")
-st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
-
 st.markdown(
     """
-    <p style="
-        font-size: 13px;
-        margin-top: -5px;
-        margin-bottom: 8px;
-        opacity: 0.85;
+    <div style="
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 10px;
     ">
-        Where you school life actually makes sense
-    </p>
+        <div style="
+            font-size: 30px;
+            font-weight: 700;
+        ">
+            🎓 EduSphere
+        </div>
+        <div style="
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.85;
+        ">
+            Organize today. Own tomorrow.
+        </div>
+    </div>
     """,
     unsafe_allow_html=True
 )
