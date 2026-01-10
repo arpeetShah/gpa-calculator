@@ -210,7 +210,7 @@ with main_tabs[0]:
     with col2:
         st.image(
             "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=700&q=80",
-            width=300,
+            width=450,
         )
     st.markdown("---")
 
