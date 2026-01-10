@@ -1334,7 +1334,7 @@ elif section == "📚 School Tools":
     # =============================
     # TAB 3: WHAT-IF GPA CALCULATOR
     # =============================
-    with tools_tabs[4]:
+    with tools_tabs[2]:
         st.subheader("❓ What-If GPA Calculator")
 
         st.markdown(
