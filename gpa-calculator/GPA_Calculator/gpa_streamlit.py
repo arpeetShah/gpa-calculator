@@ -3,7 +3,7 @@ import sqlite3
 from datetime import date
 
 tutor_bar_html = """
-<a href="#tutoring-corner" style="text-decoration:none;">
+<a href="?section=tutoring" style="text-decoration:none;">
     <div style="
         position: fixed;
         bottom: 0;
@@ -133,6 +133,21 @@ st.set_page_config(
     layout="wide"
 )
 
+# --------------------------------
+# Handle navigation via URL param
+# --------------------------------
+params = st.experimental_get_query_params()
+
+# default section (in case nothing chosen yet)
+if "section_choice" not in st.session_state:
+    st.session_state.section_choice = "🏠 Home & Intro"
+
+# If the bottom bar was clicked (?section=tutoring), jump to Tutoring
+if "section" in params:
+    if params["section"][0] == "tutoring":
+        st.session_state.section_choice = "🎯 Tutoring"
+        # Clear the param so refreshing doesn't keep forcing it
+        st.experimental_set_query_params()
 # =============================
 # STYLES
 # =============================
