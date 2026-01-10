@@ -264,52 +264,64 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    left_col, right_col = st.columns([2, 3])
+    # Two columns: left = text, right = image
+    col_text, col_image = st.columns([3, 2])
 
-    # -------- LEFT: Text + Comic-style quote --------
-    with left_col:
+    # ---------- LEFT: WELCOME TEXT (shifted to the right a bit) ----------
+    with col_text:
         st.markdown(
             """
-            <h2 style="margin-bottom: 0.4rem;">Welcome to <span style="color:#facc15;">EduSphere</span> ✨</h2>
-            <p style="font-size: 14px; line-height: 1.5;">
-                EduSphere is your all-in-one workspace for school.<br>
-                You can track your progress, plan your day, set priorities, and practice problems — all in one clean dashboard,
-                without creating an account or sharing personal info.
-            </p>
-
-            <div style="
-                margin-top: 10px;
-                padding: 12px 14px;
-                border-radius: 16px;
-                background: rgba(30, 64, 175, 0.5);
-                border: 2px dashed rgba(251, 191, 36, 0.9);
-                box-shadow: 0 10px 24px rgba(15,23,42,0.7);
-            ">
-                <p style="
-                    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                    font-size: 15px;
-                    font-weight: 700;
-                    color: #fffbeb;
-                    margin: 0;
-                ">
-                    ✨ “You don’t have to do everything at once — just organize today.<br>
-                    EduSphere is your space to plan, reset, and move closer to your goals.”
+            <div style="margin-left: 30px;">
+                <h3 style="margin-bottom: 8px;">Welcome to EduSphere</h3>
+                <p style="font-size: 14px; line-height: 1.6;">
+                    EduSphere is your all-in-one workspace for school.
+                    You can track your progress, plan your day, set priorities,
+                    and practice problems — all in one clean dashboard, without
+                    creating an account or sharing personal info.
                 </p>
+                <div style="
+                    margin-top: 10px;
+                    padding: 12px 14px;
+                    border-radius: 16px;
+                    background: rgba(30, 64, 175, 0.5);
+                    border: 2px dashed rgba(251, 191, 36, 0.9);
+                    box-shadow: 0 10px 24px rgba(15,23,42,0.7);
+                ">
+                    <p style="
+                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #fffbeb;
+                        margin: 0;
+                    ">
+                        ✨ You don’t have to fix everything today — just organize it.<br>
+                        EduSphere is your space to plan, reset, and move closer to your goals.
+                    </p>
+                </div>
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    # -------- RIGHT: Image --------
-    with right_col:
-        st.image(
-            "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            width=500,
-        )
+    # ---------- RIGHT: IMAGE (pushed to the right) ----------
+    with col_image:
         st.markdown(
-            "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Think beyond the classroom. Aim past the stars. 🚀</p>",
+            "<div style='text-align: right; margin-right: 25px;'>",
             unsafe_allow_html=True
         )
+        st.image(
+            "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.1.0",
+            width=340,
+        )
+        st.markdown(
+            """
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 6px;">
+                Think beyond the classroom. Design your own path. 🚀
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
         # =============================
 # TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
