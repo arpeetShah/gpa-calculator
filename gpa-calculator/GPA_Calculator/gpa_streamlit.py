@@ -263,38 +263,81 @@ st.markdown(box_html, unsafe_allow_html=True)
 # =============================
 # TAB 0: WELCOME
 # =============================
-with col_text:
-    st.markdown(
-        """
-        <h3 style="margin-bottom: 8px; text-align: center;">Welcome to EduSphere</h3>
-        <p style="font-size: 14px; line-height: 1.6; text-align: center;">
-            EduSphere is your all-in-one workspace for school.<br>
-            Track your progress, plan your day, set priorities, and practice problems —
-            all in one clean dashboard, without creating an account or sharing personal info.
-        </p>
-        <div style="
-            margin-top: 10px;
-            padding: 12px 14px;
-            border-radius: 16px;
-            background: rgba(30, 64, 175, 0.5);
-            border: 2px dashed rgba(251, 191, 36, 0.9);
-            box-shadow: 0 10px 24px rgba(15,23,42,0.7);
-        ">
-            <p style="
-                font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                font-size: 15px;
-                font-weight: 700;
-                color: #fffbeb;
-                margin: 0;
-                text-align: center;
+with main_tabs[0]:
+    # Two columns: left = text, right = image
+    col_text, col_image = st.columns([7, 5])
+
+    # ----- LEFT: Aesthetic welcome card -----
+    with col_text:
+        st.markdown(
+            """
+            <div style="
+                background: radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(15,23,42,0.95));
+                border-radius: 18px;
+                padding: 18px 18px 16px 18px;
+                border: 1px solid rgba(148,163,184,0.6);
+                box-shadow: 0 18px 40px rgba(0,0,0,0.55);
             ">
-                ✨ You don’t have to fix everything today — just organize it.<br>
-                EduSphere is your space to plan, reset, and move closer to your goals.
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+                <h3 style="
+                    margin: 0 0 6px 0;
+                    text-align: center;
+                    font-size: 22px;
+                    letter-spacing: 0.04em;
+                ">
+                    Welcome to <span style="color:#bfdbfe;">EduSphere</span>
+                </h3>
+
+                <p style="
+                    font-size: 13px;
+                    line-height: 1.7;
+                    text-align: center;
+                    opacity: 0.9;
+                    margin: 4px 4px 10px 4px;
+                ">
+                    Your all-in-one workspace for school.<br>
+                    Plan your day, track progress, and practice smarter —
+                    all in a clean, distraction-light dashboard.
+                </p>
+
+                <div style="
+                    margin-top: 6px;
+                    padding: 10px 12px;
+                    border-radius: 14px;
+                    background: rgba(30,64,175,0.7);
+                    border: 1.5px dashed rgba(251,191,36,0.95);
+                ">
+                    <p style="
+                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                        font-size: 14px;
+                        font-weight: 700;
+                        color: #fffbeb;
+                        margin: 0;
+                        text-align: center;
+                    ">
+                        ✨ You don’t have to fix everything today — just organize it.<br>
+                        This is your space to plan, reset, and move closer to your goals.
+                    </p>
+                </div>
+
+                <p style="
+                    font-size: 11px;
+                    opacity: 0.75;
+                    text-align: center;
+                    margin-top: 8px;
+                ">
+                    No logins. No data tracking. Just tools that work for you.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # ----- RIGHT: Image -----
+    with col_image:
+        st.image(
+            "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
+            width=500,
+        )
         # =============================
 # TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
