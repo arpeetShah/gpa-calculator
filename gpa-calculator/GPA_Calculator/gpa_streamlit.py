@@ -264,47 +264,82 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Two columns: left = text, right = image
     col1, col2 = st.columns([3, 2])
 
     with col1:
-        st.subheader("Welcome to EduSphere!")
-        st.write(
-            "EduSphere is a simple all-in-one place for your school life. "
-            "You can check your GPA, plan tasks, set daily priorities, and practice quizzes — all in one spot. "
-            "You don’t need an account or any personal login; you just type in what you want to track, and it stays on your screen."
-        )
-
-        # 🔹 Comic-style inspirational box (no grade-specific wording)
+        # Main glass-style welcome card
         st.markdown(
             """
             <div style="
-                margin-top: 10px;
-                padding: 14px 16px;
-                border-radius: 14px;
-                background: rgba(255, 255, 255, 0.08);
-                border: 2px dashed rgba(251, 191, 36, 0.9);
-                box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+                background: rgba(15, 23, 42, 0.7);
+                border-radius: 20px;
+                padding: 18px 20px;
+                border: 1px solid rgba(148, 163, 184, 0.6);
+                box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+                backdrop-filter: blur(10px);
             ">
-                <p style="
-                    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                    font-size: 16px;
-                    font-weight: 700;
-                    color: #fffbeb;
-                    margin: 0;
+                <h2 style="
+                    margin-top: 0;
+                    margin-bottom: 8px;
+                    font-size: 24px;
+                    background: linear-gradient(135deg, #a855f7, #38bdf8);
+                    -webkit-background-clip: text;
+                    color: transparent;
                 ">
-                    ✨ “You don’t have to have everything figured out — just plan the next few steps. <br>
-                    EduSphere is your space to organize, breathe, and move a little closer to your goals each day.”
+                    Welcome to EduSphere
+                </h2>
+                <p style="
+                    font-size: 14px;
+                    line-height: 1.6;
+                    color: #e5e7eb;
+                    margin-bottom: 10px;
+                ">
+                    EduSphere is your all-in-one workspace for school.  
+                    You can track your progress, plan your day, set priorities, and practice problems —
+                    all in one clean dashboard, without creating an account or sharing personal info.
                 </p>
+
+                <div style="
+                    margin-top: 10px;
+                    padding: 12px 14px;
+                    border-radius: 16px;
+                    background: rgba(30, 64, 175, 0.5);
+                    border: 2px dashed rgba(251, 191, 36, 0.9);
+                    box-shadow: 0 10px 24px rgba(15,23,42,0.7);
+                ">
+                    <p style="
+                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #fffbeb;
+                        margin: 0;
+                    ">
+                        ✨ “You don’t have to do everything at once — just organize today.  
+                        EduSphere is your space to plan, reset, and move closer to your goals.”
+                    </p>
+                </div>
             </div>
             """,
             unsafe_allow_html=True
         )
 
     with col2:
+        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
         st.image(
-            "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80",
+            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80",
             use_column_width=True
+        )
+        st.markdown(
+            """
+            <p style="
+                font-size: 12px;
+                opacity: 0.8;
+                margin-top: 6px;
+            ">
+                A futuristic workspace for a more organized you 🚀
+            </p>
+            """,
+            unsafe_allow_html=True
         )
 # TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
 # =============================
