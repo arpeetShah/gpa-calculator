@@ -1679,22 +1679,4 @@ elif section == "🎯 Tutoring":
         st.markdown(
             "A: Mostly middle school and early high school (up to 9th/10th grade level)."
         )
-# =============================
-# BOTTOM TUTORING BANNER
-# =============================
 
-st.markdown("<br><br>", unsafe_allow_html=True)  # small spacer above the bar
-
-# Center the banner across the bottom
-left_spacer, center_col, right_spacer = st.columns([1, 6, 1])
-
-with center_col:
-    clicked = st.button(
-        "🧑‍🏫 Now offering 1-on-1 tutoring — tap here to see subjects, grades, and how to get started",
-        key="tutoring_banner_button",
-    )
-
-    if clicked:
-        # Switch the dropdown to the Tutoring section and reload
-        st.session_state.section_choice = "🎯 Tutoring"
-        st.experimental_rerun()
