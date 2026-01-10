@@ -264,8 +264,8 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Two equal columns so the whole section feels centered
-    col_text, col_image = st.columns([1, 1])
+    # Two columns, slightly favoring the text
+    col_text, col_image = st.columns([1.1, 0.9])
 
     # ---------- LEFT: WELCOME TEXT ----------
     with col_text:
@@ -301,10 +301,10 @@ with main_tabs[0]:
             unsafe_allow_html=True
         )
 
-    # ---------- RIGHT: IMAGE (centered, width 500) ----------
+    # ---------- RIGHT: IMAGE (pushed a bit right, no extra gaps) ----------
     with col_image:
         st.markdown(
-            "<div style='text-align: center;'>",
+            "<div style='text-align: right; padding-right: 5px;'>",
             unsafe_allow_html=True
         )
         st.image(
@@ -313,8 +313,8 @@ with main_tabs[0]:
         )
         st.markdown(
             """
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 6px; text-align: center;">
-                Think beyond the classroom. Design your own path. 🚀
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 6px; text-align: right;">
+                Think beyond the classroom. Design your own trajectory. 🚀
             </p>
             """,
             unsafe_allow_html=True
