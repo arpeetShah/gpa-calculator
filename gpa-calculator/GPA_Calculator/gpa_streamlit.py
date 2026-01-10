@@ -408,8 +408,8 @@ with main_tabs[1]:
             if not weighted:
                 st.warning("No courses selected.")
             else:
-                final_weighted = round(sum(weighted) / len(weighted), 2)
-                final_unweighted = round(sum(unweighted) / len(unweighted), 2)
+                final_weighted = round(sum(weighted) / len(weighted), 4)
+                final_unweighted = round(sum(unweighted) / len(unweighted), 4)
 
                 st.success(f"🎓 Final Weighted GPA: {final_weighted}")
                 st.success(f"📘 Final Unweighted GPA: {final_unweighted}")
