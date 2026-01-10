@@ -187,7 +187,13 @@ st.title("🎓 EduSphere")
 st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # Main tabs for the whole app
-main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice", "📅 Organization Helper"])
+main_tabs = st.tabs([
+    "🏠 Welcome",
+    "🎓 GPA",
+    "📝 Quiz & Practice",
+    "🧠 Daily Dashboard",
+    "📅 Organization Helper"
+])
 
 # =============================
 # FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
@@ -274,6 +280,7 @@ with main_tabs[0]:
 # =============================
 # TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
 # =============================
+# TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
     st.header("🧠 Daily Dashboard")
 
@@ -344,17 +351,6 @@ with main_tabs[3]:
         )
 
     # RIGHT: image
-    with col2:
-        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-        st.image(
-            "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=700&q=80",
-            width=220,
-        )
-        st.markdown(
-            "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Quiet focus mode 🧑‍💻</p>",
-            unsafe_allow_html=True
-        )
-    # ---------- RIGHT SIDE: Aesthetic image ----------
     with col2:
         st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
         st.image(
