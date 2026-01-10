@@ -340,7 +340,7 @@ with main_tabs[0]:
     with col_image:
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
-            width=450,
+            width=500,
         )
 # TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
