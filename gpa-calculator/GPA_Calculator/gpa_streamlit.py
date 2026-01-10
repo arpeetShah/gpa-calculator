@@ -353,7 +353,7 @@ with main_tabs[3]:
     # RIGHT: image
     with col2:
         st.markdown(
-            "<div style='text-align:left; margin-left:10000px;'>",
+            "<div style='text-align:left; margin-right:30px;'>",
             unsafe_allow_html=True
         )
         st.image(
