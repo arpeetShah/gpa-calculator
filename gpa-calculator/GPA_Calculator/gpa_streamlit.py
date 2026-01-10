@@ -293,7 +293,7 @@ with main_tabs[0]:
                 color: #f9fafb;
             ">
                 <div style="font-weight:700; margin-bottom:6px; opacity:0.95;">
-                    📇 Contact
+                    📇 Contact:
                 </div>
                 <div style="margin-bottom:4px;">
                     <strong>Phone:</strong> 469-996-1729
