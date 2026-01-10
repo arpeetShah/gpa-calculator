@@ -355,7 +355,7 @@ with main_tabs[3]:
         st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
         st.image(
             "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
-            width=560,
+            width=500,
         )
         st.markdown(
             "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Quiet focus mode 🧑‍💻</p>",
