@@ -180,7 +180,10 @@ courses = {
 # =============================
 st.title("🎓 EduSphere")
 
-# ---------- Top-right priorities summary (fixed-size box) ----------
+# small spacer so the title doesn't feel jammed at the very top
+st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+
+# ---------- Top-right priorities summary (fixed-size, nicer styling) ----------
 top_left, top_right = st.columns([3, 1])
 
 with top_right:
@@ -188,7 +191,7 @@ with top_right:
     p2 = st.session_state.get("dash_task2", "").strip()
     p3 = st.session_state.get("dash_task3", "").strip()
 
-    # Build the inner list content
+    # Build inner list
     if any([p1, p2, p3]):
         items_html = ""
         if p1:
@@ -198,36 +201,59 @@ with top_right:
         if p3:
             items_html += f"<li>{p3}</li>"
     else:
-        # Placeholder when nothing is set yet
         items_html = "<li style='opacity:0.7;'>Set your top 3 in the Daily Dashboard tab.</li>"
 
-    # Single fixed-height box, always same size
     box_html = f"""
     <div style="
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 14px;
+        background: linear-gradient(145deg, rgba(15,23,42,0.95), rgba(30,64,175,0.8));
+        border-radius: 16px;
         padding: 10px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.35);
         font-size: 12px;
-        height: 120px;              /* 🔹 fixed height */
-        overflow-y: auto;           /* 🔹 scroll if too long, no extra page space */
+        height: 120px;               /* fixed height */
+        overflow-y: auto;
+        color: #e5e7eb;
     ">
         <div style="
-            font-size: 11px;
-            text-transform: uppercase;
-            opacity: 0.75;
-            letter-spacing: 0.08em;
-            margin-bottom: 4px;
+            text-align: center;
+            margin-bottom: 6px;
         ">
-            Today&apos;s Focus
+            <span style="
+                display: inline-block;
+                padding: 4px 10px;
+                border-radius: 999px;
+                background: radial-gradient(circle at top, #f97316, #ec4899);
+                color: white;
+                font-size: 11px;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            ">
+                Today&apos;s Focus
+            </span>
         </div>
-        <ul style="margin-top: 4px; padding-left: 18px; margin-bottom: 0;">
-            {items_html}
+        <ul style="
+            margin-top: 4px;
+            padding-left: 18px;
+            margin-bottom: 0;
+            list-style-type: disc;
+        ">
+            <li style="font-weight: 600; margin-bottom: 2px;">{p1}</li> 
+            {f'<li style="font-weight: 600; margin-bottom: 2px;">{p2}</li>' if p2 else ''}
+            {f'<li style="font-weight: 600; margin-bottom: 2px;">{p3}</li>' if p3 else ''}
+            {""
+            if any([p1, p2, p3])
+            else '<li style="opacity:0.7; font-weight:500;">Set your top 3 in the Daily Dashboard tab.</li>'}
         </ul>
     </div>
     """
 
     st.markdown(box_html, unsafe_allow_html=True)
+
+# keep your tabs line exactly as you already have it
+# main_tabs = st.tabs([...])
 
 # ---------- Main tabs ----------
 main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice", "📅 Organization Helper", "🧠 Daily Dashboard"])
