@@ -352,7 +352,10 @@ with main_tabs[3]:
 
     # RIGHT: image
     with col2:
-        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='text-align:left; margin-left:-20px;'>",
+            unsafe_allow_html=True
+        )
         st.image(
             "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
             width=500,
