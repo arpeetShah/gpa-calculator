@@ -192,7 +192,7 @@ main_tabs = st.tabs([
     "🎓 GPA",
     "📝 Quiz & Practice",
     "🧠 Daily Dashboard",
-    "📅 Organization Helper",
+    "📅 Planner",
     "💡 Idea Vault"
 ])
 
