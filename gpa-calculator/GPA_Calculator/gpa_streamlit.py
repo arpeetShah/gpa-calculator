@@ -329,7 +329,7 @@ with main_tabs[0]:
                 </p>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True   # 👈 THIS is what makes the HTML render instead of showing as code
         )
 
     # ----- RIGHT: Welcome image -----
