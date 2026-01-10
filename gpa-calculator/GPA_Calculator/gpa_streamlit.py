@@ -270,21 +270,39 @@ with main_tabs[0]:
     # ---------- COLUMN 1: About Me ----------
     # ---------- COLUMN 1: About Me ----------
     with col_me:
-        st.subheader("👋 About Me")
-
-        st.write(
-            "Hi, I'm **Arpeet Shah**.\n"
-            "- 9th grade student at **Emerson High School**\n"
-            "- I care about staying organized, keeping up with school, and keeping some balance.\n"
-            "- I built EduSphere so students (including me) have one place to plan and track school."
-        )
-
-        # Contact label + “pill” style info
         st.markdown(
             """
+            <h4 style="
+                margin: 0 0 6px 0;
+                font-size: 17px;
+            ">
+                Hi, I&apos;m <span style="color:#bfdbfe;">Arpeet Shah</span> 👋
+            </h4>
+
+            <p style="
+                font-size: 12px;
+                line-height: 1.6;
+                opacity: 0.9;
+                margin: 4px 0 8px 0;
+            ">
+                • 9th grade student at Emerson High School<br>
+                • I care about staying organized, keeping my grades on track, and balancing everything going on<br>
+                • I built EduSphere so students have one place to plan, track, and reset without stress
+            </p>
+
+            <p style="
+                font-size: 11px;
+                opacity: 0.8;
+                margin-top: 4px;
+            ">
+                I made this so students (including me) have one place to
+                plan, track, and breathe a little easier.
+            </p>
+
             <div style="margin-top:10px; font-size:13px; font-weight:700; opacity:0.95;">
                 📇 Contact
             </div>
+
             <div style="
                 margin-top:8px;
                 display:flex;
