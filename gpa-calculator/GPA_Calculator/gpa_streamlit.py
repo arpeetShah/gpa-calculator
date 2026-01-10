@@ -1190,7 +1190,7 @@ elif section == "📚 School Tools":
                             # If more than 9 in this category, tell the user
                             if len(filtered) > max_tiles:
                                 st.caption(f"+ {len(filtered) - max_tiles} more saved resources in this category.")
-elif section == "🧠 Focus & Planning":
+elif section == "🧠 Daily & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
 
     with focus_tabs[0]:
