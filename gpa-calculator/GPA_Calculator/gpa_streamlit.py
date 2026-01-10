@@ -1177,7 +1177,7 @@ elif section == "🌱 Personal Growth":
     tabs = st.tabs(["💡 Idea Vault"])
 
     # ------------------ TAB 1: IDEA VAULT ------------------
-    with tabs[1]:
+    with tabs[0]:
         st.subheader("💡 Idea Vault")
 
         # make sure list exists in session_state
