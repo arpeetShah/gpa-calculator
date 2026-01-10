@@ -350,7 +350,7 @@ with main_tabs[1]:
             for course, sem_grades in ms_course_grades.items():
                 for sem_index, grade in enumerate(sem_grades, start=1):
 
-                    # Determine course weight
+                    # Determine weight
                     if course == "GT / AP World History":
                         year = st.session_state.get(f"{course}_year", 1)
                         weight = courses[course][year]
@@ -377,16 +377,18 @@ with main_tabs[1]:
                 # Group quarters into semesters (Q1+Q2, Q3+Q4)
                 for sem_index in range(0, len(q_grades), 2):
                     sem_quarters = q_grades[sem_index:sem_index + 2]
-                    sem_avg = sum(sem_quarters) / len(sem_quarters)
 
-                    # Determine course weight
+                    raw_avg = sum(sem_quarters) / len(sem_quarters)
+                    sem_avg = round(raw_avg)  # 🔥 FIX: ROUND TO WHOLE NUMBER FIRST
+
+                    # Determine weight
                     if course == "GT / AP World History":
                         year = st.session_state.get(f"{course}_year", 1)
                         weight = courses[course][year]
                     else:
                         weight = courses.get(course)
 
-                    # Convert semester average → GPA
+                    # Convert semester grade → GPA
                     w_gpa = weighted_gpa(sem_avg, weight)
                     uw_gpa = unweighted_gpa(sem_avg)
 
@@ -396,7 +398,7 @@ with main_tabs[1]:
                     breakdown_text.append(
                         f"High School | {course} | Semester {(sem_index // 2) + 1}: "
                         f"Quarter Grades {sem_quarters} → "
-                        f"Semester Avg {round(sem_avg, 2)} → "
+                        f"Avg {raw_avg:.2f} → Rounded {sem_avg} → "
                         f"Weighted GPA {w_gpa}, Unweighted GPA {uw_gpa}"
                     )
 
