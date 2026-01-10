@@ -264,126 +264,126 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Two columns: left = text, right = image
-    col_left, col_right = st.columns([6, 5])
+    # Three columns: About Me | About App | Image
+    col_me, col_app, col_image = st.columns([3, 3, 4])
 
-    # ---------- LEFT: Clean, "tuff" welcome card ----------
-    with col_left:
+    # ---------- COLUMN 1: About Me ----------
+    with col_me:
         st.markdown(
             """
             <div style="
-                background: radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(15,23,42,0.95));
+                background: radial-gradient(circle at top left, rgba(59,130,246,0.28), rgba(15,23,42,0.95));
                 border-radius: 18px;
-                padding: 20px 20px 16px 20px;
-                border: 1px solid rgba(148,163,184,0.6);
-                box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+                padding: 16px 16px 14px 16px;
+                border: 1px solid rgba(148,163,184,0.7);
+                box-shadow: 0 14px 30px rgba(0,0,0,0.55);
             ">
-
                 <div style="
                     font-size: 11px;
                     letter-spacing: 0.18em;
                     text-transform: uppercase;
                     color: #a5b4fc;
-                    text-align: left;
                     margin-bottom: 6px;
                 ">
-                    YOUR SCHOOL HUB
+                    ABOUT ME
                 </div>
 
-                <h2 style="
-                    margin: 0 0 8px 0;
-                    text-align: left;
-                    font-size: 24px;
-                    letter-spacing: 0.03em;
+                <h4 style="
+                    margin: 0 0 6px 0;
+                    font-size: 17px;
                 ">
-                    Welcome to <span style="color:#bfdbfe;">EduSphere</span>
-                </h2>
+                    Hi, I&apos;m <span style="color:#bfdbfe;">[Your Name]</span> 👋
+                </h4>
 
                 <p style="
-                    font-size: 13px;
-                    line-height: 1.7;
-                    text-align: left;
+                    font-size: 12px;
+                    line-height: 1.6;
                     opacity: 0.9;
-                    margin: 4px 0 12px 0;
+                    margin: 4px 0 8px 0;
                 ">
-                    Your all-in-one workspace for school.<br>
-                    Track your progress, stay organized, and practice smarter — 
-                    without logins or extra noise.
+                    • [Short sentence about your grade / school]<br>
+                    • [What you care about – e.g. organization, grades, balance]<br>
+                    • [Why you built EduSphere in one line]
                 </p>
-
-                <div style="
-                    display: flex;
-                    gap: 8px;
-                    flex-wrap: wrap;
-                    margin-bottom: 10px;
-                ">
-                    <span style="
-                        font-size: 11px;
-                        padding: 4px 10px;
-                        border-radius: 999px;
-                        background: rgba(15,23,42,0.9);
-                        border: 1px solid rgba(129,140,248,0.9);
-                    ">
-                        🎯 GPA & insights
-                    </span>
-                    <span style="
-                        font-size: 11px;
-                        padding: 4px 10px;
-                        border-radius: 999px;
-                        background: rgba(15,23,42,0.9);
-                        border: 1px solid rgba(56,189,248,0.9);
-                    ">
-                        ✏️ Quizzes & practice
-                    </span>
-                    <span style="
-                        font-size: 11px;
-                        padding: 4px 10px;
-                        border-radius: 999px;
-                        background: rgba(15,23,42,0.9);
-                        border: 1px solid rgba(251,191,36,0.9);
-                    ">
-                        🧠 Daily focus & planning
-                    </span>
-                </div>
-
-                <div style="
-                    margin-top: 4px;
-                    padding: 9px 11px;
-                    border-radius: 14px;
-                    background: rgba(30,64,175,0.7);
-                    border: 1.5px dashed rgba(251,191,36,0.95);
-                ">
-                    <p style="
-                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                        font-size: 13px;
-                        font-weight: 700;
-                        color: #fffbeb;
-                        margin: 0;
-                        text-align: center;
-                    ">
-                        ✨ You don’t have to fix everything today — just organize it.<br>
-                        This is your space to reset and move closer to your goals.
-                    </p>
-                </div>
 
                 <p style="
                     font-size: 11px;
-                    opacity: 0.75;
-                    text-align: left;
-                    margin-top: 10px;
+                    opacity: 0.8;
+                    margin-top: 6px;
                 ">
-                    No accounts. No data tracking. Just tools built to help you.
+                    I made this so students (including me) have one place to
+                    plan, track, and breathe a little easier.
                 </p>
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    # ---------- RIGHT: Futuristic image ----------
-    with col_right:
+    # ---------- COLUMN 2: About the App ----------
+    with col_app:
+        st.markdown(
+            """
+            <div style="
+                background: radial-gradient(circle at top, rgba(129,140,248,0.3), rgba(15,23,42,0.96));
+                border-radius: 18px;
+                padding: 16px 16px 14px 16px;
+                border: 1px solid rgba(96,165,250,0.7);
+                box-shadow: 0 14px 30px rgba(0,0,0,0.55);
+            ">
+                <div style="
+                    font-size: 11px;
+                    letter-spacing: 0.18em;
+                    text-transform: uppercase;
+                    color: #7dd3fc;
+                    margin-bottom: 6px;
+                ">
+                    ABOUT THE APP
+                </div>
+
+                <h4 style="
+                    margin: 0 0 6px 0;
+                    font-size: 17px;
+                ">
+                    What is <span style="color:#bfdbfe;">EduSphere</span>?
+                </h4>
+
+                <p style="
+                    font-size: 12px;
+                    line-height: 1.6;
+                    opacity: 0.9;
+                    margin: 4px 0 8px 0;
+                ">
+                    EduSphere is your personal school hub where you can:
+                </p>
+
+                <ul style="
+                    font-size: 12px;
+                    padding-left: 18px;
+                    margin: 0 0 8px 0;
+                    line-height: 1.6;
+                ">
+                    <li>📊 See GPA & performance in one place</li>
+                    <li>📝 Practice quizzes to actually understand topics</li>
+                    <li>🧠 Plan your day and set 3 key priorities</li>
+                </ul>
+
+                <p style="
+                    font-size: 11px;
+                    opacity: 0.8;
+                    margin-top: 6px;
+                ">
+                    No accounts. No data tracking. Just simple tools that work for you.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # ---------- COLUMN 3: Image ----------
+    with col_image:
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
-            width=480,
+            width=380,
         )
 
     # ----- RIGHT: Welcome image -----
