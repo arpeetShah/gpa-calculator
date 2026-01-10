@@ -304,7 +304,7 @@ with main_tabs[0]:
     with right_col:
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            width=600,
+            width=500,
         )
         st.markdown(
             "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Think beyond the classroom. Aim past the stars. 🚀</p>",
