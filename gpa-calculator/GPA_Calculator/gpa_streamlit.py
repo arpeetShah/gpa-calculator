@@ -198,6 +198,9 @@ main_tabs = st.tabs([
 # =============================
 # FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
 # =============================
+# =============================
+# FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
+# =============================
 p1 = st.session_state.get("dash_task1", "").strip()
 p2 = st.session_state.get("dash_task2", "").strip()
 p3 = st.session_state.get("dash_task3", "").strip()
@@ -212,12 +215,12 @@ if p3:
 
 if items:
     items_html = "".join(
-        f'<li style="font-weight:600; margin-bottom:2px;">{t}</li>'
+        f'<li style="font-weight:650; font-size:13px; line-height:1.4; margin-bottom:4px;">{t}</li>'
         for t in items
     )
 else:
     items_html = (
-        '<li style="opacity:0.75; font-weight:500;">'
+        '<li style="opacity:0.75; font-weight:500; font-size:12px; line-height:1.4;">'
         'Set your top 3 in the Daily Dashboard tab.'
         '</li>'
     )
@@ -227,20 +230,20 @@ box_html = f"""
     position: fixed;
     top: 80px;
     right: 20px;
-    width: 230px;
+    width: 270px;  /* ⬅ slightly wider */
     background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(30,64,175,0.9));
-    border-radius: 16px;
-    padding: 10px 12px;
+    border-radius: 18px;
+    padding: 14px 16px;  /* ⬅ more padding */
     border: 1px solid rgba(148, 163, 184, 0.6);
     box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-    font-size: 12px;
+    font-size: 13px;  /* ⬅ base text a bit bigger */
     color: #e5e7eb;
     z-index: 999;
 ">
-    <div style="text-align:center; margin-bottom:6px;">
+    <div style="text-align:center; margin-bottom:8px;">
         <span style="
             display:inline-block;
-            padding:4px 10px;
+            padding:5px 12px;
             border-radius:999px;
             background: radial-gradient(circle at top, #f97316, #ec4899);
             color:white;
