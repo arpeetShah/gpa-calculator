@@ -282,38 +282,46 @@ with main_tabs[0]:
         # Contact label + “pill” style info
         st.markdown(
             """
-            <div style="margin-top:10px; font-size:13px; font-weight:700; opacity:0.9;">
+            <div style="margin-top:10px; font-size:13px; font-weight:700; opacity:0.95;">
                 📇 Contact
             </div>
-            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:8px;">
+            <div style="
+                margin-top:8px;
+                display:flex;
+                flex-wrap:wrap;
+                gap:10px;
+            ">
+                <!-- Phone pill -->
                 <div style="
-                    padding:7px 12px;
+                    padding:8px 14px;
                     border-radius:999px;
-                    background:linear-gradient(135deg,#111827,#1f2937);
+                    background: radial-gradient(circle at top left, #020617, #111827);
                     font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(148,163,184,0.9);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
+                    border:1px solid rgba(148,163,184,0.95);
+                    box-shadow:0 8px 20px rgba(0,0,0,0.75);
                     display:flex;
                     align-items:center;
-                    gap:6px;
+                    gap:8px;
                 ">
-                    <span style="font-size:15px;">📱</span>
+                    <span style="font-size:16px;">📱</span>
                     <span><strong>Phone:</strong> 469-996-1729</span>
                 </div>
+
+                <!-- Email pill -->
                 <div style="
-                    padding:7px 12px;
+                    padding:8px 14px;
                     border-radius:999px;
-                    background:linear-gradient(135deg,#022c22,#064e3b);
+                    background: radial-gradient(circle at top left, #022c22, #02201a);
                     font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(167,243,208,0.9);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
+                    border:1px solid rgba(45,212,191,0.9);
+                    box-shadow:0 8px 20px rgba(0,0,0,0.75);
                     display:flex;
                     align-items:center;
-                    gap:6px;
+                    gap:8px;
                 ">
-                    <span style="font-size:15px;">✉️</span>
+                    <span style="font-size:16px;">✉️</span>
                     <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
                 </div>
             </div>
@@ -340,7 +348,7 @@ with main_tabs[0]:
     with col_image:
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
-            width=550,
+            width=500,
         )
 # TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
