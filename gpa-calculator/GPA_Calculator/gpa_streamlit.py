@@ -354,7 +354,7 @@ with main_tabs[3]:
     with col2:
         st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
         st.image(
-            "https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?auto=format&fit=crop&w=900&q=80",
+            "https://images.unsplash.com/photo-1522202195461-41b9a15c3b99?auto=format&fit=crop&w=900&q=80",
             width=220,
         )
         st.markdown(
