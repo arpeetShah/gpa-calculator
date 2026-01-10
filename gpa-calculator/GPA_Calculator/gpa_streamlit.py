@@ -1681,39 +1681,21 @@ elif section == "🎯 Tutoring":
         )
 
 # =============================
-# BOTTOM TUTORING BANNER
+# BOTTOM TUTORING BAR
 # =============================
 
-st.markdown("<br><br>", unsafe_allow_html=True)  # tiny spacer so it’s not glued to content
+st.markdown("<br><br>", unsafe_allow_html=True)  # small spacer above the bar
 
-banner_col1, banner_col2 = st.columns([4, 1])
+# Center the big clickable bar
+left_spacer, center_col, right_spacer = st.columns([1, 4, 1])
 
-with banner_col1:
-    st.markdown(
-        """
-        <div style="
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #0f172a, #1d293b, #4f46e5);
-            border: 1px solid rgba(129, 140, 248, 0.9);
-            box-shadow: 0 10px 28px rgba(0,0,0,0.8);
-        ">
-            <div style="font-size: 14px; font-weight: 700; color: #e5e7eb; margin-bottom: 3px;">
-                🧑‍🏫 I’m offering 1:1 tutoring
-            </div>
-            <div style="font-size: 12px; color: #cbd5f5; opacity: 0.9;">
-                Need help with math, AP World, Spanish, or planning your week? 
-                Click to see how my tutoring works and fill out a quick interest form.
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+with center_col:
+    clicked = st.button(
+        "🧑‍🏫 Now offering 1-on-1 tutoring — tap here to see subjects, grades, and how to get started",
+        key="tutoring_banner_button",
     )
 
-with banner_col2:
-    # Big button that jumps to the Tutoring section
-    if st.button("Go to Tutoring", key="banner_tutoring_btn"):
+    if clicked:
+        # Switch the selectbox to the Tutoring section
         st.session_state.section_choice = "🎯 Tutoring"
-        # Optional: force refresh so it switches immediately
         st.experimental_rerun()
