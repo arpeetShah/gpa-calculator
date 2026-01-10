@@ -249,7 +249,7 @@ st.markdown(
     <div style="
         display: flex;
         align-items: baseline;
-        justify-content: space-between;
+        gap: 12px;
         margin-bottom: 10px;
     ">
         <div style="
