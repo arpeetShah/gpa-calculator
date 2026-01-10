@@ -268,13 +268,46 @@ with main_tabs[0]:
     col_me, col_app, col_image = st.columns([3, 3, 4])
 
     # ---------- COLUMN 1: About Me ----------
+    # ---------- COLUMN 1: About Me ----------
     with col_me:
         st.subheader("👋 About Me")
+
         st.write(
-            "Hi, I'm **[Your Name]**.\n"
-            "- [Short sentence about your grade / school]\n"
-            "- I care about things like **[organization / balance / learning]**\n"
-            "- I built EduSphere so students (including me) have *one* place to plan and track school."
+            "Hi, I'm **Arpeet Shah**.\n"
+            "- 9th grade student at **Emerson High School**\n"
+            "- I care about staying organized, keeping up with school, and keeping some balance.\n"
+            "- I built EduSphere so students (including me) have one place to plan and track school."
+        )
+
+        # contact “buttons” (non-clickable, just styled)
+        st.markdown(
+            """
+            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:8px;">
+                <div style="
+                    padding:6px 10px;
+                    border-radius:999px;
+                    background:linear-gradient(135deg,#4f46e5,#9333ea);
+                    font-size:12px;
+                    color:#f9fafb;
+                    border:1px solid rgba(191,219,254,0.6);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.35);
+                ">
+                    📞 469-996-1729
+                </div>
+                <div style="
+                    padding:6px 10px;
+                    border-radius:999px;
+                    background:linear-gradient(135deg,#0ea5e9,#22c55e);
+                    font-size:12px;
+                    color:#f9fafb;
+                    border:1px solid rgba(187,247,208,0.7);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.35);
+                ">
+                    ✉️ arpeet.shah.168@k12.friscoisd.org
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     # ---------- COLUMN 2: About the App ----------
