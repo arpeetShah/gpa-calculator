@@ -279,31 +279,42 @@ with main_tabs[0]:
             "- I built EduSphere so students (including me) have one place to plan and track school."
         )
 
-        # contact “buttons” (non-clickable, just styled)
+        # Contact label + “pill” style info
         st.markdown(
             """
+            <div style="margin-top:10px; font-size:13px; font-weight:700; opacity:0.9;">
+                📇 Contact
+            </div>
             <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:8px;">
                 <div style="
-                    padding:6px 10px;
+                    padding:7px 12px;
                     border-radius:999px;
                     background:linear-gradient(135deg,#4f46e5,#9333ea);
-                    font-size:12px;
+                    font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(191,219,254,0.6);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.35);
+                    border:1px solid rgba(191,219,254,0.7);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.45);
+                    display:flex;
+                    align-items:center;
+                    gap:6px;
                 ">
-                    📞 469-996-1729
+                    <span style="font-size:15px;">📱</span>
+                    <span><strong>Phone:</strong> 469-996-1729</span>
                 </div>
                 <div style="
-                    padding:6px 10px;
+                    padding:7px 12px;
                     border-radius:999px;
                     background:linear-gradient(135deg,#0ea5e9,#22c55e);
-                    font-size:12px;
+                    font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(187,247,208,0.7);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.35);
+                    border:1px solid rgba(187,247,208,0.8);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.45);
+                    display:flex;
+                    align-items:center;
+                    gap:6px;
                 ">
-                    ✉️ arpeet.shah.168@k12.friscoisd.org
+                    <span style="font-size:15px;">✉️</span>
+                    <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
                 </div>
             </div>
             """,
