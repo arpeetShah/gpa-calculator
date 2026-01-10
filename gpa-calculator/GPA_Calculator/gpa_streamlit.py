@@ -187,37 +187,86 @@ main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice", "📅 O
 # =============================
 from datetime import date
 
-with main_tabs[0]:
-    st.subheader("📌 Daily Dashboard")
+with main_tabs[3]:
+    st.header("🧠 Daily Dashboard")
 
-    # Top layout: info on the left, image on the right
-    col1, col2 = st.columns([2, 1])
+    st.markdown(
+        """
+        <style>
+        .dash-card {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(6px);
+        }
+        .dash-title-pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            color: white;
+            margin-bottom: 8px;
+        }
+        .dash-subtitle {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .dash-hint {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 6px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
+    col1, col2 = st.columns([3, 2])
+
+    # ---------- LEFT SIDE: Tasks card ----------
     with col1:
-        today = date.today().strftime("%A, %B %d, %Y")
-        st.markdown(f"### 📅 Today: {today}")
+        st.markdown(
+            """
+            <div class="dash-card">
+                <div class="dash-title-pill">Today</div>
+                <div class="dash-subtitle">Top 3 Priorities</div>
+                <p style="font-size: 13px; opacity: 0.85; margin-bottom: 6px;">
+                    Pick the three things that would make today a win.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        # Quick priorities
-        st.markdown("#### ✅ Today’s Top 3 Priorities")
-        p1 = st.text_input("Priority 1", key="dash_p1")
-        p2 = st.text_input("Priority 2", key="dash_p2")
-        p3 = st.text_input("Priority 3", key="dash_p3")
+        task1 = st.text_input("① Priority 1", key="dash_task1")
+        task2 = st.text_input("② Priority 2", key="dash_task2")
+        task3 = st.text_input("③ Priority 3", key="dash_task3")
 
-        # Quick notes
-        st.markdown("#### 📝 Quick Notes")
-        notes = st.text_area("Anything important for today?", key="dash_notes")
+        st.markdown(
+            """
+            <p class="dash-hint">
+            ✅ Tip: If everything is a priority, nothing is. Keep this list short and realistic.
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
 
+    # ---------- RIGHT SIDE: Aesthetic image ----------
     with col2:
+        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
         st.image(
             "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=700&q=80",
-            width=450,
+            width=220,
         )
-    st.markdown("---")
-
-    # Optional: small “overview” section
-    st.markdown("### 📊 Overview")
-    st.write("Use the GPA and Quiz tabs above to track your progress and practice for your classes.")
-
+        st.markdown(
+            "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Quiet focus mode 🧑‍💻</p>",
+            unsafe_allow_html=True
+        )
 # =============================
 # GPA TAB
 # =============================
