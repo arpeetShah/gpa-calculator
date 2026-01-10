@@ -267,7 +267,7 @@ with main_tabs[0]:
     # Two columns: left = text, right = image
     col_text, col_image = st.columns([7, 5])
 
-    # ----- LEFT: Aesthetic welcome card -----
+    # ----- LEFT: Welcome text (HTML styled) -----
     with col_text:
         st.markdown(
             """
@@ -332,7 +332,7 @@ with main_tabs[0]:
             unsafe_allow_html=True
         )
 
-    # ----- RIGHT: Image -----
+    # ----- RIGHT: Welcome image -----
     with col_image:
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
