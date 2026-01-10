@@ -1174,52 +1174,7 @@ elif section == "🧠 Focus & Planning":
 # TAB 5: IDEA VAULT
 # =============================
 elif section == "🌱 Personal Growth":
-    tabs = st.tabs(["💬 Mood & Energy", "💡 Idea Vault"])
-
-    # ------------------ TAB 0: Mood & Energy (simple version) ------------------
-    with tabs[0]:
-        st.subheader("💬 Mood & Energy Check-in")
-
-        mood = st.slider(
-            "How are you feeling today?",
-            min_value=1,
-            max_value=10,
-            value=7,
-            help="1 = terrible, 10 = amazing"
-        )
-
-        energy = st.slider(
-            "What’s your energy level?",
-            min_value=1,
-            max_value=10,
-            value=6,
-            help="1 = exhausted, 10 = super charged"
-        )
-
-        note = st.text_area(
-            "Optional note (what’s going on today?)",
-            key="mood_note",
-            height=80
-        )
-
-        if "mood_log" not in st.session_state:
-            st.session_state.mood_log = []
-
-        if st.button("Save today’s check-in", key="save_mood"):
-            st.session_state.mood_log.append(
-                {"mood": mood, "energy": energy, "note": note}
-            )
-            st.success("Saved today’s check-in ✅")
-
-        if st.session_state.mood_log:
-            st.markdown("### Recent check-ins")
-            for entry in reversed(st.session_state.mood_log[-5:]):
-                st.write(
-                    f"- Mood **{entry['mood']}** / Energy **{entry['energy']}**"
-                    + (f" – _{entry['note']}_" if entry['note'].strip() else "")
-                )
-        else:
-            st.caption("No check-ins yet. Use this tab when you want to track how you’re feeling over time.")
+    tabs = st.tabs(["💡 Idea Vault"])
 
     # ------------------ TAB 1: IDEA VAULT ------------------
     with tabs[1]:
