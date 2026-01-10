@@ -2,6 +2,50 @@ import streamlit as st
 import sqlite3
 from datetime import date
 
+tutor_bar_html = """
+<a href="#tutoring-corner" style="text-decoration:none;">
+    <div style="
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 58px;
+        background: linear-gradient(135deg, rgba(30,64,175,0.98), rgba(124,58,237,0.96));
+        border-top: 1px solid rgba(191,219,254,0.7);
+        box-shadow: 0 -10px 25px rgba(0,0,0,0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        z-index: 999;
+        cursor: pointer;
+    ">
+        <div style="
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: radial-gradient(circle at top, #fde68a, #f97316);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+        ">
+            📚
+        </div>
+        <div style="text-align:center; color:#e5e7eb;">
+            <div style="font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;">
+                Now Offering 1-on-1 Tutoring
+            </div>
+            <div style="font-size:11px; opacity:0.9;">
+                Tap here to see subjects, grades, and how to get started.
+            </div>
+        </div>
+    </div>
+</a>
+"""
+
+st.markdown(tutor_bar_html, unsafe_allow_html=True)
+
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -191,7 +235,13 @@ st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 # --------- TOP-LEVEL DROPDOWN NAV ---------
 section = st.selectbox(
     "Where do you want to go?",
-    ["🏠 Home & Intro", "📚 School Tools", "🧠 Focus & Planning", "🌱 Personal Growth"]
+    [
+        "🏠 Home & Intro",
+        "📚 School Tools",
+        "🧠 Daily & Planning",
+        "🌱 Personal Growth",
+        "🎯 Tutoring",
+    ],
 )
 # =============================
 # FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
@@ -1429,3 +1479,202 @@ elif section == "🌱 Personal Growth":
 
                 if len(st.session_state.idea_vault) > 5:
                     st.caption(f"+ {len(st.session_state.idea_vault) - 5} more saved ideas in your vault.")
+
+elif section == "🎯 Tutoring":
+    st.header("🎯 Tutoring with Arpeet")
+
+    # Make sure storage exists
+    if "tutoring_requests" not in st.session_state:
+        st.session_state.tutoring_requests = []
+
+    tabs = st.tabs(["Overview", "Interest Form", "FAQ"])
+
+    # ---------------- TAB 1: OVERVIEW ----------------
+    with tabs[0]:
+        col_left, col_right = st.columns([3, 2])
+
+        # LEFT: main info
+        with col_left:
+            st.subheader("Why I’m offering tutoring")
+
+            st.markdown(
+                """
+                I’m **Arpeet**, a 9th grader at Emerson High School, and I built EduSphere
+                to help students stay organized and understand school better.
+
+                Tutoring with me is:
+                - 🧠 **Student-to-student** – I get what assignments and tests actually feel like.
+                - 🧮 **Focused on understanding**, not just memorizing steps.
+                - 🤝 **Chill and low-pressure** – we work through problems together.
+                """
+            )
+
+            st.markdown("### 📚 Subjects I can help with")
+
+            st.markdown(
+                """
+                - **Math:** Algebra 1, Geometry, Algebra 2 basics, AP Precalculus foundations  
+                - **Social Studies:** GT / AP World History concepts & writing prep  
+                - **Spanish:** Beginner conversation & grammar practice  
+                - **Organization:** Planning, prioritizing, and using this app to stay on top of work
+                """
+            )
+
+            st.markdown("### 👥 Who this is for?")
+            st.markdown(
+                """
+                - Middle schoolers who want a head-start on high school  
+                - 9th graders who want help with math, AP World, or staying organized  
+                - Anyone who wants another student to explain things in simple language
+                """
+            )
+
+        # RIGHT: quick “how it works” card
+        with col_right:
+            st.markdown(
+                """
+                <div style="
+                    background: radial-gradient(circle at top left,
+                                rgba(59,130,246,0.35),
+                                rgba(15,23,42,0.95));
+                    border-radius: 18px;
+                    padding: 14px 16px;
+                    border: 1px solid rgba(148,163,184,0.7);
+                    box-shadow: 0 16px 35px rgba(0,0,0,0.7);
+                    font-size: 13px;
+                ">
+                    <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">
+                        How a tutoring session works
+                    </div>
+                    <ol style="padding-left: 18px; margin: 0;">
+                        <li>Tell me your subject, class, and what you’re stuck on.</li>
+                        <li>We pick problems from your homework or similar practice.</li>
+                        <li>I walk you through step-by-step and ask you to explain back.</li>
+                        <li>We end with a tiny “exit ticket” so you know what you learned.</li>
+                    </ol>
+                    <div style="margin-top: 10px; font-size: 11px; opacity: 0.8;">
+                        Note: This app doesn’t schedule anything by itself –
+                        it just collects your info so you (or a parent) can reach out.
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    # ---------------- TAB 2: INTEREST FORM ----------------
+    with tabs[1]:
+        st.subheader("📥 Tutoring Interest Form")
+
+        st.markdown(
+            "Fill this out if you might want tutoring. This doesn’t book anything – "
+            "it just organizes your info so it’s easier to reach out and plan."
+        )
+
+        # Basic info
+        student_name = st.text_input("Your first name (or initials)", key="tutor_name")
+        grade = st.selectbox(
+            "Your grade",
+            ["6th", "7th", "8th", "9th", "10th", "Other"],
+            key="tutor_grade",
+        )
+
+        subject = st.selectbox(
+            "What do you want help with?",
+            [
+                "Algebra 1",
+                "Geometry",
+                "Algebra 2 basics",
+                "AP Precalculus basics",
+                "GT / AP World History",
+                "Spanish",
+                "Organization / planning",
+                "Other",
+            ],
+            key="tutor_subject",
+        )
+
+        st.markdown("**When are you usually free? (You can pick more than one)**")
+        availability = st.multiselect(
+            "Days / time windows",
+            [
+                "Weekdays after school",
+                "Weekday evenings",
+                "Saturday mornings",
+                "Saturday afternoons",
+                "Sunday",
+            ],
+            key="tutor_availability",
+        )
+
+        contact_pref = st.selectbox(
+            "Who should reach out?",
+            [
+                "Me (student) will reach out to you",
+                "My parent/guardian will contact you",
+                "We’ll decide later",
+            ],
+            key="tutor_contact_pref",
+        )
+
+        goals = st.text_area(
+            "What are your goals or what are you struggling with?",
+            placeholder="Ex: I keep messing up factoring… / I don’t understand DBQ structure…",
+            key="tutor_goals",
+            height=90,
+        )
+
+        if st.button("Save my interest", key="tutor_save_interest"):
+            if student_name.strip():
+                st.session_state.tutoring_requests.append(
+                    {
+                        "name": student_name.strip(),
+                        "grade": grade,
+                        "subject": subject,
+                        "availability": availability,
+                        "contact_pref": contact_pref,
+                        "goals": goals.strip(),
+                    }
+                )
+                st.success(
+                    "✅ Saved! You can show this page to your parent/guardian when you reach out."
+                )
+            else:
+                st.warning("Please at least put your name or initials so you remember which one is yours.")
+
+        # Show a mini table of saved entries (only visible on your side)
+        if st.session_state.tutoring_requests:
+            st.markdown("### 🗂 Saved interest entries (only visible on this device)")
+            for i, t in enumerate(st.session_state.tutoring_requests, start=1):
+                st.markdown(
+                    f"""
+                    **#{i} – {t['name']} ({t['grade']})**  
+                    • Subject: `{t['subject']}`  
+                    • Availability: `{", ".join(t['availability']) if t['availability'] else "Not specified"}`  
+                    • Contact: `{t['contact_pref']}`  
+                    • Goals: `{t['goals'] or "—"}`
+                    """
+                )
+
+    # ---------------- TAB 3: FAQ ----------------
+    with tabs[2]:
+        st.subheader("❓ Tutoring FAQ")
+
+        st.markdown("**Q: Is this through school?**")
+        st.markdown(
+            "A: No, this is just a personal student-to-student tutoring offer, not an official school program."
+        )
+
+        st.markdown("**Q: How do we actually contact you?**")
+        st.markdown(
+            "A: You can use the contact info on the Home section. It’s best if a parent/guardian reaches out."
+        )
+
+        st.markdown("**Q: Do you help with homework or just concepts?**")
+        st.markdown(
+            "A: Both. We can go over your homework problems *and* practice similar ones so you actually understand it."
+        )
+
+        st.markdown("**Q: What grades do you prefer working with?**")
+        st.markdown(
+            "A: Mostly middle school and early high school (up to 9th/10th grade level)."
+        )
