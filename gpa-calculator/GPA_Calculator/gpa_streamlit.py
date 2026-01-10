@@ -238,6 +238,15 @@ CREATE TABLE IF NOT EXISTS grades (
 """)
 conn.commit()
 
+# Simple users table for login profiles
+c.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    username TEXT PRIMARY KEY,
+    pin TEXT
+)
+""")
+conn.commit()
+
 # =============================
 # HELPERS
 # =============================
@@ -284,6 +293,73 @@ courses = {
 # =============================
 # MAIN TITLE + TABS
 # =============================
+
+# =============================
+# SIMPLE LOGIN SYSTEM
+# =============================
+import sqlite3  # you already have this at the top
+
+# Make sure login state exists
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
+
+# If not logged in, show login / signup screen and STOP the app there
+if not st.session_state.logged_in:
+    st.title("🎓 EduSphere")
+
+    st.subheader("Login or create a profile")
+    st.caption("⚠️ Don’t use a real password. Just a nickname + simple PIN for this app.")
+
+    mode = st.radio("Choose an option:", ["Log in", "Create new profile"], key="login_mode")
+
+    username = st.text_input(
+        "Username",
+        placeholder="Ex: arpeet09 or math_wizard",
+        key="login_username"
+    )
+
+    pin = st.text_input(
+        "4-digit PIN (NOT a real password)",
+        type="password",
+        max_chars=4,
+        key="login_pin"
+    )
+
+    if st.button("Continue", key="login_continue"):
+        if not username.strip() or not pin.strip():
+            st.warning("Please enter both a username and a PIN.")
+        else:
+            username = username.strip()
+
+            if mode == "Create new profile":
+                # Try to create the user
+                try:
+                    c.execute("INSERT INTO users (username, pin) VALUES (?, ?)", (username, pin))
+                    conn.commit()
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = username
+                    st.success(f"Profile created! Welcome, {username}.")
+                    st.rerun()
+                except sqlite3.IntegrityError:
+                    st.error("That username already exists. Try logging in instead.")
+            else:
+                # Log in
+                c.execute("SELECT pin FROM users WHERE username = ?", (username,))
+                row = c.fetchone()
+                if row and row[0] == pin:
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = username
+                    st.success(f"Welcome back, {username}!")
+                    st.rerun()
+                else:
+                    st.error("Incorrect username or PIN.")
+
+    # Stop here if not logged in (don’t show the rest of the app)
+    st.stop()
+
+
 st.markdown(
     """
     <div style="
