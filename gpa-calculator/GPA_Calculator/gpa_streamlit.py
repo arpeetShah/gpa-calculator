@@ -239,7 +239,7 @@ st.markdown("""
 # =============================
 # DATABASE
 # =============================
-conn = sqlite3.connect("gpa_users.db", check_same_thread=False)
+conn = sqlite3.connect("gpa_users_v2.db", check_same_thread=False)
 c = conn.cursor()
 
 c.execute("""
