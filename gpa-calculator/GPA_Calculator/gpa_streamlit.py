@@ -77,6 +77,9 @@ if "show_questions" not in st.session_state:
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
 
+if "resources" not in st.session_state:
+    st.session_state.resources = []   # each: {"title", "url", "category"}
+
 # =============================
 # PAGE CONFIG
 # =============================
@@ -328,7 +331,7 @@ if section == "🏠 Home & Intro":
         )
 
 elif section == "📚 School Tools":
-    tools_tabs = st.tabs(["📊 GPA", "📝 Quiz & Practice"])
+    tools_tabs = st.tabs(["📊 GPA", "📝 Quiz & Practice", "🔗 Resource Hub"])
     # ⬆️ everything under this elif must be indented one level
     # put your GPA + Quiz code in here
 
@@ -958,6 +961,99 @@ elif section == "📚 School Tools":
                         for unit in units:
                             st.markdown(f"**🔹 {unit}**")
                             st.write(get_study_tips(unit))
+
+    with tools_tabs[2]:
+        st.header("🔗 Resource Hub")
+
+        st.write(
+            "Save your most useful school links here so you’re not hunting through bookmarks "
+            "or old tabs every time."
+        )
+
+        col_left, col_right = st.columns([2, 3])
+
+        # LEFT: add a new resource
+        with col_left:
+            st.subheader("➕ Add a resource")
+
+            res_title = st.text_input(
+                "Resource name",
+                placeholder="Ex: Desmos Graphing Calculator",
+                key="res_title"
+            )
+
+            res_url = st.text_input(
+                "Link (URL)",
+                placeholder="Ex: https://www.desmos.com/calculator",
+                key="res_url"
+            )
+
+            res_category = st.selectbox(
+                "Category",
+                ["Math", "Science", "History / AP World", "Language / Spanish",
+                 "College / Testing", "School Portals", "Tools", "Other"],
+                key="res_category"
+            )
+
+            if st.button("Save resource", key="res_save_button"):
+                if res_title.strip() and res_url.strip():
+                    st.session_state.resources.append(
+                        {
+                            "title": res_title.strip(),
+                            "url": res_url.strip(),
+                            "category": res_category,
+                        }
+                    )
+                    st.success("✅ Resource saved!")
+                else:
+                    st.warning("Please enter both a name and a link.")
+
+        # RIGHT: show saved resources
+        with col_right:
+            st.subheader("📚 Your saved links")
+
+            resources = st.session_state.resources
+
+            if not resources:
+                st.info("No resources saved yet. Add a few on the left!")
+            else:
+                categories = sorted({r["category"] for r in resources})
+                selected_cats = st.multiselect(
+                    "Filter by category (optional):",
+                    categories,
+                    default=categories,
+                )
+
+                filtered = [
+                    r for r in resources
+                    if not selected_cats or r["category"] in selected_cats
+                ]
+
+                for r in filtered:
+                    st.markdown(
+                        f"""
+                        <div style="
+                            padding:8px 10px;
+                            margin-bottom:6px;
+                            border-radius:10px;
+                            background:rgba(15,23,42,0.7);
+                            border:1px solid rgba(148,163,184,0.8);
+                        ">
+                            <div style="font-size:13px; font-weight:700; margin-bottom:2px;">
+                                {r['title']}
+                            </div>
+                            <div style="font-size:11px; opacity:0.85; margin-bottom:4px;">
+                                Category: <strong>{r['category']}</strong>
+                            </div>
+                            <div style="font-size:12px;">
+                                🔗 <a href="{r['url']}" target="_blank" style="color:#bfdbfe;">
+                                    {r['url']}
+                                </a>
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
 elif section == "🧠 Focus & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
