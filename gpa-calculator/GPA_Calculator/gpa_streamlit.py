@@ -303,7 +303,7 @@ with main_tabs[0]:
     # -------- RIGHT: Image --------
     with right_col:
         st.image(
-            "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1000&q=80",
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
             use_column_width=True,
         )
         st.markdown(
