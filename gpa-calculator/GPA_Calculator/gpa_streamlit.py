@@ -192,7 +192,8 @@ main_tabs = st.tabs([
     "🎓 GPA",
     "📝 Quiz & Practice",
     "🧠 Daily Dashboard",
-    "📅 Organization Helper"
+    "📅 Organization Helper",
+    "💡 Idea Vault"
 ])
 
 # =============================
@@ -1109,5 +1110,96 @@ with main_tabs[2]:
                     for unit in units:
                         st.markdown(f"**🔹 {unit}**")
                         st.write(get_study_tips(unit))
+
+# =============================
+# TAB 5: IDEA VAULT
+# =============================
+with main_tabs[5]:
+    st.header("💡 Idea Vault")
+
+    # Store ideas in session_state
+    if "idea_vault" not in st.session_state:
+        st.session_state.idea_vault = []   # list of dicts
+
+    col_form, col_list = st.columns([2, 3])
+
+    # ---------- LEFT: Add a new idea ----------
+    with col_form:
+        st.subheader("Add a new idea")
+
+        title = st.text_input("Idea title", key="idea_title")
+        description = st.text_area("Describe it (1–2 sentences)", key="idea_desc")
+
+        category = st.selectbox(
+            "Category",
+            ["Business / Startup", "School / Club", "Personal Project", "Random Thought"],
+            key="idea_category"
+        )
+
+        horizon = st.selectbox(
+            "When do you want to think about this?",
+            ["Soon", "Later", "Someday"],
+            key="idea_horizon"
+        )
+
+        if st.button("➕ Save idea", key="save_idea"):
+            if title.strip():
+                st.session_state.idea_vault.append({
+                    "title": title.strip(),
+                    "description": description.strip(),
+                    "category": category,
+                    "horizon": horizon,
+                    "favorite": False,
+                })
+                st.success("Idea saved to your vault ✅")
+            else:
+                st.warning("Give your idea a title first.")
+
+    # ---------- RIGHT: List of ideas ----------
+    with col_list:
+        st.subheader("Your ideas")
+
+        if not st.session_state.idea_vault:
+            st.caption("No ideas yet. Add one on the left to start your vault.")
+        else:
+            # Filters
+            filter_category = st.selectbox(
+                "Filter by category",
+                ["All"] + sorted(list({i["category"] for i in st.session_state.idea_vault})),
+                key="idea_filter_category"
+            )
+
+            filter_horizon = st.selectbox(
+                "Filter by time frame",
+                ["All", "Soon", "Later", "Someday"],
+                key="idea_filter_horizon"
+            )
+
+            # Apply filters
+            ideas = st.session_state.idea_vault
+            if filter_category != "All":
+                ideas = [i for i in ideas if i["category"] == filter_category]
+            if filter_horizon != "All":
+                ideas = [i for i in ideas if i["horizon"] == filter_horizon]
+
+            # Sort: favorites first
+            indexed_ideas = list(enumerate(ideas))
+            indexed_ideas.sort(key=lambda x: x[1].get("favorite", False), reverse=True)
+
+            for idx, idea in indexed_ideas:
+                fav_label = "⭐ Favorite" if not idea["favorite"] else "✅ Favorited"
+
+                row_cols = st.columns([5, 1])
+                with row_cols[0]:
+                    st.markdown(f"**{idea['title']}**")
+                    st.markdown(f"*{idea['category']} • {idea['horizon']}*")
+                    if idea["description"]:
+                        st.write(idea["description"])
+
+                with row_cols[1]:
+                    if st.button(fav_label, key=f"fav_{idx}"):
+                        # Find real index in session_state
+                        real_idx = st.session_state.idea_vault.index(idea)
+                        st.session_state.idea_vault[real_idx]["favorite"] = not idea["favorite"]
 # ORGANIZATION HELPER TAB
 # =============================
