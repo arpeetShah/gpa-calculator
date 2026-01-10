@@ -353,7 +353,7 @@ with main_tabs[3]:
     # RIGHT: image
     with col2:
         st.markdown(
-            "<div style='text-align:left; margin-right:30px;'>",
+            "<div style='text-align:left; margin-left:20px;'>",
             unsafe_allow_html=True
         )
         st.image(
@@ -364,6 +364,7 @@ with main_tabs[3]:
             "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Quiet focus mode 🧑‍💻</p>",
             unsafe_allow_html=True
         )
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # =============================
 # TAB 4: ORGANIZATION HELPER
