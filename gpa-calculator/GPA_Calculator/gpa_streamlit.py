@@ -289,11 +289,11 @@ with main_tabs[0]:
                 <div style="
                     padding:7px 12px;
                     border-radius:999px;
-                    background:linear-gradient(135deg,#4f46e5,#9333ea);
+                    background:linear-gradient(135deg,#111827,#1f2937);
                     font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(191,219,254,0.7);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.45);
+                    border:1px solid rgba(148,163,184,0.9);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
                     display:flex;
                     align-items:center;
                     gap:6px;
@@ -304,11 +304,11 @@ with main_tabs[0]:
                 <div style="
                     padding:7px 12px;
                     border-radius:999px;
-                    background:linear-gradient(135deg,#0ea5e9,#22c55e);
+                    background:linear-gradient(135deg,#022c22,#064e3b);
                     font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(187,247,208,0.8);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.45);
+                    border:1px solid rgba(167,243,208,0.9);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
                     display:flex;
                     align-items:center;
                     gap:6px;
