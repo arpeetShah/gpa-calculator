@@ -178,14 +178,20 @@ courses = {
 # =============================
 # MAIN APP
 # =============================
+# =============================
+# MAIN TITLE + TABS
+# =============================
 st.title("🎓 EduSphere")
 
-# small spacer so the title doesn't feel jammed at the very top
+# A little space so the title isn't jammed to the top
+st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
-
+# Main tabs for the whole app
 main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice", "📅 Organization Helper"])
 
-# ---------- Floating "Today's Focus" box (top-right, no extra space) ----------
+# =============================
+# FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
+# =============================
 p1 = st.session_state.get("dash_task1", "").strip()
 p2 = st.session_state.get("dash_task2", "").strip()
 p3 = st.session_state.get("dash_task3", "").strip()
@@ -248,6 +254,9 @@ box_html = f"""
 
 st.markdown(box_html, unsafe_allow_html=True)
 
+# =============================
+# TAB 0: WELCOME
+# =============================
 with main_tabs[0]:
     st.subheader("Welcome to EduSphere!")
     st.write(
@@ -263,11 +272,9 @@ with main_tabs[0]:
     )
 
 # =============================
-# WELCOME TAB
+# TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
 # =============================
-from datetime import date
-
-with main_tabs[4]:
+with main_tabs[3]:
     st.header("🧠 Daily Dashboard")
 
     st.markdown(
@@ -308,7 +315,7 @@ with main_tabs[4]:
 
     col1, col2 = st.columns([3, 2])
 
-    # ---------- LEFT SIDE: Tasks card ----------
+    # LEFT: priorities inputs
     with col1:
         st.markdown(
             """
@@ -336,6 +343,17 @@ with main_tabs[4]:
             unsafe_allow_html=True
         )
 
+    # RIGHT: image
+    with col2:
+        st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+        st.image(
+            "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=700&q=80",
+            width=220,
+        )
+        st.markdown(
+            "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Quiet focus mode 🧑‍💻</p>",
+            unsafe_allow_html=True
+        )
     # ---------- RIGHT SIDE: Aesthetic image ----------
     with col2:
         st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
