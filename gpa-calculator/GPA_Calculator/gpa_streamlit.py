@@ -264,53 +264,126 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    col_text, col_image = st.columns([7, 5])
+    # Two columns: left = text, right = image
+    col_left, col_right = st.columns([6, 5])
 
-    with col_text:
+    # ---------- LEFT: Clean, "tuff" welcome card ----------
+    with col_left:
         st.markdown(
             """
-            <p style="
-                font-size: 13px;
-                line-height: 1.7;
-                text-align: center;
-                opacity: 0.9;
-                margin: 4px 4px 10px 4px;
-            ">
-                Your all-in-one workspace for school.<br>
-                Plan your day, track progress, and practice smarter —
-                all in a clean, distraction-light dashboard.
-            </p>
-
             <div style="
-                margin-top: 6px;
-                padding: 10px 12px;
-                border-radius: 14px;
-                background: rgba(30,64,175,0.7);
-                border: 1.5px dashed rgba(251,191,36,0.95);
+                background: radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(15,23,42,0.95));
+                border-radius: 18px;
+                padding: 20px 20px 16px 20px;
+                border: 1px solid rgba(148,163,184,0.6);
+                box-shadow: 0 18px 40px rgba(0,0,0,0.55);
             ">
-                <p style="
-                    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                    font-size: 14px;
-                    font-weight: 700;
-                    color: #fffbeb;
-                    margin: 0;
-                    text-align: center;
+
+                <div style="
+                    font-size: 11px;
+                    letter-spacing: 0.18em;
+                    text-transform: uppercase;
+                    color: #a5b4fc;
+                    text-align: left;
+                    margin-bottom: 6px;
                 ">
-                    ✨ You don’t have to fix everything today — just organize it.<br>
-                    This is your space to plan, reset, and move closer to your goals.
+                    YOUR SCHOOL HUB
+                </div>
+
+                <h2 style="
+                    margin: 0 0 8px 0;
+                    text-align: left;
+                    font-size: 24px;
+                    letter-spacing: 0.03em;
+                ">
+                    Welcome to <span style="color:#bfdbfe;">EduSphere</span>
+                </h2>
+
+                <p style="
+                    font-size: 13px;
+                    line-height: 1.7;
+                    text-align: left;
+                    opacity: 0.9;
+                    margin: 4px 0 12px 0;
+                ">
+                    Your all-in-one workspace for school.<br>
+                    Track your progress, stay organized, and practice smarter — 
+                    without logins or extra noise.
+                </p>
+
+                <div style="
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                    margin-bottom: 10px;
+                ">
+                    <span style="
+                        font-size: 11px;
+                        padding: 4px 10px;
+                        border-radius: 999px;
+                        background: rgba(15,23,42,0.9);
+                        border: 1px solid rgba(129,140,248,0.9);
+                    ">
+                        🎯 GPA & insights
+                    </span>
+                    <span style="
+                        font-size: 11px;
+                        padding: 4px 10px;
+                        border-radius: 999px;
+                        background: rgba(15,23,42,0.9);
+                        border: 1px solid rgba(56,189,248,0.9);
+                    ">
+                        ✏️ Quizzes & practice
+                    </span>
+                    <span style="
+                        font-size: 11px;
+                        padding: 4px 10px;
+                        border-radius: 999px;
+                        background: rgba(15,23,42,0.9);
+                        border: 1px solid rgba(251,191,36,0.9);
+                    ">
+                        🧠 Daily focus & planning
+                    </span>
+                </div>
+
+                <div style="
+                    margin-top: 4px;
+                    padding: 9px 11px;
+                    border-radius: 14px;
+                    background: rgba(30,64,175,0.7);
+                    border: 1.5px dashed rgba(251,191,36,0.95);
+                ">
+                    <p style="
+                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #fffbeb;
+                        margin: 0;
+                        text-align: center;
+                    ">
+                        ✨ You don’t have to fix everything today — just organize it.<br>
+                        This is your space to reset and move closer to your goals.
+                    </p>
+                </div>
+
+                <p style="
+                    font-size: 11px;
+                    opacity: 0.75;
+                    text-align: left;
+                    margin-top: 10px;
+                ">
+                    No accounts. No data tracking. Just tools built to help you.
                 </p>
             </div>
-
-            <p style="
-                font-size: 11px;
-                opacity: 0.75;
-                text-align: center;
-                margin-top: 8px;
-            ">
-                No logins. No data tracking. Just tools that work for you.
-            </p>
             """,
             unsafe_allow_html=True
+        )
+
+    # ---------- RIGHT: Futuristic image ----------
+    with col_right:
+        st.image(
+            "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
+            width=480,
         )
 
     # ----- RIGHT: Welcome image -----
