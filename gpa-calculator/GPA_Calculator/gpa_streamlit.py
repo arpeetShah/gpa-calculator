@@ -188,8 +188,7 @@ st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 # --------- TOP-LEVEL DROPDOWN NAV ---------
 section = st.selectbox(
     "Where do you want to go?",
-    ["🏠 Home & Intro", "📚 School Tools", "🧠 Focus & Planning"],
-    index=0
+    ["🏠 Home & Intro", "📚 School Tools", "🧠 Focus & Planning", "🌱 Personal Growth"]
 )
 # =============================
 # FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
