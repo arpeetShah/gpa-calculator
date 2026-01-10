@@ -337,88 +337,84 @@ with main_tabs[1]:
     # GPA & Analytics
     # =============================
     with sub_tabs[2]:
-        st.header("GPA Results & Analytics")
+        st.header("📊 GPA Results & Analytics")
 
         if st.button("🎯 Calculate GPA"):
-            weighted, unweighted = [], []
+            weighted = []
+            unweighted = []
             breakdown_text = []
 
             # ===========================
-            # Middle School GPA
+            # MIDDLE SCHOOL GPA
             # ===========================
-            for course, grades in ms_course_grades.items():
-                for idx, sem_grade in enumerate(grades, start=1):
-                    # Determine weight
-                    if course == "GT / AP World History":
-                        year = st.session_state.get(f"{course}_year", 1)  # default year 1
-                        weight = courses[course][year]
-                    else:
-                        weight = courses.get(course, 5.0)
+            for course, sem_grades in ms_course_grades.items():
+                for sem_index, grade in enumerate(sem_grades, start=1):
 
-                    # Convert semester grade to GPA
-                    sem_gpa_weighted = weighted_gpa(sem_grade, weight)
-                    sem_gpa_unweighted = unweighted_gpa(sem_grade)
-
-                    weighted.append(sem_gpa_weighted)
-                    unweighted.append(sem_gpa_unweighted)
-
-                    breakdown_text.append(
-                        f"MS {course} – Semester {idx}: Grade={sem_grade} → "
-                        f"Weighted GPA={sem_gpa_weighted}, Unweighted GPA={sem_gpa_unweighted}"
-                    )
-
-            # ===========================
-            # High School GPA
-            # ===========================
-            for course, q_grades in hs_course_grades.items():
-                # Split quarters into semesters
-                for i in range(0, len(q_grades), 2):
-                    sem_quarters = q_grades[i:i + 2]
-                    sem_avg = sum(sem_quarters) / len(sem_quarters)
-
-                    # Determine weight
+                    # Determine course weight
                     if course == "GT / AP World History":
                         year = st.session_state.get(f"{course}_year", 1)
                         weight = courses[course][year]
                     else:
-                        weight = courses.get(course, 5.0)
+                        weight = courses.get(course)
 
-                    # Convert semester grade to GPA
-                    sem_gpa_weighted = weighted_gpa(sem_avg, weight)
-                    sem_gpa_unweighted = unweighted_gpa(sem_avg)
+                    # Convert grade → GPA
+                    w_gpa = weighted_gpa(grade, weight)
+                    uw_gpa = unweighted_gpa(grade)
 
-                    weighted.append(sem_gpa_weighted)
-                    unweighted.append(sem_gpa_unweighted)
+                    weighted.append(w_gpa)
+                    unweighted.append(uw_gpa)
 
                     breakdown_text.append(
-                        f"HS {course} – Semester {(i // 2) + 1}: "
-                        f"Quarter Grades={sem_quarters}, Average={sem_avg} → "
-                        f"Weighted GPA={sem_gpa_weighted}, Unweighted GPA={sem_gpa_unweighted}"
+                        f"Middle School | {course} | Semester {sem_index}: "
+                        f"Grade {grade} → Weighted GPA {w_gpa}, Unweighted GPA {uw_gpa}"
                     )
 
             # ===========================
-            # Final GPA
+            # HIGH SCHOOL GPA
+            # ===========================
+            for course, q_grades in hs_course_grades.items():
+
+                # Group quarters into semesters (Q1+Q2, Q3+Q4)
+                for sem_index in range(0, len(q_grades), 2):
+                    sem_quarters = q_grades[sem_index:sem_index + 2]
+                    sem_avg = sum(sem_quarters) / len(sem_quarters)
+
+                    # Determine course weight
+                    if course == "GT / AP World History":
+                        year = st.session_state.get(f"{course}_year", 1)
+                        weight = courses[course][year]
+                    else:
+                        weight = courses.get(course)
+
+                    # Convert semester average → GPA
+                    w_gpa = weighted_gpa(sem_avg, weight)
+                    uw_gpa = unweighted_gpa(sem_avg)
+
+                    weighted.append(w_gpa)
+                    unweighted.append(uw_gpa)
+
+                    breakdown_text.append(
+                        f"High School | {course} | Semester {(sem_index // 2) + 1}: "
+                        f"Quarter Grades {sem_quarters} → "
+                        f"Semester Avg {round(sem_avg, 2)} → "
+                        f"Weighted GPA {w_gpa}, Unweighted GPA {uw_gpa}"
+                    )
+
+            # ===========================
+            # FINAL GPA
             # ===========================
             if not weighted:
                 st.warning("No courses selected.")
             else:
                 final_weighted = round(sum(weighted) / len(weighted), 2)
                 final_unweighted = round(sum(unweighted) / len(unweighted), 2)
-                st.success(f"🎓 Weighted GPA: {final_weighted}")
-                st.success(f"📘 Unweighted GPA: {final_unweighted}")
 
-                # Show breakdown
+                st.success(f"🎓 Final Weighted GPA: {final_weighted}")
+                st.success(f"📘 Final Unweighted GPA: {final_unweighted}")
+
                 st.subheader("📖 GPA Calculation Breakdown")
                 for line in breakdown_text:
                     st.text(line)
-
-                st.subheader("📊 GPA Insight")
-                if w >= 5.5:
-                    st.write("Your GPA is being boosted by strong performance in weighted courses.")
-                elif w >= 4.5:
-                    st.write("Your GPA is solid, but higher-weight classes have the biggest impact.")
-                else:
-                    st.write("Lower performance in GPA-heavy courses is pulling your GPA down.")
 
 # =============================
 # QUIZ TAB
