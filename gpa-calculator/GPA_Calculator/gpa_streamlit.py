@@ -367,13 +367,23 @@ with main_tabs[0]:
                     <li>🧠 Plan your day and set 3 key priorities</li>
                 </ul>
 
-                <p style
+                <p style="
+                    font-size: 11px;
+                    opacity: 0.8;
+                    margin-top: 6px;
+                ">
+                    No accounts. No data tracking. Just simple tools that work for you.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    # ----- RIGHT: Welcome image -----
+    # ---------- COLUMN 3: Image ----------
     with col_image:
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
-            width=500,
+            width=380,
         )
         # =============================
 # TAB 3: DAILY DASHBOARD
