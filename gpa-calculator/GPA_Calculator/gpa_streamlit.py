@@ -968,7 +968,7 @@ elif section == "📚 School Tools":
             with tools_tabs[2]:
                 st.subheader("🔗 Resource Hub")
 
-                # make sure the list exists in session_state
+                # Make sure the list exists
                 if "resources" not in st.session_state:
                     st.session_state.resources = []
 
@@ -1018,14 +1018,14 @@ elif section == "📚 School Tools":
                         else:
                             st.warning("Please enter both a name and a link.")
 
-                # ---------- RIGHT: 3×3 gradient tiles grid ----------
+                # ---------- RIGHT: 3×3 table of tiles ----------
                 with col_right:
                     st.markdown("**Your saved resources**")
 
                     if not st.session_state.resources:
                         st.caption("No resources yet. Add a few on the left!")
                     else:
-                        # Filter by category (optional)
+                        # Optional: filter by category
                         categories = ["All"] + sorted(
                             list({r["category"] for r in st.session_state.resources})
                         )
@@ -1071,24 +1071,23 @@ elif section == "📚 School Tools":
                                 },
                             ]
 
-                            # Limit to 9 items → true 3×3 look
+                            # Limit to 9 items → 3 rows × 3 columns
                             max_tiles = 9
                             display_list = filtered[:max_tiles]
 
-                            tiles_html = """
-            <div style="
-                display:grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap:12px;
-            ">
-            """
+                            # Row-by-row, 3 columns per row
+                            for row_start in range(0, len(display_list), 3):
+                                cols = st.columns(3)
+                                for i in range(3):
+                                    idx = row_start + i
+                                    if idx >= len(display_list):
+                                        break
 
-                            for idx, r in enumerate(display_list):
-                                scheme = color_schemes[idx % len(color_schemes)]
+                                    r = display_list[idx]
+                                    scheme = color_schemes[idx % len(color_schemes)]
 
-                                tiles_html += f"""
-            <a href="{r['url']}" target="_blank"
-               style="text-decoration:none;">
+                                    tile_html = f"""
+            <a href="{r['url']}" target="_blank" style="text-decoration:none;">
                 <div style="
                     height:110px;
                     border-radius:18px;
@@ -1118,10 +1117,8 @@ elif section == "📚 School Tools":
                 </div>
             </a>
             """
-
-                            tiles_html += "</div>"
-
-                            st.markdown(tiles_html, unsafe_allow_html=True)
+                                    with cols[i]:
+                                        st.markdown(tile_html, unsafe_allow_html=True)
 
                             # If more than 9 in this category, tell the user
                             if len(filtered) > max_tiles:
