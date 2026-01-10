@@ -462,8 +462,12 @@ if section == "🏠 Home & Intro":
 elif section == "📚 School Tools":
     st.subheader("📚 School Tools")
 
-    tools_tabs = st.tabs(["📊 GPA", "📝 Quiz & Practice", "🔗 Resource Hub"])
-
+    tools_tabs = st.tabs([
+        "📊 GPA",
+        "📝 Quiz & Practice",
+        "🔗 Resource Hub",
+        "🔮 What-If GPA"  # 👈 NEW
+    ])
     # =============================
     # TAB 0: GPA CALCULATOR
     # =============================
