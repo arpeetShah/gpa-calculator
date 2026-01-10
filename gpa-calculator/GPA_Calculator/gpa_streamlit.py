@@ -264,123 +264,51 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Two columns: left = text, right = image
     col_text, col_image = st.columns([7, 5])
 
-    # ----- LEFT: Welcome text (HTML styled) -----
     with col_text:
         st.markdown(
             """
-            <div style="
-                background: radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(15,23,42,0.95));
-                border-radius: 18px;
-                padding: 20px 20px 16px 20px;
-                border: 1px solid rgba(148,163,184,0.6);
-                box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+            <p style="
+                font-size: 13px;
+                line-height: 1.7;
+                text-align: center;
+                opacity: 0.9;
+                margin: 4px 4px 10px 4px;
             ">
-                <!-- Top label -->
-                <div style="
-                    font-size: 11px;
-                    letter-spacing: 0.18em;
-                    text-transform: uppercase;
-                    color: #a5b4fc;
-                    text-align: center;
-                    margin-bottom: 4px;
-                ">
-                    YOUR SCHOOL HUB
-                </div>
+                Your all-in-one workspace for school.<br>
+                Plan your day, track progress, and practice smarter —
+                all in a clean, distraction-light dashboard.
+            </p>
 
-                <!-- Main title -->
-                <h3 style="
-                    margin: 0 0 8px 0;
-                    text-align: center;
-                    font-size: 22px;
-                    letter-spacing: 0.04em;
-                ">
-                    Welcome to <span style="color:#bfdbfe;">EduSphere</span>
-                </h3>
-
-                <!-- Short description -->
+            <div style="
+                margin-top: 6px;
+                padding: 10px 12px;
+                border-radius: 14px;
+                background: rgba(30,64,175,0.7);
+                border: 1.5px dashed rgba(251,191,36,0.95);
+            ">
                 <p style="
-                    font-size: 13px;
-                    line-height: 1.7;
+                    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #fffbeb;
+                    margin: 0;
                     text-align: center;
-                    opacity: 0.9;
-                    margin: 6px 6px 12px 6px;
                 ">
-                    Your all-in-one workspace for school. <br>
-                    Plan your day, track progress, and practice smarter —
-                    all in one clean, distraction-light dashboard.
-                </p>
-
-                <!-- Three quick features -->
-                <div style="
-                    display: flex;
-                    justify-content: center;
-                    gap: 10px;
-                    margin-bottom: 10px;
-                    flex-wrap: wrap;
-                ">
-                    <span style="
-                        font-size: 11px;
-                        padding: 4px 10px;
-                        border-radius: 999px;
-                        background: rgba(15,23,42,0.8);
-                        border: 1px solid rgba(129,140,248,0.8);
-                    ">
-                        ✅ GPA & progress at a glance
-                    </span>
-                    <span style="
-                        font-size: 11px;
-                        padding: 4px 10px;
-                        border-radius: 999px;
-                        background: rgba(15,23,42,0.8);
-                        border: 1px solid rgba(56,189,248,0.8);
-                    ">
-                        ✏️ Quizzes & practice problems
-                    </span>
-                    <span style="
-                        font-size: 11px;
-                        padding: 4px 10px;
-                        border-radius: 999px;
-                        background: rgba(15,23,42,0.8);
-                        border: 1px solid rgba(251,191,36,0.9);
-                    ">
-                        🧠 Planning & daily focus
-                    </span>
-                </div>
-
-                <!-- Comic-style inspirational box -->
-                <div style="
-                    margin-top: 6px;
-                    padding: 10px 12px;
-                    border-radius: 14px;
-                    background: rgba(30,64,175,0.7);
-                    border: 1.5px dashed rgba(251,191,36,0.95);
-                ">
-                    <p style="
-                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                        font-size: 14px;
-                        font-weight: 700;
-                        color: #fffbeb;
-                        margin: 0;
-                        text-align: center;
-                    ">
-                        ✨ You don’t have to fix everything today — just organize it. <br>
-                        This is your space to plan, reset, and move closer to your goals.
-                    </p>
-                </div>
-
-                <!-- Tiny privacy note -->
-                <p style="
-                    font-size: 11px;
-                    opacity: 0.75;
-                    text-align: center;
-                    margin-top: 10px;
-                ">
-                    No logins. No data tracking. Just tools that work for you.
+                    ✨ You don’t have to fix everything today — just organize it.<br>
+                    This is your space to plan, reset, and move closer to your goals.
                 </p>
             </div>
+
+            <p style="
+                font-size: 11px;
+                opacity: 0.75;
+                text-align: center;
+                margin-top: 8px;
+            ">
+                No logins. No data tracking. Just tools that work for you.
+            </p>
             """,
             unsafe_allow_html=True
         )
