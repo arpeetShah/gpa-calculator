@@ -367,19 +367,7 @@ with main_tabs[0]:
                     <li>🧠 Plan your day and set 3 key priorities</li>
                 </ul>
 
-                <p style="
-                    font-size: 11px;
-                    opacity: 0.8;
-                    margin-top: 6px;
-                ">
-                    No accounts. No data tracking. Just simple tools that work for you.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    # ---------- COLUMN 3: Image ----------
+                <p style
 
     # ----- RIGHT: Welcome image -----
     with col_image:
