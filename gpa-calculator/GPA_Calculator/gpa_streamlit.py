@@ -270,14 +270,12 @@ with main_tabs[0]:
     with col1:
         st.subheader("Welcome to EduSphere!")
         st.write(
-            "Hey! I created this app/website for YOU to have a convenient way to track your educational path. "
-            "There is no platform (until now) which allows you to get your cumulative GPA, and that was the inspiration for this. "
-            "Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! "
-            "Additionally, you do not need to give any personal credentials; you just manually input your grades and no one "
-            "(including me) will have access to your personal information and grades."
+            "EduSphere is a simple all-in-one place for your school life. "
+            "You can check your GPA, plan tasks, set daily priorities, and practice quizzes — all in one spot. "
+            "You don’t need an account or any personal login; you just type in what you want to track, and it stays on your screen."
         )
 
-        # 🔹 Comic-style inspirational box
+        # 🔹 Comic-style inspirational box (no grade-specific wording)
         st.markdown(
             """
             <div style="
@@ -295,8 +293,8 @@ with main_tabs[0]:
                     color: #fffbeb;
                     margin: 0;
                 ">
-                    🚀 “Every grade you enter here is one step closer to the future you want.<br>
-                    Use EduSphere to stay on track, stay confident, and prove to yourself what you’re capable of.”
+                    ✨ “You don’t have to have everything figured out — just plan the next few steps. <br>
+                    EduSphere is your space to organize, breathe, and move a little closer to your goals each day.”
                 </p>
             </div>
             """,
@@ -308,7 +306,6 @@ with main_tabs[0]:
             "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80",
             use_column_width=True
         )
-# =============================
 # TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
 # =============================
 # TAB 3: DAILY DASHBOARD
