@@ -209,10 +209,9 @@ with main_tabs[0]:
 
     with col2:
         st.image(
-            "https://images.unsplash.com/photo-1515165562835-c4c9e0737eaa?auto=format&fit=crop&w=700&q=80",
-            width=250,
+            "https://images.unsplash.com/photo-1519452575417-564c1401ecc0?auto=format&fit=crop&w=700&q=80",
+            width=220,
         )
-
     st.markdown("---")
 
     # Optional: small “overview” section
