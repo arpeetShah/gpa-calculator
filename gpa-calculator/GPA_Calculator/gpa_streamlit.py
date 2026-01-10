@@ -2,6 +2,32 @@ import streamlit as st
 import sqlite3
 from datetime import date
 
+st.markdown(
+    """
+    <style>
+    .es-card {
+        background: rgba(15, 23, 42, 0.85);
+        border-radius: 18px;
+        padding: 16px 18px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.7);
+    }
+    .es-card-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .es-card-sub {
+        font-size: 12px;
+        opacity: 0.85;
+        margin-bottom: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 tutor_bar_html = """
 <a href="?section=tutoring" style="text-decoration:none;">
     <div style="
@@ -132,6 +158,20 @@ st.set_page_config(
     page_icon="🎓",
     layout="wide"
 )
+
+st.markdown(
+    """
+    <style>
+    .page-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown('<div class="page-wrapper">', unsafe_allow_html=True)
 
 # --------------------------------
 # Handle navigation via URL param
@@ -420,46 +460,78 @@ if section == "🏠 Home & Intro":
         )
 
 elif section == "📚 School Tools":
-    tools_tabs = st.tabs([
-        "📊 GPA",
-        "📝 Quiz & Practice",
-        "🔗 Resource Hub",
-        "❓ What-If GPA"
-    ])
-    # ⬆️ everything under this elif must be indented one level
+    st.subheader("📚 School Tools")
 
+    tools_tabs = st.tabs(["📊 GPA", "📝 Quiz & Practice", "🔗 Resource Hub"])
+
+    # =============================
+    # TAB 0: GPA CALCULATOR
+    # =============================
     with tools_tabs[0]:
         st.header("📊 GPA Calculator")
 
-        sub_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📊 GPA & Analytics"])
+        # Top summary card
+        st.markdown(
+            """
+            <div class="es-card" style="margin-bottom: 12px;">
+                <div class="es-card-title">How this GPA calculator works</div>
+                <p class="es-card-sub">
+                    • Middle school: each <b>semester grade</b> becomes one GPA entry.<br>
+                    • High school: we average <b>2 quarters = 1 semester</b>, then convert that semester grade to GPA.<br>
+                    • Weighted GPA uses your course weight (5.0 / 5.5 / 6.0).<br>
+                    • Final GPA is the average of all semester GPAs you entered.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        gpa_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📈 Results & Analytics"])
 
         # =============================
-        # MIDDLE SCHOOL
+        # MIDDLE SCHOOL TAB
         # =============================
-        with sub_tabs[0]:
-            st.header("Middle School Grades")
+        with gpa_tabs[0]:
+            st.subheader("🏫 Middle School Grades")
+
+            st.markdown(
+                """
+                <div class="es-card" style="margin-bottom: 8px;">
+                    <div class="es-card-title">Enter your middle school semester grades</div>
+                    <p class="es-card-sub">
+                        • Most classes have 2 semesters.<br>
+                        • <b>Health</b> only has 1 semester.<br>
+                        • AP World lets you pick Year 1 or Year 2 weight.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
             ms_selected = st.multiselect(
                 "Select the courses you took (MS)",
                 options=list(courses.keys()),
-                key="ms_courses"
+                key="ms_courses",
             )
 
+            # stored for Results tab
             ms_course_grades = {}
 
             for course in ms_selected:
-                # Health = 1 semester, everything else = 2
+                # Determine number of semesters (Health = 1, others = 2)
                 semesters = 1 if course == "Health" else 2
 
+                # Collect grades dynamically
                 grades = []
                 for i in range(semesters):
-                    grade = st.number_input(
-                        f"{course} – Semester {i + 1}",
-                        min_value=0.0,
-                        max_value=100.0,
-                        key=f"ms_s{i + 1}_{course}"
+                    grades.append(
+                        st.number_input(
+                            f"{course} – Semester {i + 1}",
+                            min_value=0.0,
+                            max_value=100.0,
+                            key=f"ms_s{i + 1}_{course}",
+                        )
                     )
-                    grades.append(grade)
 
                 ms_course_grades[course] = tuple(grades)
 
@@ -469,70 +541,92 @@ elif section == "📚 School Tools":
                     gt_year = st.selectbox(
                         f"Select year for {course}:",
                         [1, 2],
-                        key=f"{course}_year"
+                        key=f"{course}_year",
                     )
                     weight = courses[course][gt_year]
                 else:
                     weight = courses[course]
 
-                # ---- Insert into DB (9 columns total) ----
+                # Prepare values for SQLite insert (exactly 9 values)
                 s1 = grades[0]
                 s2 = grades[1] if semesters == 2 else None
-                extra = [None, None, None, None]  # q1–q4 placeholders
+                extra = [None, None, None, None]  # HS quarter placeholders
 
                 c.execute(
                     """
-                    INSERT OR REPLACE INTO grades
-                    VALUES (?,?,?,?,?,?,?,?,?)
+                    INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
                     """,
-                    (course, "MS", s1, s2, *extra, gt_year)
+                    (
+                        course,
+                        "MS",
+                        s1,
+                        s2,
+                        *extra,
+                        gt_year,
+                    ),
                 )
 
             conn.commit()
 
         # =============================
-        # HIGH SCHOOL
+        # HIGH SCHOOL TAB
         # =============================
-        with sub_tabs[1]:
-            st.header("High School Grades")
+        with gpa_tabs[1]:
+            st.subheader("🎓 High School Grades")
 
-            # Ask once for max quarters completed this year
-            hs_quarters = int(st.number_input(
-                "Enter how many quarters have been completed this year:",
+            st.markdown(
+                """
+                <div class="es-card" style="margin-bottom: 8px;">
+                    <div class="es-card-title">Enter your high school quarter grades</div>
+                    <p class="es-card-sub">
+                        • There are 4 quarters in a full year.<br>
+                        • We convert them as: Q1 + Q2 = Semester 1, Q3 + Q4 = Semester 2.<br>
+                        • If you only have 1–2 quarters so far, we use what's available.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            # Ask once for total quarters completed this year
+            hs_quarters = st.number_input(
+                "How many quarters have been completed this year?",
                 min_value=1,
                 max_value=4,
                 value=4,
                 step=1,
-                format="%d"
-            ))
+                key="hs_quarters_overall",
+            )
 
             hs_selected = st.multiselect(
                 "Select the courses you took (HS)",
                 options=list(courses.keys()),
-                key="hs_courses"
+                key="hs_courses",
             )
 
+            # stored for Results tab
             hs_course_grades = {}
 
             for course in hs_selected:
-                # Per-course quarters (up to hs_quarters)
+                # Collect quarter grades for each course
                 quarters = st.slider(
                     f"Quarters Completed – {course}",
                     min_value=1,
                     max_value=hs_quarters,
                     value=hs_quarters,
-                    key=f"hs_quarters_{course}"
+                    key=f"hs_quarters_{course}",
                 )
 
                 q_grades = []
                 for i in range(quarters):
-                    q_grade = st.number_input(
-                        f"{course} – Quarter {i + 1}",
-                        min_value=0.0,
-                        max_value=100.0,
-                        key=f"hs_q{i + 1}_{course}"
+                    q_grades.append(
+                        st.number_input(
+                            f"{course} – Quarter {i + 1}",
+                            min_value=0.0,
+                            max_value=100.0,
+                            key=f"hs_q{i + 1}_{course}",
+                        )
                     )
-                    q_grades.append(q_grade)
 
                 hs_course_grades[course] = q_grades
 
@@ -542,7 +636,7 @@ elif section == "📚 School Tools":
                     gt_year = st.selectbox(
                         f"Select year for {course}:",
                         [1, 2],
-                        key=f"{course}_year"
+                        key=f"{course}_year",
                     )
                     weight = courses[course][gt_year]
                 else:
@@ -551,31 +645,44 @@ elif section == "📚 School Tools":
                 # Pad to 4 quarters for DB
                 padded = q_grades + [None] * (4 - len(q_grades))
 
+                # Insert into SQLite (exactly 9 values)
                 c.execute(
                     """
-                    INSERT OR REPLACE INTO grades
-                    VALUES (?,?,?,?,?,?,?,?,?)
+                    INSERT OR REPLACE INTO grades VALUES (?,?,?,?,?,?,?,?,?)
                     """,
                     (
                         course,
                         "HS",
-                        None,  # semester1
-                        None,  # semester2
-                        padded[0],  # q1
-                        padded[1],  # q2
-                        padded[2],  # q3
-                        padded[3],  # q4
-                        gt_year
-                    )
+                        None,
+                        None,
+                        padded[0],
+                        padded[1],
+                        padded[2],
+                        padded[3],
+                        gt_year,
+                    ),
                 )
 
             conn.commit()
 
         # =============================
-        # GPA & Analytics
+        # RESULTS & ANALYTICS TAB
         # =============================
-        with sub_tabs[2]:
-            st.header("📊 GPA Results & Analytics")
+        with gpa_tabs[2]:
+            st.subheader("📈 GPA Results & Analytics")
+
+            st.markdown(
+                """
+                <div class="es-card" style="margin-bottom: 10px;">
+                    <div class="es-card-title">Calculate your current GPA</div>
+                    <p class="es-card-sub">
+                        This combines every middle school semester and every high school semester
+                        (built from your quarter grades) into one overall GPA.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
             if st.button("🎯 Calculate GPA"):
                 weighted = []
@@ -592,8 +699,9 @@ elif section == "📚 School Tools":
                             year = st.session_state.get(f"{course}_year", 1)
                             weight = courses[course][year]
                         else:
-                            weight = courses.get(course)
+                            weight = courses.get(course, 5.0)
 
+                        # Convert grade → GPA
                         w_gpa = weighted_gpa(grade, weight)
                         uw_gpa = unweighted_gpa(grade)
 
@@ -602,27 +710,31 @@ elif section == "📚 School Tools":
 
                         breakdown_text.append(
                             f"Middle School | {course} | Semester {sem_index}: "
-                            f"Grade {grade} → Weighted GPA {w_gpa}, Unweighted GPA {uw_gpa}"
+                            f"Grade {grade} → Weighted GPA {w_gpa:.2f}, Unweighted GPA {uw_gpa:.2f}"
                         )
 
                 # ===========================
                 # HIGH SCHOOL GPA
                 # ===========================
                 for course, q_grades in hs_course_grades.items():
-                    # Group quarters into semesters: (Q1+Q2), (Q3+Q4)
+                    # Group quarters into semesters (Q1+Q2, Q3+Q4)
                     for sem_index in range(0, len(q_grades), 2):
-                        sem_quarters = q_grades[sem_index:sem_index + 2]
+                        sem_quarters = q_grades[sem_index : sem_index + 2]
+
+                        if not sem_quarters:
+                            continue
 
                         raw_avg = sum(sem_quarters) / len(sem_quarters)
-                        sem_avg = round(raw_avg)  # round quarter average to whole number first
+                        sem_avg = round(raw_avg)  # round to whole number first
 
                         # Determine weight
                         if course == "GT / AP World History":
                             year = st.session_state.get(f"{course}_year", 1)
                             weight = courses[course][year]
                         else:
-                            weight = courses.get(course)
+                            weight = courses.get(course, 5.0)
 
+                        # Convert semester grade → GPA
                         w_gpa = weighted_gpa(sem_avg, weight)
                         uw_gpa = unweighted_gpa(sem_avg)
 
@@ -633,24 +745,25 @@ elif section == "📚 School Tools":
                             f"High School | {course} | Semester {(sem_index // 2) + 1}: "
                             f"Quarter Grades {sem_quarters} → "
                             f"Avg {raw_avg:.2f} → Rounded {sem_avg} → "
-                            f"Weighted GPA {w_gpa}, Unweighted GPA {uw_gpa}"
+                            f"Weighted GPA {w_gpa:.2f}, Unweighted GPA {uw_gpa:.2f}"
                         )
 
                 # ===========================
                 # FINAL GPA
                 # ===========================
                 if not weighted:
-                    st.warning("No courses selected.")
+                    st.warning("No courses selected in the MS / HS tabs above.")
                 else:
-                    final_weighted = round(sum(weighted) / len(weighted), 4)
-                    final_unweighted = round(sum(unweighted) / len(unweighted), 4)
+                    final_weighted = round(sum(weighted) / len(weighted), 3)
+                    final_unweighted = round(sum(unweighted) / len(unweighted), 3)
 
                     st.success(f"🎓 Final Weighted GPA: {final_weighted}")
                     st.success(f"📘 Final Unweighted GPA: {final_unweighted}")
 
-                    st.subheader("📖 GPA Calculation Breakdown")
-                    for line in breakdown_text:
-                        st.text(line)
+                    with st.expander("📖 See full GPA calculation breakdown"):
+                        for line in breakdown_text:
+                            st.text(line)
+
 
     with tools_tabs[1]:
         unit = None
@@ -1909,4 +2022,6 @@ elif section == "🎯 Tutoring":
         st.markdown(
             "A: Mostly middle school and early high school (up to 9th/10th grade level)."
         )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
