@@ -1041,6 +1041,7 @@ elif section == "📚 School Tools":
 
                     # Build tiles (≈ 3 per row, responsive)
                     # Build tiles (≈ 3 per row, responsive)
+                    # Build tiles (≈ 3 per row, responsive)
                     tiles_html = """
                     <div style="
                         display:flex;
@@ -1090,7 +1091,6 @@ elif section == "📚 School Tools":
                     tiles_html += "</div>"
 
                     st.markdown(tiles_html, unsafe_allow_html=True)
-
 elif section == "🧠 Focus & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
 
