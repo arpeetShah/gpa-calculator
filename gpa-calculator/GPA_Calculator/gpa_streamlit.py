@@ -361,6 +361,123 @@ with main_tabs[3]:
             "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Quiet focus mode 🧑‍💻</p>",
             unsafe_allow_html=True
         )
+
+# =============================
+# TAB 4: ORGANIZATION HELPER
+# =============================
+from datetime import date
+
+with main_tabs[4]:
+    st.header("📅 Organization Helper")
+
+    # --- Session state for saved tasks ---
+    if "org_tasks" not in st.session_state:
+        st.session_state.org_tasks = []   # each task will be a dict
+
+    col_left, col_right = st.columns([2, 3])
+
+    # ---------- LEFT: Add a task ----------
+    with col_left:
+        st.subheader("➕ Add a task to your planner")
+
+        task_date = st.date_input("📆 Date", value=date.today(), key="org_task_date")
+
+        task_course = st.selectbox(
+            "📚 Class / Subject",
+            list(courses.keys()) + ["Other"],
+            key="org_task_course"
+        )
+
+        task_title = st.text_input(
+            "✏️ Task / Assignment name",
+            key="org_task_title"
+        )
+
+        task_type = st.selectbox(
+            "Type",
+            ["Homework", "Test", "Quiz", "Project", "Reminder"],
+            key="org_task_type"
+        )
+
+        task_priority = st.selectbox(
+            "Priority",
+            ["Low", "Medium", "High"],
+            key="org_task_priority"
+        )
+
+        task_est = st.number_input(
+            "Estimated time (minutes)",
+            min_value=0,
+            max_value=300,
+            value=30,
+            step=5,
+            key="org_task_est"
+        )
+
+        if st.button("Add to planner", key="org_add_button"):
+            if task_title.strip():
+                st.session_state.org_tasks.append({
+                    "date": task_date,
+                    "course": task_course,
+                    "title": task_title.strip(),
+                    "type": task_type,
+                    "priority": task_priority,
+                    "est": task_est,
+                })
+                st.success("✅ Task added to your planner!")
+            else:
+                st.warning("Please enter a task / assignment name before adding.")
+
+    # ---------- RIGHT: View tasks ----------
+    with col_right:
+        st.subheader("📅 Tasks for a specific day")
+
+        view_date = st.date_input(
+            "Show tasks for date:",
+            value=date.today(),
+            key="org_view_date"
+        )
+
+        # Filter tasks for that day
+        tasks_for_day = [
+            t for t in st.session_state.org_tasks
+            if t["date"] == view_date
+        ]
+
+        if tasks_for_day:
+            for t in tasks_for_day:
+                st.markdown(
+                    f"""
+                    <div style="
+                        padding: 8px 10px;
+                        margin-bottom: 6px;
+                        border-radius: 10px;
+                        background: rgba(15,23,42,0.5);
+                        border: 1px solid rgba(148,163,184,0.6);
+                    ">
+                        <strong>{t['title']}</strong><br>
+                        <span style="font-size: 12px; opacity: 0.9;">
+                            {t['course']} • {t['type']} • Priority: {t['priority']} • ~{t['est']} min
+                        </span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+        else:
+            st.info("No tasks for this date yet. Add one on the left!")
+
+        st.markdown("---")
+        st.subheader("📚 All Planned Tasks")
+
+        if st.session_state.org_tasks:
+            # Show all tasks in a simple text list
+            for t in st.session_state.org_tasks:
+                st.write(
+                    f"- {t['date']} • {t['course']} • {t['title']} "
+                    f"({t['type']}, {t['priority']}, ~{t['est']} min)"
+                )
+        else:
+            st.caption("Your planner is empty. Start by adding a task on the left.")
 # =============================
 # GPA TAB
 # =============================
