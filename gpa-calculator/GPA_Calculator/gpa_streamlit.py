@@ -185,18 +185,39 @@ main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice", "📅 O
 # =============================
 # WELCOME TAB
 # =============================
+from datetime import date
+
 with main_tabs[0]:
-    st.subheader("Welcome to EduSphere!")
-    st.write(
-        "Hey! I created this app/website for YOU to have a convenient way to track your educational path. "
-        "There is no platform (until now) which allows you to get your cumulative GPA, and that was the inspiration for this. "
-        "Throughout this app, you can track your GPA, analyze it, and practice quizzes to improve your learning! "
-        "Additionally, you do not need to give any personal credentials; you just manually input your grades and no one (including me) will have access to your personal information and grades."
-    )
-    st.image(
-        "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80",
-        use_column_width=True
-    )
+    st.subheader("📌 Daily Dashboard")
+
+    # Top layout: info on the left, image on the right
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+        today = date.today().strftime("%A, %B %d, %Y")
+        st.markdown(f"### 📅 Today: {today}")
+
+        # Quick priorities
+        st.markdown("#### ✅ Today’s Top 3 Priorities")
+        p1 = st.text_input("Priority 1", key="dash_p1")
+        p2 = st.text_input("Priority 2", key="dash_p2")
+        p3 = st.text_input("Priority 3", key="dash_p3")
+
+        # Quick notes
+        st.markdown("#### 📝 Quick Notes")
+        notes = st.text_area("Anything important for today?", key="dash_notes")
+
+    with col2:
+        st.image(
+            "https://images.unsplash.com/photo-1515165562835-c4c9e0737eaa?auto=format&fit=crop&w=700&q=80",
+            width=250,
+        )
+
+    st.markdown("---")
+
+    # Optional: small “overview” section
+    st.markdown("### 📊 Overview")
+    st.write("Use the GPA and Quiz tabs above to track your progress and practice for your classes.")
 
 # =============================
 # GPA TAB
