@@ -303,8 +303,12 @@ with main_tabs[0]:
     # -------- RIGHT: Image --------
     with right_col:
         st.image(
-            "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1000&q=80",
+            "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1000&q=80",
             use_column_width=True,
+        )
+        st.markdown(
+            "<p style='font-size: 12px; opacity: 0.8; margin-top: 6px;'>Think beyond the classroom. Aim past the stars. 🚀</p>",
+            unsafe_allow_html=True
         )
         # =============================
 # TAB 3: DAILY DASHBOARD
