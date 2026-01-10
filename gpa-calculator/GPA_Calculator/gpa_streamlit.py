@@ -302,7 +302,7 @@ with main_tabs[0]:
                     margin: 4px 0 8px 0;
                 ">
                     • [Short sentence about your grade / school]<br>
-                    • [What you care about – e.g. organization, grades, balance]<br>
+                    • [What you care about – e.g. organization, balance]<br>
                     • [Why you built EduSphere in one line]
                 </p>
 
@@ -316,7 +316,7 @@ with main_tabs[0]:
                 </p>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
     # ---------- COLUMN 2: About the App ----------
@@ -372,11 +372,11 @@ with main_tabs[0]:
                     opacity: 0.8;
                     margin-top: 6px;
                 ">
-                    No accounts. No data tracking. Just simple tools that work for you.
+                    No logins. No data tracking. Just simple tools that work for you.
                 </p>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
     # ---------- COLUMN 3: Image ----------
@@ -385,7 +385,6 @@ with main_tabs[0]:
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
             width=380,
         )
-        # =============================
 # TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
     st.header("🧠 Daily Dashboard")
