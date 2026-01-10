@@ -264,58 +264,56 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Two columns: left = text, right = image
-    col_text, col_image = st.columns([3, 2])
+    # Two equal columns so the whole section feels centered
+    col_text, col_image = st.columns([1, 1])
 
-    # ---------- LEFT: WELCOME TEXT (shifted to the right a bit) ----------
+    # ---------- LEFT: WELCOME TEXT ----------
     with col_text:
         st.markdown(
             """
-            <div style="margin-left: 30px;">
-                <h3 style="margin-bottom: 8px;">Welcome to EduSphere</h3>
-                <p style="font-size: 14px; line-height: 1.6;">
-                    EduSphere is your all-in-one workspace for school.
-                    You can track your progress, plan your day, set priorities,
-                    and practice problems — all in one clean dashboard, without
-                    creating an account or sharing personal info.
-                </p>
-                <div style="
-                    margin-top: 10px;
-                    padding: 12px 14px;
-                    border-radius: 16px;
-                    background: rgba(30, 64, 175, 0.5);
-                    border: 2px dashed rgba(251, 191, 36, 0.9);
-                    box-shadow: 0 10px 24px rgba(15,23,42,0.7);
+            <h3 style="margin-bottom: 8px; text-align: center;">Welcome to EduSphere</h3>
+            <p style="font-size: 14px; line-height: 1.6; text-align: center;">
+                EduSphere is your all-in-one workspace for school.<br>
+                Track your progress, plan your day, set priorities, and practice problems —
+                all in one clean dashboard, without creating an account or sharing personal info.
+            </p>
+            <div style="
+                margin-top: 10px;
+                padding: 12px 14px;
+                border-radius: 16px;
+                background: rgba(30, 64, 175, 0.5);
+                border: 2px dashed rgba(251, 191, 36, 0.9);
+                box-shadow: 0 10px 24px rgba(15,23,42,0.7);
+            ">
+                <p style="
+                    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                    font-size: 15px;
+                    font-weight: 700;
+                    color: #fffbeb;
+                    margin: 0;
+                    text-align: center;
                 ">
-                    <p style="
-                        font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-                        font-size: 15px;
-                        font-weight: 700;
-                        color: #fffbeb;
-                        margin: 0;
-                    ">
-                        ✨ You don’t have to fix everything today — just organize it.<br>
-                        EduSphere is your space to plan, reset, and move closer to your goals.
-                    </p>
-                </div>
+                    ✨ You don’t have to fix everything today — just organize it.<br>
+                    EduSphere is your space to plan, reset, and move closer to your goals.
+                </p>
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    # ---------- RIGHT: IMAGE (pushed to the right) ----------
+    # ---------- RIGHT: IMAGE (centered, width 500) ----------
     with col_image:
         st.markdown(
-            "<div style='text-align: right; margin-right: 25px;'>",
+            "<div style='text-align: center;'>",
             unsafe_allow_html=True
         )
         st.image(
             "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.1.0",
-            width=340,
+            width=500,
         )
         st.markdown(
             """
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 6px;">
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 6px; text-align: center;">
                 Think beyond the classroom. Design your own path. 🚀
             </p>
             """,
