@@ -273,7 +273,7 @@ with main_tabs[0]:
         "(including me) will have access to your personal information and grades."
     )
     st.image(
-        "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1000&q=80",
         use_column_width=True
     )
 
