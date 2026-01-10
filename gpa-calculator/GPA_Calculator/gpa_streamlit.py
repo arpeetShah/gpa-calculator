@@ -294,9 +294,10 @@ with main_tabs[0]:
                     color: #e5e7eb;
                     margin-bottom: 10px;
                 ">
-                    EduSphere is your all-in-one workspace for school.  
-                    You can track your progress, plan your day, set priorities, and practice problems —
-                    all in one clean dashboard, without creating an account or sharing personal info.
+                    EduSphere is your all-in-one workspace for school.<br>
+                    You can track your progress, plan your day, set priorities,
+                    and practice problems — all in one clean dashboard,
+                    without creating an account or sharing personal info.
                 </p>
 
                 <div style="
@@ -314,19 +315,19 @@ with main_tabs[0]:
                         color: #fffbeb;
                         margin: 0;
                     ">
-                        ✨ “You don’t have to do everything at once — just organize today.  
+                        ✨ “You don’t have to do everything at once — just organize today.<br>
                         EduSphere is your space to plan, reset, and move closer to your goals.”
                     </p>
                 </div>
             </div>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True   # 🔴 this line is IMPORTANT
         )
 
     with col2:
         st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
         st.image(
-            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80",
+            "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1000&q=80",
             use_column_width=True
         )
         st.markdown(
@@ -341,8 +342,7 @@ with main_tabs[0]:
             """,
             unsafe_allow_html=True
         )
-# TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
-# =============================
+        # =============================
 # TAB 3: DAILY DASHBOARD
 with main_tabs[3]:
     st.header("🧠 Daily Dashboard")
