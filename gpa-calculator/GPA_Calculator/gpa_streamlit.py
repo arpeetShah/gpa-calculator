@@ -264,8 +264,8 @@ st.markdown(box_html, unsafe_allow_html=True)
 # TAB 0: WELCOME
 # =============================
 with main_tabs[0]:
-    # Create two columns: left (text) and right (image)
-    col1, col2 = st.columns([3, 2])  # 3:2 ratio = text a bit wider
+    # Two columns: left = text, right = image
+    col1, col2 = st.columns([3, 2])
 
     with col1:
         st.subheader("Welcome to EduSphere!")
@@ -277,12 +277,37 @@ with main_tabs[0]:
             "(including me) will have access to your personal information and grades."
         )
 
+        # 🔹 Comic-style inspirational box
+        st.markdown(
+            """
+            <div style="
+                margin-top: 10px;
+                padding: 14px 16px;
+                border-radius: 14px;
+                background: rgba(255, 255, 255, 0.08);
+                border: 2px dashed rgba(251, 191, 36, 0.9);
+                box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+            ">
+                <p style="
+                    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #fffbeb;
+                    margin: 0;
+                ">
+                    🚀 “Every grade you enter here is one step closer to the future you want.<br>
+                    Use EduSphere to stay on track, stay confident, and prove to yourself what you’re capable of.”
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
     with col2:
         st.image(
             "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80",
             use_column_width=True
         )
-
 # =============================
 # TAB 3: DAILY DASHBOARD (ORGANIZATION HELPER)
 # =============================
