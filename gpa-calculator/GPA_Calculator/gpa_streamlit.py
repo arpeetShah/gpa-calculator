@@ -996,11 +996,18 @@ elif section == "📚 School Tools":
             )
 
             if st.button("Save resource", key="res_save_button"):
-                if res_title.strip() and res_url.strip():
+                title = res_title.strip()
+                url = res_url.strip()
+
+                if title and url:
+                    # 🔒 Make sure the URL is absolute (has http/https)
+                    if not (url.startswith("http://") or url.startswith("https://")):
+                        url = "https://" + url  # default to https
+
                     st.session_state.resources.append(
                         {
-                            "title": res_title.strip(),
-                            "url": res_url.strip(),
+                            "title": title,
+                            "url": url,
                             "category": res_category,
                         }
                     )
