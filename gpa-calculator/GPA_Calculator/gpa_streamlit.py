@@ -1040,40 +1040,48 @@ elif section == "📚 School Tools":
                         filtered = [r for r in st.session_state.resources if r["category"] == selected_cat]
 
                     # Build tiles (≈ 3 per row, responsive)
-                    tiles_html = '<div style="display:flex; flex-wrap:wrap; gap:12px;">'
+                    # Build tiles (≈ 3 per row, responsive)
+                    tiles_html = """
+                    <div style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:12px;
+                        justify-content:flex-start;
+                    ">
+                    """
 
                     for r in filtered:
                         tiles_html += f"""
-                        <a href="{r['url']}" target="_blank" style="text-decoration:none; flex:1 1 calc(33.33% - 12px); min-width:190px; max-width:260px;">
+                        <a href="{r['url']}" target="_blank"
+                           style="
+                               text-decoration:none;
+                               flex:1 1 calc(33.33% - 12px);
+                               min-width:190px;
+                               max-width:260px;
+                           ">
                             <div style="
-                                height: 110px;
-                                padding: 10px 12px;
-                                border-radius: 16px;
-                                background: linear-gradient(135deg, rgba(79,70,229,0.35), rgba(147,51,234,0.45));
-                                border: 1px solid rgba(148,163,184,0.7);
-                                box-shadow: 0 10px 22px rgba(15,23,42,0.75);
-                                cursor: pointer;
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: space-between;
+                                height:110px;
+                                border-radius:18px;
+                                padding:10px 14px;
+                                background:radial-gradient(circle at top left,
+                                            rgba(59,130,246,0.34),
+                                            rgba(30,64,175,0.9));
+                                border:1px solid rgba(191,219,254,0.85);
+                                box-shadow:0 14px 30px rgba(15,23,42,0.9);
+                                cursor:pointer;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                text-align:center;
                             ">
-                                <div>
-                                    <div style="font-size:13px; font-weight:600; color:#e5e7eb; margin-bottom:4px;">
-                                        {r['title']}
-                                    </div>
-                                    <div style="font-size:11px; opacity:0.8; color:#c7d2fe; margin-bottom:4px;">
-                                        {r['category']}
-                                    </div>
-                                </div>
                                 <div style="
-                                    font-size:10px;
-                                    opacity:0.65;
-                                    color:#9ca3af;
-                                    white-space:nowrap;
-                                    overflow:hidden;
-                                    text-overflow:ellipsis;
+                                    font-size:15px;
+                                    font-weight:700;
+                                    letter-spacing:0.04em;
+                                    color:#e5e7eb;
+                                    text-shadow:0 0 10px rgba(15,23,42,0.9);
                                 ">
-                                    {r['url']}
+                                    {r['title']}
                                 </div>
                             </div>
                         </a>
