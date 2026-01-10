@@ -247,6 +247,20 @@ courses = {
 st.title("🎓 EduSphere")
 st.markdown("<div style='margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
+st.markdown(
+    """
+    <p style="
+        font-size: 13px;
+        margin-top: -5px;
+        margin-bottom: 8px;
+        opacity: 0.85;
+    ">
+        Where you school life actually makes sense
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
 # --------- TOP-LEVEL DROPDOWN NAV ---------
 section = st.selectbox(
     "Where do you want to go?",
