@@ -180,66 +180,54 @@ courses = {
 # =============================
 st.title("🎓 EduSphere")
 
-# ---------- Top-right priorities summary ----------
-# Small card that shows today's top 3 priorities (if set in the Daily Dashboard tab)
+# ---------- Top-right priorities summary (fixed-size box) ----------
 top_left, top_right = st.columns([3, 1])
 
 with top_right:
-    # Pull priorities from session_state (from Daily Dashboard inputs)
     p1 = st.session_state.get("dash_task1", "").strip()
     p2 = st.session_state.get("dash_task2", "").strip()
     p3 = st.session_state.get("dash_task3", "").strip()
 
-    # Only show the box if at least one priority is filled in
+    # Build the inner list content
     if any([p1, p2, p3]):
-        st.markdown(
-            """
-            <div style="
-                background: rgba(255, 255, 255, 0.08);
-                border-radius: 14px;
-                padding: 10px 12px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                font-size: 12px;
-            ">
-                <div style="font-size: 11px; text-transform: uppercase; opacity: 0.7; letter-spacing: 0.08em;">
-                    Today&apos;s Focus
-                </div>
-                <ul style="margin-top: 6px; padding-left: 18px;">
-            """,
-            unsafe_allow_html=True
-        )
-
+        items_html = ""
         if p1:
-            st.markdown(f"<li>{p1}</li>", unsafe_allow_html=True)
+            items_html += f"<li>{p1}</li>"
         if p2:
-            st.markdown(f"<li>{p2}</li>", unsafe_allow_html=True)
+            items_html += f"<li>{p2}</li>"
         if p3:
-            st.markdown(f"<li>{p3}</li>", unsafe_allow_html=True)
-
-        st.markdown(
-            """
-                </ul>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+            items_html += f"<li>{p3}</li>"
     else:
-        # Optional: tiny hint when no priorities yet
-        st.markdown(
-            """
-            <div style="
-                background: rgba(255, 255, 255, 0.04);
-                border-radius: 14px;
-                padding: 8px 10px;
-                border: 1px dashed rgba(255, 255, 255, 0.2);
-                font-size: 11px;
-                opacity: 0.8;
-            ">
-                Set today&apos;s top 3 priorities in the <b>Daily Dashboard</b> tab.
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        # Placeholder when nothing is set yet
+        items_html = "<li style='opacity:0.7;'>Set your top 3 in the Daily Dashboard tab.</li>"
+
+    # Single fixed-height box, always same size
+    box_html = f"""
+    <div style="
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 12px;
+        height: 120px;              /* 🔹 fixed height */
+        overflow-y: auto;           /* 🔹 scroll if too long, no extra page space */
+    ">
+        <div style="
+            font-size: 11px;
+            text-transform: uppercase;
+            opacity: 0.75;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        ">
+            Today&apos;s Focus
+        </div>
+        <ul style="margin-top: 4px; padding-left: 18px; margin-bottom: 0;">
+            {items_html}
+        </ul>
+    </div>
+    """
+
+    st.markdown(box_html, unsafe_allow_html=True)
 
 # ---------- Main tabs ----------
 main_tabs = st.tabs(["🏠 Welcome", "🎓 GPA", "📝 Quiz & Practice", "📅 Organization Helper", "🧠 Daily Dashboard"])
