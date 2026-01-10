@@ -270,76 +270,50 @@ with main_tabs[0]:
     # ---------- COLUMN 1: About Me ----------
     # ---------- COLUMN 1: About Me ----------
     with col_me:
+        st.subheader("👋 About Me")
+
+        st.write(
+            "Hi, I'm **Arpeet Shah**.\n"
+            "- 9th grade student at **Emerson High School**\n"
+            "- I care about staying organized, keeping up with school, and keeping some balance.\n"
+            "- I built EduSphere so students (including me) have one place to plan and track school."
+        )
+
+        # Contact label + “pill” style info
         st.markdown(
             """
-            <h4 style="
-                margin: 0 0 6px 0;
-                font-size: 17px;
-            ">
-                Hi, I&apos;m <span style="color:#bfdbfe;">Arpeet Shah</span> 👋
-            </h4>
-
-            <p style="
-                font-size: 12px;
-                line-height: 1.6;
-                opacity: 0.9;
-                margin: 4px 0 8px 0;
-            ">
-                • 9th grade student at Emerson High School<br>
-                • I care about staying organized, keeping my grades on track, and balancing everything going on<br>
-                • I built EduSphere so students have one place to plan, track, and reset without stress
-            </p>
-
-            <p style="
-                font-size: 11px;
-                opacity: 0.8;
-                margin-top: 4px;
-            ">
-                I made this so students (including me) have one place to
-                plan, track, and breathe a little easier.
-            </p>
-
-            <div style="margin-top:10px; font-size:13px; font-weight:700; opacity:0.95;">
+            <div style="margin-top:10px; font-size:13px; font-weight:700; opacity:0.9;">
                 📇 Contact
             </div>
-
-            <div style="
-                margin-top:8px;
-                display:flex;
-                flex-wrap:wrap;
-                gap:10px;
-            ">
-                <!-- Phone pill -->
+            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:8px;">
                 <div style="
-                    padding:8px 14px;
+                    padding:7px 12px;
                     border-radius:999px;
-                    background: radial-gradient(circle at top left, #020617, #111827);
+                    background:linear-gradient(135deg,#111827,#1f2937);
                     font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(148,163,184,0.95);
-                    box-shadow:0 8px 20px rgba(0,0,0,0.75);
+                    border:1px solid rgba(148,163,184,0.9);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
                     display:flex;
                     align-items:center;
-                    gap:8px;
+                    gap:6px;
                 ">
-                    <span style="font-size:16px;">📱</span>
+                    <span style="font-size:15px;">📱</span>
                     <span><strong>Phone:</strong> 469-996-1729</span>
                 </div>
-
-                <!-- Email pill -->
                 <div style="
-                    padding:8px 14px;
+                    padding:7px 12px;
                     border-radius:999px;
-                    background: radial-gradient(circle at top left, #022c22, #02201a);
+                    background:linear-gradient(135deg,#022c22,#064e3b);
                     font-size:13px;
                     color:#f9fafb;
-                    border:1px solid rgba(45,212,191,0.9);
-                    box-shadow:0 8px 20px rgba(0,0,0,0.75);
+                    border:1px solid rgba(167,243,208,0.9);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
                     display:flex;
                     align-items:center;
-                    gap:8px;
+                    gap:6px;
                 ">
-                    <span style="font-size:16px;">✉️</span>
+                    <span style="font-size:15px;">✉️</span>
                     <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
                 </div>
             </div>
