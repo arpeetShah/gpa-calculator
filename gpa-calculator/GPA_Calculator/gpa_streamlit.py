@@ -965,160 +965,154 @@ elif section == "📚 School Tools":
         # ============================
         # TOOL TAB 2: RESOURCE HUB
         # ============================
-        with tools_tabs[2]:
-            st.subheader("🔗 Resource Hub")
+            with tools_tabs[2]:
+                st.subheader("🔗 Resource Hub")
 
-            # make sure the list exists in session_state
-            if "resources" not in st.session_state:
-                st.session_state.resources = []
+                # make sure the list exists in session_state
+                if "resources" not in st.session_state:
+                    st.session_state.resources = []
 
-            # Slightly smaller left column so it doesn't dominate
-            col_left, col_right = st.columns([1.3, 2.7])
+                # Slightly smaller left column so it doesn't dominate
+                col_left, col_right = st.columns([1.3, 2.7])
 
-            # ---------- LEFT: Add resource (compact) ----------
-            with col_left:
-                st.markdown("**Add a resource**")
-                st.caption("Save links you use a lot (Canvas, Desmos, Quizlet, docs, etc.).")
+                # ---------- LEFT: Add resource (compact) ----------
+                with col_left:
+                    st.markdown("**Add a resource**")
+                    st.caption("Save links you use a lot (Canvas, Desmos, Quizlet, docs, etc.).")
 
-                res_title = st.text_input(
-                    "Name",
-                    placeholder="Ex: Desmos Graphing Calculator",
-                    key="res_title",
-                )
+                    res_title = st.text_input(
+                        "Name",
+                        placeholder="Ex: Desmos Graphing Calculator",
+                        key="res_title",
+                    )
 
-                res_url = st.text_input(
-                    "Link",
-                    placeholder="Ex: fisd.instructure.com",
-                    key="res_url",
-                )
+                    res_url = st.text_input(
+                        "Link",
+                        placeholder="Ex: fisd.instructure.com",
+                        key="res_url",
+                    )
 
-                res_category = st.selectbox(
-                    "Category",
-                    ["Math", "Science", "Spanish", "APs", "Research", "Other"],
-                    key="res_category",
-                )
+                    res_category = st.selectbox(
+                        "Category",
+                        ["Math", "Science", "Spanish", "APs", "Research", "Other"],
+                        key="res_category",
+                    )
 
-                if st.button("Save resource", key="res_save_button"):
-                    title = res_title.strip()
-                    url = res_url.strip()
+                    if st.button("Save resource", key="res_save_button"):
+                        title = res_title.strip()
+                        url = res_url.strip()
 
-                    if title and url:
-                        # force full URL so it opens outside Streamlit
-                        if not (url.startswith("http://") or url.startswith("https://")):
-                            url = "https://" + url
+                        if title and url:
+                            # force full URL so it opens outside Streamlit
+                            if not (url.startswith("http://") or url.startswith("https://")):
+                                url = "https://" + url
 
-                        st.session_state.resources.append(
-                            {
-                                "title": title,
-                                "url": url,
-                                "category": res_category,
-                            }
+                            st.session_state.resources.append(
+                                {
+                                    "title": title,
+                                    "url": url,
+                                    "category": res_category,
+                                }
+                            )
+                            st.success("✅ Resource saved!")
+                        else:
+                            st.warning("Please enter both a name and a link.")
+
+                # ---------- RIGHT: 3×3-style gradient tiles grid ----------
+                with col_right:
+                    st.markdown("**Your saved resources**")
+
+                    if not st.session_state.resources:
+                        st.caption("No resources yet. Add a few on the left!")
+                    else:
+                        # filter by category (optional)
+                        categories = ["All"] + sorted(
+                            list({r["category"] for r in st.session_state.resources})
                         )
-                        st.success("✅ Resource saved!")
-                    else:
-                        st.warning("Please enter both a name and a link.")
+                        selected_cat = st.selectbox(
+                            "Filter by category",
+                            categories,
+                            index=0,
+                            key="res_filter_cat",
+                        )
 
-            # ---------- RIGHT: Gradient tiles grid ----------
-            with col_right:
-                st.markdown("**Your saved resources**")
+                        if selected_cat == "All":
+                            filtered = st.session_state.resources
+                        else:
+                            filtered = [
+                                r for r in st.session_state.resources
+                                if r["category"] == selected_cat
+                            ]
 
-                if not st.session_state.resources:
-                    st.caption("No resources yet. Add a few on the left!")
-                else:
-                    # filter by category (optional)
-                    categories = ["All"] + sorted(
-                        list({r["category"] for r in st.session_state.resources})
-                    )
-                    selected_cat = st.selectbox(
-                        "Filter by category",
-                        categories,
-                        index=0,
-                        key="res_filter_cat",
-                    )
-
-                    if selected_cat == "All":
-                        filtered = st.session_state.resources
-                    else:
-                        filtered = [
-                            r for r in st.session_state.resources
-                            if r["category"] == selected_cat
+                        # color themes for tiles (cycled)
+                        color_schemes = [
+                            {  # blue
+                                "bg": "radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(30,64,175,0.95))",
+                                "border": "rgba(191,219,254,0.9)",
+                            },
+                            {  # orange
+                                "bg": "radial-gradient(circle at top left, rgba(249,115,22,0.35), rgba(124,45,18,0.95))",
+                                "border": "rgba(253,186,116,0.9)",
+                            },
+                            {  # green
+                                "bg": "radial-gradient(circle at top left, rgba(34,197,94,0.35), rgba(5,46,22,0.95))",
+                                "border": "rgba(187,247,208,0.9)",
+                            },
+                            {  # purple
+                                "bg": "radial-gradient(circle at top left, rgba(168,85,247,0.35), rgba(88,28,135,0.95))",
+                                "border": "rgba(233,213,255,0.9)",
+                            },
+                            {  # teal
+                                "bg": "radial-gradient(circle at top left, rgba(45,212,191,0.35), rgba(15,118,110,0.95))",
+                                "border": "rgba(153,246,228,0.9)",
+                            },
                         ]
 
-                    # ----- Color themes for tiles (cycled) -----
-                    color_schemes = [
-                        {  # blue
-                            "bg": "radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(30,64,175,0.95))",
-                            "border": "rgba(191,219,254,0.9)",
-                        },
-                        {  # orange
-                            "bg": "radial-gradient(circle at top left, rgba(249,115,22,0.35), rgba(124,45,18,0.95))",
-                            "border": "rgba(253,186,116,0.9)",
-                        },
-                        {  # green
-                            "bg": "radial-gradient(circle at top left, rgba(34,197,94,0.35), rgba(5,46,22,0.95))",
-                            "border": "rgba(187,247,208,0.9)",
-                        },
-                        {  # purple
-                            "bg": "radial-gradient(circle at top left, rgba(168,85,247,0.35), rgba(88,28,135,0.95))",
-                            "border": "rgba(233,213,255,0.9)",
-                        },
-                        {  # teal
-                            "bg": "radial-gradient(circle at top left, rgba(45,212,191,0.35), rgba(15,118,110,0.95))",
-                            "border": "rgba(153,246,228,0.9)",
-                        },
-                    ]
-
-                    # Build tiles (≈ 3 per row, responsive)
-                    tiles_html = """
-    <div style="
-        display:flex;
-        flex-wrap:wrap;
-        gap:12px;
-        justify-content:flex-start;
-    ">
-    """
-
-                    for idx, r in enumerate(filtered):
-                        scheme = color_schemes[idx % len(color_schemes)]
-
-                        tiles_html += f"""
-    <a href="{r['url']}" target="_blank"
-       style="
-           text-decoration:none;
-           flex:1 1 calc(33.33% - 12px);
-           min-width:190px;
-           max-width:260px;
-       ">
+                        # Build tiles in a 3-column grid (3x3 layout feel)
+                        tiles_html = """
         <div style="
-            height:110px;
-            border-radius:18px;
-            padding:10px 14px;
-            background:{scheme['bg']};
-            border:1px solid {scheme['border']};
-            box-shadow:0 14px 30px rgba(15,23,42,0.9);
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            transition:transform 0.12s ease-out, box-shadow 0.12s ease-out;
+            display:grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap:12px;
         ">
+        """
+
+                        for idx, r in enumerate(filtered):
+                            scheme = color_schemes[idx % len(color_schemes)]
+
+                            tiles_html += f"""
+        <a href="{r['url']}" target="_blank"
+           style="text-decoration:none;">
             <div style="
-                font-size:15px;
-                font-weight:700;
-                letter-spacing:0.04em;
-                color:#e5e7eb;
-                text-shadow:0 0 10px rgba(15,23,42,0.9);
+                height:110px;
+                border-radius:18px;
+                padding:10px 14px;
+                background:{scheme['bg']};
+                border:1px solid {scheme['border']};
+                box-shadow:0 14px 30px rgba(15,23,42,0.9);
+                cursor:pointer;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                text-align:center;
+                transition:transform 0.12s ease-out, box-shadow 0.12s ease-out;
             ">
-                {r['title']}
+                <div style="
+                    font-size:15px;
+                    font-weight:700;
+                    letter-spacing:0.04em;
+                    color:#e5e7eb;
+                    text-shadow:0 0 10px rgba(15,23,42,0.9);
+                ">
+                    {r['title']}
+                </div>
             </div>
-        </div>
-    </a>
-    """
+        </a>
+        """
 
-                    tiles_html += "</div>"
+                        tiles_html += "</div>"
 
-                    st.markdown(tiles_html, unsafe_allow_html=True)
+                        st.markdown(tiles_html, unsafe_allow_html=True)
 elif section == "🧠 Focus & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
 
