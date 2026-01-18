@@ -2,6 +2,15 @@ import streamlit as st
 import sqlite3
 from datetime import date
 
+# =============================
+# PAGE CONFIG
+# =============================
+st.set_page_config(
+    page_title="EduSphere",
+    page_icon="🎓",
+    layout="wide"
+)
+
 # =============== PER-USER STORAGE HELPER ===============
 def get_user_list(key: str):
     """
@@ -21,123 +30,215 @@ def get_user_list(key: str):
 
     return st.session_state[key][user]
 
+# =============================
+# GLOBAL THEME (Midnight Study Glow)
+# =============================
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Baloo+2:wght@500;700&display=swap');
+
 :root {
-    --accent: #2563eb;
-    --accent-soft: rgba(37,99,235,0.10);
-    --bg-page: #eff6ff;
-    --bg-card: #ffffff;
-    --border-subtle: rgba(148,163,184,0.35);
-    --text-main: #0f172a;
-    --text-muted: #6b7280;
+    --es-bg: #020617;
+    --es-bg-alt: #020617;
+    --es-card: rgba(15,23,42,0.96);
+    --es-border: rgba(148,163,184,0.45);
+    --es-accent: #38bdf8;
+    --es-accent-soft: rgba(56,189,248,0.12);
+    --es-accent-alt: #818cf8;
+    --es-text-main: #e5e7eb;
+    --es-text-muted: #9ca3af;
 }
 
-/* Page background with soft blue “bubbles” */
+/* PAGE BACKGROUND + CONTENT WIDTH */
 [data-testid="stAppViewContainer"] {
-    background:
-        radial-gradient(circle at 0% 0%, rgba(30,64,175,0.65), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(8,47,73,0.55), transparent 55%),
-        linear-gradient(to bottom, #cbd5f5, #9ca3af);
+    background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
+    color: var(--es-text-main);
 }
 
-/* Main content area (center + more vertical space) */
-[data-testid="block-container"] {
+[data-testid="stAppViewContainer"] [data-testid="block-container"] {
     max-width: 1150px;
-    padding-top: 2rem;
-    padding-bottom: 4rem;
+    padding-top: 1.8rem;
+    padding-bottom: 3rem;
     margin: 0 auto;
 }
 
-/* Sidebar (if shown) */
+/* SIDEBAR */
 [data-testid="stSidebar"] {
-    background: #f9fafb;
-    border-right: 1px solid rgba(148,163,184,0.3);
+    background: #020617;
+    border-right: 1px solid rgba(30,64,175,0.7);
+}
+[data-testid="stSidebar"] * {
+    font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Headings */
-h1, h2, h3 {
-    color: var(--text-main);
+/* GLOBAL TEXT */
+html, body, [class*="css"] {
+    font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--es-text-main);
+}
+
+/* HEADINGS */
+h1, h2, h3, h4 {
+    font-family: 'Baloo 2', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     letter-spacing: 0.02em;
 }
+h1 {
+    font-size: 2.1rem;
+}
+h2 {
+    font-size: 1.5rem;
+}
 
-/* Tabs – pill style */
+/* TOP WRAPPER */
+.page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* TOP TITLE ROW (EduSphere + motto) */
+.es-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.es-title-main {
+    font-family: 'Baloo 2', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+}
+.es-title-motto {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* TABS – SOFT PILLS */
 .stTabs [data-baseweb="tab"] {
-    background: rgba(255,255,255,0.9);
+    background: rgba(15,23,42,0.85);
     border-radius: 999px;
-    padding: 8px 18px;
+    padding: 8px 16px;
     margin-right: 8px;
-    border: 1px solid rgba(209,213,219,0.9);
-    color: #4b5563;
-    font-weight: 600;
+    border: 1px solid transparent;
+    color: var(--es-text-muted);
+    font-weight: 500;
     font-size: 13px;
 }
 .stTabs [aria-selected="true"] {
-    background: var(--accent);
-    color: #ffffff !important;
-    border-color: var(--accent);
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    color: #0b1120 !important;
+    border-color: rgba(56,189,248,0.7);
 }
 
-/* Buttons */
+/* BUTTONS */
 .stButton > button {
     border-radius: 999px;
     padding: 6px 18px;
-    border: 1px solid var(--accent);
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: white;
+    border: 0;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    color: #0b1120;
     font-weight: 600;
     font-size: 13px;
-    box-shadow: 0 8px 18px rgba(37,99,235,0.25);
+    box-shadow: 0 8px 20px rgba(15,23,42,0.8);
 }
 .stButton > button:hover {
-    filter: brightness(1.03);
+    filter: brightness(1.05);
+    box-shadow: 0 10px 26px rgba(15,23,42,0.9);
 }
 
-/* Generic “card” style */
+/* GENERIC CARD */
 .es-card {
-    background: var(--bg-card);
-    border-radius: 16px;
+    background: var(--es-card);
+    border-radius: 18px;
     padding: 16px 18px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+    border: 1px solid var(--es-border);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.75);
     margin-bottom: 14px;
 }
 .es-card-title {
     font-size: 15px;
     font-weight: 700;
-    color: var(--text-main);
     margin-bottom: 4px;
 }
 .es-card-sub {
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--es-text-muted);
 }
 
-/* Optional grid helper if you want to use it later */
+/* RESOURCE GRID (still available) */
 .es-resource-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
 }
 @media (max-width: 900px) {
-    .es-resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .es-resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-    .es-resource-grid { grid-template-columns: repeat(1, minmax(0,1fr)); }
+    .es-resource-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+}
+.es-resource-tile {
+    height: 110px;
+    border-radius: 16px;
+    padding: 10px 14px;
+    background: radial-gradient(circle at top left,
+        rgba(15,23,42,0.9),
+        rgba(15,23,42,1));
+    border: 1px solid var(--es-border);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
+}
+.es-resource-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(0,0,0,1);
+    border-color: rgba(56,189,248,0.9);
+}
+.es-resource-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #e5e7eb;
+}
+
+/* TODAY'S FOCUS BOX – LIGHT CARD */
+.es-focus-box {
+    position: fixed;
+    top: 78px;
+    right: 24px;
+    width: 250px;
+    background: linear-gradient(145deg, #eff6ff, #e0f2fe);
+    border-radius: 18px;
+    padding: 10px 14px;
+    border: 1px solid rgba(148,163,184,0.6);
+    box-shadow: 0 14px 32px rgba(15,23,42,0.3);
+    font-size: 12px;
+    color: #0f172a;
+    z-index: 999;
+}
+.es-focus-pill {
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:rgba(56,189,248,0.14);
+    color:#0ea5e9;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
 }
 
 /* Inputs rounder */
 input, textarea {
     border-radius: 10px !important;
 }
-
-/* Wrapper div you already use */
-.page-wrapper {
-    max-width: 1150px;
-    margin: 0 auto;
-}
 </style>
 """, unsafe_allow_html=True)
+
+
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -216,29 +317,6 @@ if "submitted" not in st.session_state:
 if "resources" not in st.session_state:
     st.session_state.resources = []   # each: {"title", "url", "category"}
 
-# =============================
-# PAGE CONFIG
-# =============================
-st.set_page_config(
-    page_title="EduSphere",
-    page_icon="🎓",
-    layout="wide"
-)
-
-st.markdown(
-    """
-    <style>
-    .page-wrapper {
-        max-width: 1100px;
-        margin: 0 auto;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown('<div class="page-wrapper">', unsafe_allow_html=True)
-
 # --------------------------------
 # Handle navigation via URL param
 # --------------------------------
@@ -254,9 +332,6 @@ if "section" in params:
         st.session_state.section_choice = "🎯 Tutoring"
         # Clear the param so refreshing doesn't keep forcing it
         st.experimental_set_query_params()
-# =============================
-# STYLES
-# =============================
 
 
 # =============================
@@ -329,7 +404,6 @@ courses = {
     "Surv Bus Mark Fin": 5.0,
     "Engineering": 5.0
 }
-
 # =============================
 # MAIN APP
 # =============================
@@ -340,7 +414,9 @@ courses = {
 # =============================
 # SIMPLE LOGIN SYSTEM
 # =============================
-import sqlite3  # you already have this at the top
+# =============================
+# SIMPLE LOGIN SYSTEM
+# =============================
 
 # Make sure login state exists
 if "logged_in" not in st.session_state:
@@ -350,25 +426,53 @@ if "current_user" not in st.session_state:
 
 # If not logged in, show login / signup screen and STOP the app there
 if not st.session_state.logged_in:
-    st.title("🎓 EduSphere")
+    st.markdown('<div class="page-wrapper">', unsafe_allow_html=True)
 
-    st.subheader("Login or create a profile")
-    st.caption("⚠️ Don’t use a real password. Just a nickname + simple PIN for this app.")
-
-    mode = st.radio("Choose an option:", ["Log in", "Create new profile"], key="login_mode")
-
-    username = st.text_input(
-        "Username",
-        placeholder="Ex: arpeet09 or math_wizard",
-        key="login_username"
+    st.markdown(
+        """
+        <div class="es-title-row">
+            <div class="es-title-main">🎓 EduSphere</div>
+            <div class="es-title-motto">Organize today. Own tomorrow.</div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    pin = st.text_input(
-        "4-digit PIN (NOT a real password)",
-        type="password",
-        max_chars=4,
-        key="login_pin"
+    st.markdown(
+        """
+        <div class="es-card" style="margin-top: 8px;">
+            <div class="es-card-title">Welcome back 👋</div>
+            <p class="es-card-sub">
+                Create a simple profile so your GPA, planner, and ideas stay saved on this device.
+                Use a <b>nickname + 4-digit PIN</b> only – not a real password.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
+
+    mode = st.radio(
+        "Choose an option:",
+        ["Log in", "Create new profile"],
+        key="login_mode"
+    )
+
+    col_user, col_pin = st.columns(2)
+
+    with col_user:
+        username = st.text_input(
+            "Username",
+            placeholder="Ex: arpeet09 or math_wizard",
+            key="login_username"
+        )
+
+    with col_pin:
+        pin = st.text_input(
+            "4-digit PIN (NOT a real password)",
+            type="password",
+            max_chars=4,
+            key="login_pin"
+        )
 
     if st.button("Continue", key="login_continue"):
         if not username.strip() or not pin.strip():
@@ -379,7 +483,10 @@ if not st.session_state.logged_in:
             if mode == "Create new profile":
                 # Try to create the user
                 try:
-                    c.execute("INSERT INTO users (username, pin) VALUES (?, ?)", (username, pin))
+                    c.execute(
+                        "INSERT INTO users (username, pin) VALUES (?, ?)",
+                        (username, pin)
+                    )
                     conn.commit()
                     st.session_state.logged_in = True
                     st.session_state.current_user = username
@@ -399,31 +506,22 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Incorrect username or PIN.")
 
+    st.markdown('</div>', unsafe_allow_html=True)
     # Stop here if not logged in (don’t show the rest of the app)
     st.stop()
 
 
+# =============================
+# MAIN SHELL (AFTER LOGIN)
+# =============================
+st.markdown('<div class="page-wrapper">', unsafe_allow_html=True)
+
+# Top title row (uses themed classes)
 st.markdown(
     """
-    <div style="
-        display: flex;
-        align-items: baseline;
-        gap: 12px;
-        margin-bottom: 10px;
-    ">
-        <div style="
-            font-size: 30px;
-            font-weight: 700;
-        ">
-            🎓 EduSphere
-        </div>
-        <div style="
-            font-size: 13px;
-            font-weight: 500;
-            opacity: 0.85;
-        ">
-            Organize today. Own tomorrow.
-        </div>
+    <div class="es-title-row">
+        <div class="es-title-main">🎓 EduSphere</div>
+        <div class="es-title-motto">Organize today. Own tomorrow.</div>
     </div>
     """,
     unsafe_allow_html=True
@@ -441,6 +539,7 @@ section = st.selectbox(
     ],
     key="section_choice",
 )
+
 # =============================
 # FLOATING "TODAY'S FOCUS" BOX (top-right on all tabs)
 # =============================
@@ -468,33 +567,10 @@ else:
         '</li>'
     )
 
-box_html = f"""
-<div style="
-    position: fixed;
-    top: 80px;
-    right: 24px;
-    width: 250px;
-    background: linear-gradient(145deg, #ffffff, #e5edff);
-    border-radius: 16px;
-    padding: 10px 14px;
-    border: 1px solid rgba(148, 163, 184, 0.55);
-    box-shadow: 0 12px 26px rgba(15,23,42,0.15);
-    font-size: 12px;
-    color: #111827;
-    z-index: 999;
-">
+focus_html = f"""
+<div class="es-focus-box">
     <div style="text-align:center; margin-bottom:6px;">
-        <span style="
-            display:inline-block;
-            padding:4px 10px;
-            border-radius:999px;
-            background: rgba(37,99,235,0.1);
-            color:#1d4ed8;
-            font-size:11px;
-            font-weight:800;
-            letter-spacing:0.12em;
-            text-transform:uppercase;
-        ">
+        <span class="es-focus-pill">
             Today&apos;s Focus
         </span>
     </div>
@@ -504,109 +580,137 @@ box_html = f"""
 </div>
 """
 
-st.markdown(box_html, unsafe_allow_html=True)
+st.markdown(focus_html, unsafe_allow_html=True)
 
 # =============================
-# TAB 0: WELCOME
+# TAB 0: WELCOME / HOME
 # =============================
 if section == "🏠 Home & Intro":
-    # ----- WELCOME LAYOUT (3 columns) -----
-    col_me, col_app, col_image = st.columns([3, 3, 4])
+    # Welcome layout – 2 main columns: intro + image
+    col_left, col_right = st.columns([3, 4])
 
-    # LEFT: About Me
-    with col_me:
-        st.subheader("👋 About Me")
-        st.write(
-            "Hi, I'm **Arpeet Shah**.\n"
-            "- 9th grade student at **Emerson High School**\n"
-            "- I care about staying organized, keeping up with school, and keeping some balance.\n"
-            "- I built EduSphere so students (including me) have one place to plan and track school."
-        )
-
-        st.markdown("**📇 Contact**")
+    # LEFT: About Me + Contact in a card
+    with col_left:
         st.markdown(
             """
-            <div style="margin-top:6px; display:flex; flex-direction:column; gap:6px;">
-                <div style="
-                    padding:7px 12px;
-                    border-radius:999px;
-                    background:linear-gradient(135deg,#111827,#1f2937);
-                    font-size:13px;
-                    color:#f9fafb;
-                    border:1px solid rgba(148,163,184,0.9);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
-                    display:flex;
-                    align-items:center;
-                    gap:6px;
-                ">
-                    <span style="font-size:15px;">📱</span>
-                    <span><strong>Phone:</strong> 469-996-1729</span>
+            <div class="es-card">
+                <div class="es-card-title">👋 About Me</div>
+                <p class="es-card-sub" style="margin-bottom: 8px;">
+                    Hi, I'm <b>Arpeet Shah</b> — a 9th grade student at <b>Emerson High School</b>.
+                    I care about staying organized, keeping up with school, and keeping some balance.
+                    EduSphere is my all-in-one place to plan, track GPA, and keep school under control.
+                </p>
+                <div style="margin-top:10px; font-size:13px; font-weight:600; margin-bottom:6px;">
+                    📇 Contact
                 </div>
-                <div style="
-                    padding:7px 12px;
-                    border-radius:999px;
-                    background:linear-gradient(135deg,#022c22,#064e3b);
-                    font-size:13px;
-                    color:#f9fafb;
-                    border:1px solid rgba(167,243,208,0.9);
-                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
-                    display:flex;
-                    align-items:center;
-                    gap:6px;
-                ">
-                    <span style="font-size:15px;">✉️</span>
-                    <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="
+                        padding:7px 12px;
+                        border-radius:999px;
+                        background:linear-gradient(135deg,#0f172a,#020617);
+                        font-size:13px;
+                        color:#f9fafb;
+                        border:1px solid rgba(148,163,184,0.95);
+                        box-shadow:0 4px 12px rgba(0,0,0,0.7);
+                        display:flex;
+                        align-items:center;
+                        gap:6px;
+                    ">
+                        <span style="font-size:15px;">📱</span>
+                        <span><strong>Phone:</strong> 469-996-1729</span>
+                    </div>
+                    <div style="
+                        padding:7px 12px;
+                        border-radius:999px;
+                        background:linear-gradient(135deg,#022c22,#064e3b);
+                        font-size:13px;
+                        color:#f9fafb;
+                        border:1px solid rgba(45,212,191,0.9);
+                        box-shadow:0 4px 12px rgba(0,0,0,0.7);
+                        display:flex;
+                        align-items:center;
+                        gap:6px;
+                    ">
+                        <span style="font-size:15px;">✉️</span>
+                        <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
+                    </div>
                 </div>
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    # MIDDLE: About the app
-    with col_app:
-        st.subheader("🌀 What is EduSphere?")
-        st.write(
-            "- A calm, all-in-one place for school.\n"
-            "- Track your GPA, practice problems, and organize your day.\n"
-            "- No logins, no personal data stored — just tools for you."
+    # RIGHT: What is EduSphere? + hero image
+    with col_right:
+        st.markdown(
+            """
+            <div class="es-card">
+                <div class="es-card-title">🌀 What is EduSphere?</div>
+                <p class="es-card-sub">
+                    EduSphere is a calm, midnight-themed hub for your school life:
+                </p>
+                <ul style="font-size:13px; margin-top:4px; padding-left:18px;">
+                    <li>📊 Track your <b>GPA</b> with both current and what-if calculators.</li>
+                    <li>📝 Practice <b>AP Precalc</b> and <b>Spanish</b> with built-in quizzes.</li>
+                    <li>📅 Plan your week with a <b>Daily Dashboard</b> and planner.</li>
+                    <li>🌱 Save project ideas and goals in the <b>Idea Vault</b>.</li>
+                    <li>🎯 Learn how you can get <b>1-on-1 tutoring</b> directly from here.</li>
+                </ul>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-    # RIGHT: Image
-    with col_image:
         st.image(
-            "https://images.unsplash.com/photo-1589629828693-5533d7a9d731?auto=format&fit=crop&w=900&q=80",
-            width=500,
+            "https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=900&q=80",
+            use_column_width=True,
+            caption="Late-night study session vibes 🌌",
         )
 
 elif section == "📚 School Tools":
-    st.subheader("📚 School Tools")
+    # Section header card
+    st.markdown(
+        """
+        <div class="es-card" style="margin-bottom: 10px;">
+            <div class="es-card-title" style="display:flex; align-items:center; gap:8px;">
+                <span>📚 School Tools</span>
+            </div>
+            <p class="es-card-sub" style="margin-top:4px;">
+                This section is your academic control center – GPA tracking, practice quizzes,
+                saved links, and what-if simulations.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     tools_tabs = st.tabs([
         "📊 GPA",
         "📝 Quiz & Practice",
         "🔗 Resource Hub",
-        "🔮 What-If GPA"  # 👈 NEW
+        "🔮 What-If GPA"
     ])
+
     # =============================
     # TAB 0: GPA CALCULATOR
     # =============================
     with tools_tabs[0]:
-        st.header("📊 GPA Calculator")
-
-        # Who is this data for? (change this to your real login name if you have one)
         current_user = st.session_state.get("current_user", "guest")
 
-        # Top summary card
         st.markdown(
             """
-            <div class="es-card" style="margin-bottom: 12px;">
-                <div class="es-card-title">How this GPA calculator works</div>
+            <div class="es-card" style="margin-bottom: 14px;">
+                <div class="es-card-title">📊 GPA Calculator</div>
                 <p class="es-card-sub">
-                    • Middle school: each <b>semester grade</b> becomes one GPA entry.<br>
-                    • High school: we average <b>2 quarters = 1 semester</b>, then convert that semester grade to GPA.<br>
-                    • Weighted GPA uses your course weight (5.0 / 5.5 / 6.0).<br>
-                    • Final GPA is the average of all semester GPAs you entered.
+                    This calculator tracks both your <b>middle school</b> and <b>high school</b> grades
+                    and converts everything into one overall GPA.
                 </p>
+                <ul style="font-size:12px; margin-top:6px; padding-left:18px; color:#9ca3af;">
+                    <li>Middle school: each <b>semester grade</b> becomes one GPA entry.</li>
+                    <li>High school: we average <b>2 quarters = 1 semester</b>, then convert that semester grade.</li>
+                    <li>Weighted GPA uses your course weight (5.0 / 5.5 / 6.0).</li>
+                    <li>Final GPA = average of all semester GPAs you entered.</li>
+                </ul>
             </div>
             """,
             unsafe_allow_html=True,
@@ -614,7 +718,7 @@ elif section == "📚 School Tools":
 
         gpa_tabs = st.tabs(["🏫 Middle School", "🎓 High School", "📈 Results & Analytics"])
 
-        # We’ll fill these from the MS / HS tabs so Results can use them
+        # These get filled inside the MS / HS tabs and then used in Results
         ms_course_grades = {}
         hs_course_grades = {}
 
@@ -622,40 +726,37 @@ elif section == "📚 School Tools":
         # MIDDLE SCHOOL TAB
         # =============================
         with gpa_tabs[0]:
-            st.subheader("🏫 Middle School Grades")
-
             st.markdown(
                 """
-                <div class="es-card" style="margin-bottom: 8px;">
-                    <div class="es-card-title">Enter your middle school semester grades</div>
+                <div class="es-card" style="margin-bottom: 10px;">
+                    <div class="es-card-title">🏫 Middle School Grades</div>
                     <p class="es-card-sub">
-                        • Most classes have 2 semesters.<br>
-                        • <b>Health</b> only has 1 semester.<br>
-                        • AP World lets you pick Year 1 or Year 2 weight.
+                        Enter the final <b>semester grades</b> for each class. Most classes have 2 semesters;
+                        <b>Health</b> usually has 1.
                     </p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            # --- 1) Load any saved MS grades for this user from the DB ---
+            # 1) Load any saved MS grades for this user from the DB
             saved_ms = {}
             for course, s1, s2, gt_year in c.execute(
-                    """
-                    SELECT course, semester1, semester2, gt_year
-                    FROM grades
-                    WHERE username = ? AND section = 'MS'
-                    """,
-                    (current_user,),
+                """
+                SELECT course, semester1, semester2, gt_year
+                FROM grades
+                WHERE username = ? AND section = 'MS'
+                """,
+                (current_user,),
             ):
                 vals = []
                 if s1 is not None:
                     vals.append(s1)
                 if s2 is not None:
                     vals.append(s2)
-                saved_ms[course] = vals  # list of 1 or 2 sem grades
+                saved_ms[course] = vals  # list of 1 or 2 semester grades
 
-            # --- 2) Multiselect with saved courses pre-selected ---
+            # 2) Multiselect with saved courses pre-selected
             ms_selected = st.multiselect(
                 "Select the courses you took (MS)",
                 options=list(courses.keys()),
@@ -663,9 +764,9 @@ elif section == "📚 School Tools":
                 key="ms_courses",
             )
 
-            # --- 3) Inputs + saving to DB ---
+            # 3) Inputs + saving to DB
             for course in ms_selected:
-                # Determine number of semesters (Health = 1, others = 2)
+                # Health = 1 semester, everything else = 2
                 semesters = 1 if course == "Health" else 2
                 previous = saved_ms.get(course, [])
 
@@ -684,7 +785,7 @@ elif section == "📚 School Tools":
 
                 ms_course_grades[course] = tuple(grades)
 
-                # Handle AP World year
+                # AP World year selection if needed
                 gt_year = None
                 if course == "GT / AP World History":
                     gt_year = st.selectbox(
@@ -726,16 +827,15 @@ elif section == "📚 School Tools":
         # HIGH SCHOOL TAB
         # =============================
         with gpa_tabs[1]:
-            st.subheader("🎓 High School Grades")
-
             st.markdown(
                 """
-                <div class="es-card" style="margin-bottom: 8px;">
-                    <div class="es-card-title">Enter your high school quarter grades</div>
+                <div class="es-card" style="margin-bottom: 10px;">
+                    <div class="es-card-title">🎓 High School Grades</div>
                     <p class="es-card-sub">
-                        • There are 4 quarters in a full year.<br>
-                        • We convert them as: Q1 + Q2 = Semester 1, Q3 + Q4 = Semester 2.<br>
-                        • If you only have 1–2 quarters so far, we use what's available.
+                        Enter your <b>quarter grades</b>. We'll turn:
+                        <br>• Q1 + Q2 → Semester 1
+                        <br>• Q3 + Q4 → Semester 2
+                        <br>If you only have 1–2 quarters so far, we use what you have.
                     </p>
                 </div>
                 """,
@@ -752,20 +852,20 @@ elif section == "📚 School Tools":
                 key="hs_quarters_overall",
             )
 
-            # --- 1) Load saved HS grades for this user ---
+            # 1) Load saved HS grades for this user
             saved_hs = {}
             for course, q1, q2, q3, q4, gt_year in c.execute(
-                    """
-                    SELECT course, q1, q2, q3, q4, gt_year
-                    FROM grades
-                    WHERE username = ? AND section = 'HS'
-                    """,
-                    (current_user,),
+                """
+                SELECT course, q1, q2, q3, q4, gt_year
+                FROM grades
+                WHERE username = ? AND section = 'HS'
+                """,
+                (current_user,),
             ):
                 vals = [g for g in (q1, q2, q3, q4) if g is not None]
                 saved_hs[course] = vals
 
-            # --- 2) Multiselect with saved HS courses pre-selected ---
+            # 2) Multiselect with saved HS courses pre-selected
             hs_selected = st.multiselect(
                 "Select the courses you took (HS)",
                 options=list(courses.keys()),
@@ -773,7 +873,7 @@ elif section == "📚 School Tools":
                 key="hs_courses",
             )
 
-            # --- 3) Inputs + saving to DB ---
+            # 3) Inputs + saving to DB
             for course in hs_selected:
                 previous = saved_hs.get(course, [])
 
@@ -801,7 +901,7 @@ elif section == "📚 School Tools":
 
                 hs_course_grades[course] = q_grades
 
-                # Handle AP World year
+                # AP World year if needed
                 gt_year = None
                 if course == "GT / AP World History":
                     gt_year = st.selectbox(
@@ -843,15 +943,14 @@ elif section == "📚 School Tools":
         # RESULTS & ANALYTICS TAB
         # =============================
         with gpa_tabs[2]:
-            st.subheader("📈 GPA Results & Analytics")
-
             st.markdown(
                 """
                 <div class="es-card" style="margin-bottom: 10px;">
-                    <div class="es-card-title">Calculate your current GPA</div>
+                    <div class="es-card-title">📈 GPA Results & Analytics</div>
                     <p class="es-card-sub">
-                        This combines every middle school semester and every high school semester
-                        (built from your quarter grades) into one overall GPA.
+                        This combines every <b>middle school semester</b> and every
+                        <b>high school semester</b> (built from your quarter grades)
+                        into one overall GPA.
                     </p>
                 </div>
                 """,
@@ -863,19 +962,15 @@ elif section == "📚 School Tools":
                 unweighted = []
                 breakdown_text = []
 
-                # ===========================
-                # MIDDLE SCHOOL GPA
-                # ===========================
+                # ---------- Middle School ----------
                 for course, sem_grades in ms_course_grades.items():
                     for sem_index, grade in enumerate(sem_grades, start=1):
-                        # Determine weight
                         if course == "GT / AP World History":
                             year = st.session_state.get(f"{course}_year", 1)
                             weight = courses[course][year]
                         else:
                             weight = courses.get(course, 5.0)
 
-                        # Convert grade → GPA
                         w_gpa = weighted_gpa(grade, weight)
                         uw_gpa = unweighted_gpa(grade)
 
@@ -884,30 +979,27 @@ elif section == "📚 School Tools":
 
                         breakdown_text.append(
                             f"Middle School | {course} | Semester {sem_index}: "
-                            f"Grade {grade} → Weighted GPA {w_gpa:.2f}, Unweighted GPA {uw_gpa:.2f}"
+                            f"Grade {grade} → Weighted GPA {w_gpa:.2f}, "
+                            f"Unweighted GPA {uw_gpa:.2f}"
                         )
 
-                # ===========================
-                # HIGH SCHOOL GPA
-                # ===========================
+                # ---------- High School ----------
                 for course, q_grades in hs_course_grades.items():
-                    # Group quarters into semesters (Q1+Q2, Q3+Q4)
+                    # Group quarters into semesters: (Q1,Q2), (Q3,Q4)
                     for sem_index in range(0, len(q_grades), 2):
                         sem_quarters = q_grades[sem_index: sem_index + 2]
                         if not sem_quarters:
                             continue
 
                         raw_avg = sum(sem_quarters) / len(sem_quarters)
-                        sem_avg = round(raw_avg)  # round to whole number first
+                        sem_avg = round(raw_avg)
 
-                        # Determine weight
                         if course == "GT / AP World History":
                             year = st.session_state.get(f"{course}_year", 1)
                             weight = courses[course][year]
                         else:
                             weight = courses.get(course, 5.0)
 
-                        # Convert semester grade → GPA
                         w_gpa = weighted_gpa(sem_avg, weight)
                         uw_gpa = unweighted_gpa(sem_avg)
 
@@ -916,14 +1008,12 @@ elif section == "📚 School Tools":
 
                         breakdown_text.append(
                             f"High School | {course} | Semester {(sem_index // 2) + 1}: "
-                            f"Quarter Grades {sem_quarters} → "
-                            f"Avg {raw_avg:.2f} → Rounded {sem_avg} → "
-                            f"Weighted GPA {w_gpa:.2f}, Unweighted GPA {uw_gpa:.2f}"
+                            f"Quarter Grades {sem_quarters} → Avg {raw_avg:.2f} → "
+                            f"Rounded {sem_avg} → Weighted GPA {w_gpa:.2f}, "
+                            f"Unweighted GPA {uw_gpa:.2f}"
                         )
 
-                # ===========================
-                # FINAL GPA
-                # ===========================
+                # ---------- Final ----------
                 if not weighted:
                     st.warning("No courses selected in the MS / HS tabs above.")
                 else:
@@ -937,68 +1027,29 @@ elif section == "📚 School Tools":
                         for line in breakdown_text:
                             st.text(line)
 
+    # 👇 Your existing Quiz tab code should continue from here:
     with tools_tabs[1]:
         unit = None
         difficulty = None
 
-        st.subheader("Quiz & Practice Problems")
+        with tools_tabs[1]:
+            st.subheader("📝 AP Precalculus Quiz & Practice")
 
-        # Create sub-tabs for each subject
-        quiz_subjects = ["Spanish", "Math"]
-        quiz_tabs = st.tabs(quiz_subjects)
-
-        # =============================
-        # SPANISH QUIZ
-        # =============================
-        with quiz_tabs[0]:
-            st.header("Spanish Quiz")
-            spanish_level = st.selectbox("Select your Spanish level:",
-                                         ["Spanish 1", "Spanish 2", "Spanish 3", "Spanish 4 AP"])
-
-            if spanish_level == "Spanish 1":
-                q1 = st.radio("Select the correct translation: 'I eat an apple.'",
-                              ["Yo como una manzana", "Yo comer una manzana", "Yo comí una manzana"])
-                q2 = st.radio("Select the correct verb conjugation: 'Tú (hablar) español.'",
-                              ["hablas", "hablo", "habla"])
-            elif spanish_level == "Spanish 2":
-                q1 = st.radio("Select the correct past tense: 'He ate lunch.'",
-                              ["Él comió almuerzo", "Él comer almuerzo", "Él comía almuerzo"])
-                q2 = st.radio("Choose correct subjunctive: 'Es importante que tú (estudiar) para el examen.'",
-                              ["estudies", "estudias", "estudiar"])
-            elif spanish_level == "Spanish 3":
-                q1 = st.radio("Choose the correct conditional: 'I would travel to Spain.'",
-                              ["Yo viajaría a España", "Yo viajaré a España", "Yo viajo a España"])
-                q2 = st.radio("Select correct past perfect: 'I had eaten before school.'",
-                              ["Había comido antes de la escuela", "He comido antes de la escuela",
-                               "Comí antes de la escuela"])
-            else:
-                q1 = st.radio("Select the correct subjunctive past: 'It was necessary that he had finished.'",
-                              ["Era necesario que él hubiera terminado", "Era necesario que él terminó",
-                               "Era necesario que él había terminado"])
-                q2 = st.radio("Select correct idiomatic expression: 'To be over the moon.'",
-                              ["Estar en la luna", "Estar en el cielo", "Tener la luna"])
-            st.success("Spanish quiz section loaded. Answers are not yet auto-graded.")
-
-        # =============================
-        # MATH QUIZ
-        # =============================
-        with quiz_tabs[1]:
-            st.header("AP Precalculus Quiz")
-
-            # Full Precalculus Questions for Units 1-4
+            # =============================
+            # AP PRECALCULUS QUESTION BANK
+            # =============================
             questions = {
-
                 "Unit 1": {
                     "Easy": [
                         {"type": "mcq", "question": "Solve for x: x^2 - 5x + 6 = 0",
                          "options": ["x=2 or 3", "x=1 or 6", "x=0 or 6"], "answer": "x=2 or 3"},
                         {"type": "text", "question": "Find the zeros of f(x) = x^2 - 4", "answer": "2,-2"},
-                        {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)", "options": ["x+3", "x-3", "x^2+3"],
-                         "answer": "x-3"},
+                        {"type": "mcq", "question": "Simplify: (x^2 - 9)/(x+3)",
+                         "options": ["x+3", "x-3", "x^2+3"], "answer": "x-3"},
                         {"type": "text", "question": "Determine if f(x)= -x^2 + 2x + 3 has a maximum or minimum",
                          "answer": "maximum"},
-                        {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1", "options": ["9", "7", "5"],
-                         "answer": "7"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=x^2+3x-1",
+                         "options": ["9", "7", "5"], "answer": "7"},
                         {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-5)?",
                          "options": ["x=-5", "x=0", "x=5"], "answer": "x=5"},
                         {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=1 to x=4",
@@ -1009,9 +1060,10 @@ elif section == "📚 School Tools":
                          "options": ["-2", "3", "5"], "answer": "3"},
                         {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
                          "answer": "x<-2 or x>0 and x!=2"},
-                        {"type": "mcq", "question": "What is f(0) for f(x)=2x^2-3x+1?", "options": ["0", "1", "-1"],
-                         "answer": "1"},
-                        {"type": "text", "question": "Find the x-intercepts of f(x)=x^2-6x+8", "answer": "2,4"}
+                        {"type": "mcq", "question": "What is f(0) for f(x)=2x^2-3x+1?",
+                         "options": ["0", "1", "-1"], "answer": "1"},
+                        {"type": "text", "question": "Find the x-intercepts of f(x)=x^2-6x+8",
+                         "answer": "2,4"}
                     ],
                     "Medium": [
                         {"type": "mcq", "question": "Divide: (2x^3+3x^2-x+5)/(x+2)",
@@ -1024,16 +1076,20 @@ elif section == "📚 School Tools":
                          "answer": "7"},
                         {"type": "mcq", "question": "Identify the leading coefficient of f(x)=3x^4-2x^3+5",
                          "options": ["3", "-2", "5"], "answer": "3"},
-                        {"type": "text", "question": "Solve: x^3 - 6x^2 + 11x - 6 = 0", "answer": "1,2,3"},
+                        {"type": "text", "question": "Solve: x^3 - 6x^2 + 11x - 6 = 0",
+                         "answer": "1,2,3"},
                         {"type": "mcq", "question": "Simplify: (x^3 - 8)/(x-2)",
                          "options": ["x^2+2x+4", "x^2-2x+4", "x^2+4"], "answer": "x^2+2x+4"},
-                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-5x^2+6x", "answer": "3x^2-10x+6"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-5x^2+6x",
+                         "answer": "3x^2-10x+6"},
                         {"type": "mcq", "question": "End behavior of f(x)=-2x^4+3x^2",
                          "options": ["f→-∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→-∞ as x→∞"},
-                        {"type": "text", "question": "Solve for x: (x^2-1)/(x+1) < 0", "answer": "x<-1 or 0<x<1"},
-                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2-2x+3", "options": ["6", "4", "3"],
-                         "answer": "6"},
-                        {"type": "text", "question": "Determine if f(x)=x^2-4x+3 opens up or down", "answer": "up"}
+                        {"type": "text", "question": "Solve for x: (x^2-1)/(x+1) < 0",
+                         "answer": "x<-1 or 0<x<1"},
+                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2-2x+3",
+                         "options": ["6", "4", "3"], "answer": "6"},
+                        {"type": "text", "question": "Determine if f(x)=x^2-4x+3 opens up or down",
+                         "answer": "up"}
                     ],
                     "Hard": [
                         {"type": "text", "question": "Find all real solutions for x: 2x^4 - 3x^3 - 11x^2 + 6x + 9 = 0",
@@ -1047,164 +1103,206 @@ elif section == "📚 School Tools":
                          "answer": "As x→∞, f(x)→ -∞"},
                         {"type": "text", "question": "Solve for x: (x^2+2x)/(x^2-4) > 0",
                          "answer": "x<-2 or x>0 and x!=2"},
-                        {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4",
+                         "answer": "1,-1,2,-2"},
                         {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
                          "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
-                        {"type": "text", "question": "Determine the vertex of f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=-2x^2+4x+1",
+                         "answer": "(1,3)"},
                         {"type": "mcq", "question": "Which is the horizontal asymptote of f(x)=(2x^2+3)/(x^2+1)",
                          "options": ["y=2", "y=0", "y=3"], "answer": "y=2"},
-                        {"type": "text", "question": "Solve: x^3-6x^2+11x-6=0", "answer": "1,2,3"},
-                        {"type": "mcq", "question": "Find f(1) for f(x)=2x^3-3x^2+1", "options": ["0", "1", "2"],
-                         "answer": "0"},
-                        {"type": "text", "question": "Factor: x^3-7x^2+10x", "answer": "x(x-5)(x-2)"}
+                        {"type": "text", "question": "Solve: x^3-6x^2+11x-6=0",
+                         "answer": "1,2,3"},
+                        {"type": "mcq", "question": "Find f(1) for f(x)=2x^3-3x^2+1",
+                         "options": ["0", "1", "2"], "answer": "0"},
+                        {"type": "text", "question": "Factor: x^3-7x^2+10x",
+                         "answer": "x(x-5)(x-2)"}
                     ]
                 },
                 "Unit 2": {
                     "Easy": [
-                        {"type": "mcq", "question": "Simplify: (x^2-16)/(x-4)", "options": ["x+4", "x-4", "x^2+4"],
-                         "answer": "x+4"},
-                        {"type": "text", "question": "Find the zeros of f(x)=x^2-5x+6", "answer": "2,3"},
-                        {"type": "mcq", "question": "Evaluate f(2) if f(x)=x^2+2x", "options": ["6", "8", "4"],
-                         "answer": "6"},
-                        {"type": "text", "question": "Factor: x^2+5x+6", "answer": "(x+2)(x+3)"},
+                        {"type": "mcq", "question": "Simplify: (x^2-16)/(x-4)",
+                         "options": ["x+4", "x-4", "x^2+4"], "answer": "x+4"},
+                        {"type": "text", "question": "Find the zeros of f(x)=x^2-5x+6",
+                         "answer": "2,3"},
+                        {"type": "mcq", "question": "Evaluate f(2) if f(x)=x^2+2x",
+                         "options": ["6", "8", "4"], "answer": "6"},
+                        {"type": "text", "question": "Factor: x^2+5x+6",
+                         "answer": "(x+2)(x+3)"},
                         {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x-3)?",
                          "options": ["x=3", "x=-3", "x=0"], "answer": "x=3"},
-                        {"type": "text", "question": "Determine the vertex of f(x)=x^2-4x+1", "answer": "(2,-3)"},
-                        {"type": "mcq", "question": "Find f(0) if f(x)=x^2-3x+2", "options": ["2", "0", "-2"],
-                         "answer": "2"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=x^2-4x+1",
+                         "answer": "(2,-3)"},
+                        {"type": "mcq", "question": "Find f(0) if f(x)=x^2-3x+2",
+                         "options": ["2", "0", "-2"], "answer": "2"},
                         {"type": "text", "question": "Find the average rate of change of f(x)=x^2 from x=0 to x=2",
                          "answer": "2"},
-                        {"type": "mcq", "question": "Simplify: (x^2-25)/(x+5)", "options": ["x-5", "x+5", "x^2+5"],
-                         "answer": "x-5"},
-                        {"type": "text", "question": "Solve x^2-9=0", "answer": "3,-3"},
-                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2+2x+1", "options": ["0", "2", "-1"],
-                         "answer": "0"},
-                        {"type": "text", "question": "Determine if f(x)=-x^2+2x+3 opens up or down", "answer": "down"}
+                        {"type": "mcq", "question": "Simplify: (x^2-25)/(x+5)",
+                         "options": ["x-5", "x+5", "x^2+5"], "answer": "x-5"},
+                        {"type": "text", "question": "Solve x^2-9=0",
+                         "answer": "3,-3"},
+                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2+2x+1",
+                         "options": ["0", "2", "-1"], "answer": "0"},
+                        {"type": "text", "question": "Determine if f(x)=-x^2+2x+3 opens up or down",
+                         "answer": "down"}
                     ],
                     "Medium": [
                         {"type": "mcq", "question": "Divide: (x^3-2x^2+3x-4)/(x-1)",
                          "options": ["x^2-x+2", "x^2+x+4", "x^2-x+1"], "answer": "x^2-x+2"},
-                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6", "answer": "(x-1)(x-2)(x-3)"},
-                        {"type": "mcq", "question": "Find f(2) if f(x)=3x^2-2x+1", "options": ["9", "7", "5"],
-                         "answer": "9"},
-                        {"type": "text", "question": "Solve x^3-3x^2-4x+12=0", "answer": "2,-1,3"},
-                        {"type": "mcq", "question": "End behavior of f(x)=x^4-2x^3", "options": ["f→∞", "f→-∞", "f→0"],
-                         "answer": "f→∞"},
-                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-3x^2", "answer": "3x^2-6x"},
+                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6",
+                         "answer": "(x-1)(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=3x^2-2x+1",
+                         "options": ["9", "7", "5"], "answer": "9"},
+                        {"type": "text", "question": "Solve x^3-3x^2-4x+12=0",
+                         "answer": "2,-1,3"},
+                        {"type": "mcq", "question": "End behavior of f(x)=x^4-2x^3",
+                         "options": ["f→∞", "f→-∞", "f→0"], "answer": "f→∞"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-3x^2",
+                         "answer": "3x^2-6x"},
                         {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
                          "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
-                        {"type": "text", "question": "Solve x^2+5x+6=0", "answer": "-2,-3"},
+                        {"type": "text", "question": "Solve x^2+5x+6=0",
+                         "answer": "-2,-3"},
                         {"type": "mcq", "question": "Find vertical asymptote of f(x)=1/(x+4)",
                          "options": ["x=-4", "x=4", "x=0"], "answer": "x=-4"},
-                        {"type": "text", "question": "Determine the zeros of f(x)=x^2-6x+8", "answer": "2,4"},
-                        {"type": "mcq", "question": "Find f(-2) if f(x)=x^2+3x+2", "options": ["0", "-2", "6"],
-                         "answer": "0"},
-                        {"type": "text", "question": "Vertex of f(x)=x^2-2x-3", "answer": "(1,-4)"}
+                        {"type": "text", "question": "Determine the zeros of f(x)=x^2-6x+8",
+                         "answer": "2,4"},
+                        {"type": "mcq", "question": "Find f(-2) if f(x)=x^2+3x+2",
+                         "options": ["0", "-2", "6"], "answer": "0"},
+                        {"type": "text", "question": "Vertex of f(x)=x^2-2x-3",
+                         "answer": "(1,-4)"}
                     ],
                     "Hard": [
-                        {"type": "text", "question": "Find all solutions of 2x^3-3x^2-11x+6=0", "answer": "-1,1,3"},
+                        {"type": "text", "question": "Find all solutions of 2x^3-3x^2-11x+6=0",
+                         "answer": "-1,1,3"},
                         {"type": "mcq", "question": "Simplify (x^3+8)/(x+2)",
                          "options": ["x^2-2x+4", "x^2+2x+4", "x^2-2x-4"], "answer": "x^2-2x+4"},
-                        {"type": "text", "question": "Solve for x: x^3-6x^2+11x-6=0", "answer": "1,2,3"},
-                        {"type": "mcq", "question": "End behavior of f(x)=-x^3+2x^2", "options": ["f→-∞", "f→∞", "f→0"],
-                         "answer": "f→-∞"},
-                        {"type": "text", "question": "Find derivative f'(x)=3x^2-12x+5 at x=2", "answer": "-7"},
+                        {"type": "text", "question": "Solve for x: x^3-6x^2+11x-6=0",
+                         "answer": "1,2,3"},
+                        {"type": "mcq", "question": "End behavior of f(x)=-x^3+2x^2",
+                         "options": ["f→-∞", "f→∞", "f→0"], "answer": "f→-∞"},
+                        {"type": "text", "question": "Find derivative f'(x)=3x^2-12x+5 at x=2",
+                         "answer": "-7"},
                         {"type": "mcq", "question": "Simplify: (x^3-27)/(x-3)",
                          "options": ["x^2+3x+9", "x^2-3x+9", "x^2-3x-9"], "answer": "x^2+3x+9"},
-                        {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x^4-5x^2+4",
+                         "answer": "1,-1,2,-2"},
                         {"type": "mcq", "question": "Identify leading coefficient of f(x)=5x^4-3x^3",
                          "options": ["5", "-3", "3"], "answer": "5"},
-                        {"type": "text", "question": "Vertex of f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                        {"type": "text", "question": "Vertex of f(x)=-2x^2+4x+1",
+                         "answer": "(1,3)"},
                         {"type": "mcq", "question": "Horizontal asymptote of f(x)=(3x^2+2)/(x^2+1)",
                          "options": ["y=3", "y=0", "y=2"], "answer": "y=3"},
-                        {"type": "text", "question": "Solve x^3-7x^2+10x=0", "answer": "0,2,5"},
-                        {"type": "mcq", "question": "End behavior f(x)=2x^4-3x^2", "options": ["f→∞", "f→-∞", "f→0"],
-                         "answer": "f→∞"}
+                        {"type": "text", "question": "Solve x^3-7x^2+10x=0",
+                         "answer": "0,2,5"},
+                        {"type": "mcq", "question": "End behavior f(x)=2x^4-3x^2",
+                         "options": ["f→∞", "f→-∞", "f→0"], "answer": "f→∞"}
                     ]
                 },
                 "Unit 3": {
                     "Easy": [
-                        {"type": "mcq", "question": "Simplify: (x^2-1)/(x-1)", "options": ["x+1", "x-1", "x^2+1"],
-                         "answer": "x+1"},
-                        {"type": "text", "question": "Find zeros of f(x)=x^2-9", "answer": "3,-3"},
-                        {"type": "mcq", "question": "Evaluate f(1) if f(x)=x^2+3x", "options": ["4", "3", "2"],
-                         "answer": "4"},
-                        {"type": "text", "question": "Factor x^2+7x+12", "answer": "(x+3)(x+4)"},
+                        {"type": "mcq", "question": "Simplify: (x^2-1)/(x-1)",
+                         "options": ["x+1", "x-1", "x^2+1"], "answer": "x+1"},
+                        {"type": "text", "question": "Find zeros of f(x)=x^2-9",
+                         "answer": "3,-3"},
+                        {"type": "mcq", "question": "Evaluate f(1) if f(x)=x^2+3x",
+                         "options": ["4", "3", "2"], "answer": "4"},
+                        {"type": "text", "question": "Factor x^2+7x+12",
+                         "answer": "(x+3)(x+4)"},
                         {"type": "mcq", "question": "Vertical asymptote of f(x)=1/(x-2)?",
                          "options": ["x=2", "x=-2", "x=0"], "answer": "x=2"},
-                        {"type": "text", "question": "Vertex of f(x)=x^2-6x+5", "answer": "(3,-4)"},
-                        {"type": "mcq", "question": "Find f(0) if f(x)=2x^2-4x+1", "options": ["1", "0", "-1"],
-                         "answer": "1"},
+                        {"type": "text", "question": "Vertex of f(x)=x^2-6x+5",
+                         "answer": "(3,-4)"},
+                        {"type": "mcq", "question": "Find f(0) if f(x)=2x^2-4x+1",
+                         "options": ["1", "0", "-1"], "answer": "1"},
                         {"type": "text", "question": "Average rate of change of f(x)=x^2 from x=1 to x=3",
                          "answer": "4"},
-                        {"type": "mcq", "question": "Simplify: (x^2-16)/(x-4)", "options": ["x+4", "x-4", "x^2+4"],
-                         "answer": "x+4"},
-                        {"type": "text", "question": "Solve x^2-4x+3=0", "answer": "1,3"},
-                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2-2x+1", "options": ["4", "2", "0"],
-                         "answer": "4"},
-                        {"type": "text", "question": "Does f(x)=-x^2+2x+1 open up or down?", "answer": "down"}
+                        {"type": "mcq", "question": "Simplify: (x^2-16)/(x-4)",
+                         "options": ["x+4", "x-4", "x^2+4"], "answer": "x+4"},
+                        {"type": "text", "question": "Solve x^2-4x+3=0",
+                         "answer": "1,3"},
+                        {"type": "mcq", "question": "Find f(-1) if f(x)=x^2-2x+1",
+                         "options": ["4", "2", "0"], "answer": "4"},
+                        {"type": "text", "question": "Does f(x)=-x^2+2x+1 open up or down?",
+                         "answer": "down"}
                     ],
                     "Medium": [
                         {"type": "mcq", "question": "Divide: (x^3-3x^2+2x-4)/(x-1)",
                          "options": ["x^2-2x+4", "x^2+2x+4", "x^2-2x+2"], "answer": "x^2-2x+4"},
-                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6", "answer": "(x-1)(x-2)(x-3)"},
-                        {"type": "mcq", "question": "Find f(2) if f(x)=x^3-3x^2", "options": ["2", "0", "4"],
-                         "answer": "2"},
-                        {"type": "text", "question": "Solve x^3-3x^2-4x+12=0", "answer": "2,-1,3"},
-                        {"type": "mcq", "question": "End behavior of f(x)=x^4-2x^2", "options": ["f→∞", "f→-∞", "f→0"],
-                         "answer": "f→∞"},
-                        {"type": "text", "question": "Derivative f'(x)=3x^2-6x", "answer": "3x^2-6x"},
+                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6",
+                         "answer": "(x-1)(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Find f(2) if f(x)=x^3-3x^2",
+                         "options": ["2", "0", "4"], "answer": "2"},
+                        {"type": "text", "question": "Solve x^3-3x^2-4x+12=0",
+                         "answer": "2,-1,3"},
+                        {"type": "mcq", "question": "End behavior of f(x)=x^4-2x^2",
+                         "options": ["f→∞", "f→-∞", "f→0"], "answer": "f→∞"},
+                        {"type": "text", "question": "Derivative f'(x)=3x^2-6x",
+                         "answer": "3x^2-6x"},
                         {"type": "mcq", "question": "Simplify (x^3+27)/(x+3)",
                          "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
-                        {"type": "text", "question": "Solve x^2+5x+6=0", "answer": "-2,-3"},
+                        {"type": "text", "question": "Solve x^2+5x+6=0",
+                         "answer": "-2,-3"},
                         {"type": "mcq", "question": "Vertical asymptote f(x)=1/(x+3)?",
                          "options": ["x=-3", "x=3", "x=0"], "answer": "x=-3"},
-                        {"type": "text", "question": "Zeros of f(x)=x^2-5x+6", "answer": "2,3"},
-                        {"type": "mcq", "question": "f(-2) if f(x)=x^2+3x+2", "options": ["0", "-2", "6"],
-                         "answer": "0"},
-                        {"type": "text", "question": "Vertex f(x)=x^2-4x+3", "answer": "(2,-1)"}
+                        {"type": "text", "question": "Zeros of f(x)=x^2-5x+6",
+                         "answer": "2,3"},
+                        {"type": "mcq", "question": "f(-2) if f(x)=x^2+3x+2",
+                         "options": ["0", "-2", "6"], "answer": "0"},
+                        {"type": "text", "question": "Vertex f(x)=x^2-4x+3",
+                         "answer": "(2,-1)"}
                     ],
                     "Hard": [
-                        {"type": "text", "question": "Solve 2x^3-3x^2-11x+6=0", "answer": "-1,1,3"},
+                        {"type": "text", "question": "Solve 2x^3-3x^2-11x+6=0",
+                         "answer": "-1,1,3"},
                         {"type": "mcq", "question": "Simplify (x^3+8)/(x+2)",
                          "options": ["x^2-2x+4", "x^2+2x+4", "x^2-2x-4"], "answer": "x^2-2x+4"},
-                        {"type": "text", "question": "Solve x^3-6x^2+11x-6=0", "answer": "1,2,3"},
-                        {"type": "mcq", "question": "End behavior f(x)=-x^3+2x^2", "options": ["f→-∞", "f→∞", "f→0"],
-                         "answer": "f→-∞"},
-                        {"type": "text", "question": "Derivative f'(x)=3x^2-12x+5 at x=2", "answer": "-7"},
+                        {"type": "text", "question": "Solve x^3-6x^2+11x-6=0",
+                         "answer": "1,2,3"},
+                        {"type": "mcq", "question": "End behavior f(x)=-x^3+2x^2",
+                         "options": ["f→-∞", "f→∞", "f→0"], "answer": "f→-∞"},
+                        {"type": "text", "question": "Derivative f'(x)=3x^2-12x+5 at x=2",
+                         "answer": "-7"},
                         {"type": "mcq", "question": "Simplify: (x^3-27)/(x-3)",
                          "options": ["x^2+3x+9", "x^2-3x+9", "x^2-3x-9"], "answer": "x^2+3x+9"},
-                        {"type": "text", "question": "Zeros of f(x)=x^4-5x^2+4", "answer": "1,-1,2,-2"},
+                        {"type": "text", "question": "Zeros of f(x)=x^4-5x^2+4",
+                         "answer": "1,-1,2,-2"},
                         {"type": "mcq", "question": "Leading coefficient of f(x)=5x^4-3x^3",
                          "options": ["5", "-3", "3"], "answer": "5"},
-                        {"type": "text", "question": "Vertex f(x)=-2x^2+4x+1", "answer": "(1,3)"},
+                        {"type": "text", "question": "Vertex f(x)=-2x^2+4x+1",
+                         "answer": "(1,3)"},
                         {"type": "mcq", "question": "Horizontal asymptote f(x)=(3x^2+2)/(x^2+1)?",
                          "options": ["y=3", "y=0", "y=2"], "answer": "y=3"},
-                        {"type": "text", "question": "Solve x^3-7x^2+10x=0", "answer": "0,2,5"},
-                        {"type": "mcq", "question": "End behavior f(x)=2x^4-3x^2", "options": ["f→∞", "f→-∞", "f→0"],
-                         "answer": "f→∞"}
-
+                        {"type": "text", "question": "Solve x^3-7x^2+10x=0",
+                         "answer": "0,2,5"},
+                        {"type": "mcq", "question": "End behavior f(x)=2x^4-3x^2",
+                         "options": ["f→∞", "f→-∞", "f→0"], "answer": "f→∞"}
                     ]
                 },
                 "Unit 4": {
                     "Easy": [
-                        {"type": "mcq", "question": "Simplify: (x^2 - 16)/(x-4)", "options": ["x+4", "x-4", "x^2+4"],
-                         "answer": "x+4"},
-                        {"type": "text", "question": "Find the zeros of f(x)=x^2-9", "answer": "3,-3"},
-                        {"type": "mcq", "question": "Evaluate f(2) if f(x)=3x+5", "options": ["11", "7", "9"],
-                         "answer": "11"},
-                        {"type": "text", "question": "Solve for x: 2x-5=9", "answer": "7"},
+                        {"type": "mcq", "question": "Simplify: (x^2 - 16)/(x-4)",
+                         "options": ["x+4", "x-4", "x^2+4"], "answer": "x+4"},
+                        {"type": "text", "question": "Find the zeros of f(x)=x^2-9",
+                         "answer": "3,-3"},
+                        {"type": "mcq", "question": "Evaluate f(2) if f(x)=3x+5",
+                         "options": ["11", "7", "9"], "answer": "11"},
+                        {"type": "text", "question": "Solve for x: 2x-5=9",
+                         "answer": "7"},
                         {"type": "mcq", "question": "Which is a vertical asymptote of f(x)=1/(x+3)?",
                          "options": ["x=-3", "x=3", "x=0"], "answer": "x=-3"},
-                        {"type": "text", "question": "Factor completely: x^2-5x+6", "answer": "(x-2)(x-3)"},
-                        {"type": "mcq", "question": "Simplify: (x^2+5x+6)/(x+2)", "options": ["x+3", "x+2", "x+6"],
-                         "answer": "x+3"},
-                        {"type": "text", "question": "Find the domain of f(x)=1/(x-7)", "answer": "x!=7"},
-                        {"type": "mcq", "question": "Simplify: x^2-6x+9", "options": ["(x-3)^2", "(x+3)^2", "x(x-6)"],
-                         "answer": "(x-3)^2"},
-                        {"type": "text", "question": "Solve for x: x^2-4x=0", "answer": "0,4"},
-                        {"type": "mcq", "question": "Evaluate: f(0) if f(x)=2x+3", "options": ["3", "2", "0"],
-                         "answer": "3"},
+                        {"type": "text", "question": "Factor completely: x^2-5x+6",
+                         "answer": "(x-2)(x-3)"},
+                        {"type": "mcq", "question": "Simplify: (x^2+5x+6)/(x+2)",
+                         "options": ["x+3", "x+2", "x+6"], "answer": "x+3"},
+                        {"type": "text", "question": "Find the domain of f(x)=1/(x-7)",
+                         "answer": "x!=7"},
+                        {"type": "mcq", "question": "Simplify: x^2-6x+9",
+                         "options": ["(x-3)^2", "(x+3)^2", "x(x-6)"], "answer": "(x-3)^2"},
+                        {"type": "text", "question": "Solve for x: x^2-4x=0",
+                         "answer": "0,4"},
+                        {"type": "mcq", "question": "Evaluate: f(0) if f(x)=2x+3",
+                         "options": ["3", "2", "0"], "answer": "3"},
                         {"type": "text", "question": "Determine if f(x)=x^2+2x+1 has a maximum or minimum",
                          "answer": "minimum"}
                     ],
@@ -1215,19 +1313,25 @@ elif section == "📚 School Tools":
                          "answer": "4"},
                         {"type": "mcq", "question": "Identify the leading coefficient of f(x)=5x^4-2x^3+7",
                          "options": ["5", "-2", "7"], "answer": "5"},
-                        {"type": "text", "question": "Solve for x: x^2-7x+12=0", "answer": "3,4"},
-                        {"type": "mcq", "question": "Simplify: (x^2-1)/(x-1)", "options": ["x+1", "x-1", "x"],
-                         "answer": "x+1"},
-                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-3x^2+2x", "answer": "3x^2-6x+2"},
+                        {"type": "text", "question": "Solve for x: x^2-7x+12=0",
+                         "answer": "3,4"},
+                        {"type": "mcq", "question": "Simplify: (x^2-1)/(x-1)",
+                         "options": ["x+1", "x-1", "x"], "answer": "x+1"},
+                        {"type": "text", "question": "Find f'(x) for f(x)=x^3-3x^2+2x",
+                         "answer": "3x^2-6x+2"},
                         {"type": "mcq", "question": "End behavior of f(x)=-x^4+2x^2",
-                         "options": ["f→-∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"], "answer": "f→-∞ as x→∞"},
-                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6", "answer": "(x-1)(x-2)(x-3)"},
+                         "options": ["f→-∞ as x→∞", "f→∞ as x→∞", "f→0 as x→∞"],
+                         "answer": "f→-∞ as x→∞"},
+                        {"type": "text", "question": "Factor completely: x^3-6x^2+11x-6",
+                         "answer": "(x-1)(x-2)(x-3)"},
                         {"type": "mcq", "question": "Simplify: (x^3+8)/(x+2)",
                          "options": ["x^2-2x+4", "x^2+2x+4", "x^2+4"], "answer": "x^2+2x+4"},
-                        {"type": "text", "question": "Determine the vertex of f(x)=-x^2+4x-3", "answer": "(2,1)"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=-x^2+4x-3",
+                         "answer": "(2,1)"},
                         {"type": "mcq", "question": "Vertical asymptote of f(x)=1/(x-5)",
                          "options": ["x=5", "x=-5", "x=0"], "answer": "x=5"},
-                        {"type": "text", "question": "Solve for x: x^2-5x=0", "answer": "0,5"}
+                        {"type": "text", "question": "Solve for x: x^2-5x=0",
+                         "answer": "0,5"}
                     ],
                     "Hard": [
                         {"type": "text", "question": "Find all real solutions for x: x^4-5x^2+4=0",
@@ -1241,91 +1345,91 @@ elif section == "📚 School Tools":
                          "answer": "As x→∞, f(x)→ -∞"},
                         {"type": "text", "question": "Solve for x: (x^2-4)/(x^2-9)>0",
                          "answer": "x<-3 or -3<x<-2 or 2<x<3 or x>3"},
-                        {"type": "text", "question": "Find all zeros of f(x)=x^4-6x^2+8", "answer": "±√2, ±2"},
+                        {"type": "text", "question": "Find all zeros of f(x)=x^4-6x^2+8",
+                         "answer": "±√2, ±2"},
                         {"type": "mcq", "question": "Simplify: (x^3+27)/(x+3)",
-                         "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x[i^2-3x+9"},
-                        {"type": "text", "question": "Determine the vertex of f(x)=-3x^2+12x-5", "answer": "(2,7)"},
+                         "options": ["x^2-3x+9", "x^2+3x+9", "x^2-3x-9"], "answer": "x^2-3x+9"},
+                        {"type": "text", "question": "Determine the vertex of f(x)=-3x^2+12x-5",
+                         "answer": "(2,7)"},
                         {"type": "mcq", "question": "Horizontal asymptote of f(x)=(3x^2+2)/(x^2+1)",
                          "options": ["y=3", "y=2", "y=1"], "answer": "y=3"},
-                        {"type": "text", "question": "Solve: x^3-7x^2+14x-8=0", "answer": "1,2,4"},
-                        {"type": "mcq", "question": "Simplify: (x^4-16)/(x^2-4)", "options": ["x^2+4", "x^2-4", "x+4"],
-                         "answer": "x^2+4"},
-                        {"type": "text", "question": "Derivative of f(x)=4x^4-8x^2+5", "answer": "16x^3-16x"}
+                        {"type": "text", "question": "Solve: x^3-7x^2+14x-8=0",
+                         "answer": "1,2,4"},
+                        {"type": "mcq", "question": "Simplify: (x^4-16)/(x^2-4)",
+                         "options": ["x^2+4", "x^2-4", "x+4"], "answer": "x^2+4"},
+                        {"type": "text", "question": "Derivative of f(x)=4x^4-8x^2+5",
+                         "answer": "16x^3-16x"}
                     ]
                 }
-
             }
 
-            math_level = st.selectbox(
-                "Select your Math course:",
-                ["Algebra 1", "Geometry", "Algebra 2", "AP Precalculus"]
+            # =============================
+            # AP PRECALC QUIZ UI
+            # =============================
+            unit = st.selectbox(
+                "Select the Unit you want to practice:",
+                ["Unit 1", "Unit 2", "Unit 3", "Unit 4"],
+                key="unit_select"
+            )
+            difficulty = st.radio(
+                "Select difficulty level:",
+                ["Easy", "Medium", "Hard"],
+                key="difficulty_radio"
             )
 
-            if math_level == "AP Precalculus":
-                unit = st.selectbox(
-                    "Select the Unit you want to practice:",
-                    ["Unit 1", "Unit 2", "Unit 3", "Unit 4"],
-                    key="unit_select"
-                )
-                difficulty = st.radio(
-                    "Select difficulty level:",
-                    ["Easy", "Medium", "Hard"],
-                    key="difficulty_radio"
-                )
+            # Initialize show_questions flag
+            if "show_questions" not in st.session_state:
+                st.session_state.show_questions = False
 
-                # Initialize show_questions flag
-                if "show_questions" not in st.session_state:
-                    st.session_state.show_questions = False
+            # Button to show questions
+            if unit and difficulty:
+                if st.button("Show Questions", key="show_questions_button"):
+                    st.session_state.show_questions = True
 
-                # Button to show questions
-                if unit and difficulty:
-                    if st.button("Show Questions", key="show_questions_button"):
-                        st.session_state.show_questions = True
+            # Display questions only if flag is True
+            if st.session_state.show_questions:
+                # Initialize user_answers in session_state
+                if "user_answers" not in st.session_state:
+                    st.session_state.user_answers = {}
 
-                # Display questions only if flag is True
-                if st.session_state.show_questions:
-                    # Initialize user_answers in session_state
-                    if "user_answers" not in st.session_state:
-                        st.session_state.user_answers = {}
+                for i, q in enumerate(questions[unit][difficulty], 1):
+                    if q["type"] == "mcq":
+                        st.session_state.user_answers[i] = st.radio(
+                            f"Q{i}: {q['question']}",
+                            q["options"],
+                            key=f"q_{unit}_{difficulty}_{i}"
+                        )
+                    else:
+                        st.session_state.user_answers[i] = st.text_input(
+                            f"Q{i}: {q['question']}",
+                            key=f"q_{unit}_{difficulty}_{i}"
+                        )
 
+                # Submit button to grade answers
+                if st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
+                    score = 0
                     for i, q in enumerate(questions[unit][difficulty], 1):
-                        if q["type"] == "mcq":
-                            st.session_state.user_answers[i] = st.radio(
-                                f"Q{i}: {q['question']}",
-                                q["options"],
-                                key=f"q_{unit}_{difficulty}_{i}"
-                            )
-                        else:
-                            st.session_state.user_answers[i] = st.text_input(
-                                f"Q{i}: {q['question']}",
-                                key=f"q_{unit}_{difficulty}_{i}"
-                            )
+                        ans = str(st.session_state.user_answers.get(i, "")).strip().lower()
+                        correct = str(q["answer"]).strip().lower()
+                        if ans == correct:
+                            score += 1
 
-                    # Submit button to grade answers
-                    if st.button("Submit Answers", key=f"submit_answers_{unit}_{difficulty}"):
-                        score = 0
-                        for i, q in enumerate(questions[unit][difficulty], 1):
-                            ans = str(st.session_state.user_answers.get(i, "")).strip().lower()
-                            correct = str(q["answer"]).strip().lower()
-                            if ans == correct:
-                                score += 1
+                    st.session_state.last_score = score
+                    st.session_state.last_unit = unit
+                    st.session_state.last_difficulty = difficulty
 
-                        st.session_state.last_score = score
-                        st.session_state.last_unit = unit
-                        st.session_state.last_difficulty = difficulty
+                    st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
 
-                        st.success(f"You scored {score} out of {len(questions[unit][difficulty])}!")
+                    # SAVE quiz result for study recommendations
+                    st.session_state.quiz_history.append({
+                        "subject": "AP Precalculus",
+                        "unit": unit,
+                        "difficulty": difficulty,
+                        "score": score,
+                        "total": len(questions[unit][difficulty])
+                    })
 
-                        # SAVE quiz result
-                        st.session_state.quiz_history.append({
-                            "subject": "AP Precalculus",
-                            "unit": unit,
-                            "difficulty": difficulty,
-                            "score": score,
-                            "total": len(questions[unit][difficulty])
-                        })
-
-            # ---------- 3️⃣ Study Recommendations ----------
+            # ---------- Study Recommendations ----------
             if st.button("Show Study Recommendations", key="study_recs_button"):
                 st.subheader("📌 Personalized Study Recommendations")
 
@@ -1336,32 +1440,42 @@ elif section == "📚 School Tools":
                 else:
                     for subject, units in weak_units.items():
                         st.markdown(f"### {subject}")
-
-                        for unit in units:
-                            st.markdown(f"**🔹 {unit}**")
-                            st.write(get_study_tips(unit))
-
+                        for unit_name in units:
+                            st.markdown(f"**🔹 {unit_name}**")
+                            st.write(get_study_tips(unit_name))
         # ============================
         # TOOL TAB 2: RESOURCE HUB
         # ============================
+            # =============================
+            # TAB 2: RESOURCE HUB
+            # =============================
             with tools_tabs[2]:
                 st.subheader("🔗 Resource Hub")
 
                 # Make sure the list exists
                 if "resources" not in st.session_state:
-                    st.session_state.resources = []
+                    st.session_state.resources = []  # list of {"title","url","category"}
 
-                # Slightly smaller left column so it doesn't dominate
-                col_left, col_right = st.columns([1.3, 2.7])
+                col_left, col_right = st.columns([1.2, 2.8])
 
-                # ---------- LEFT: Add resource (compact) ----------
+                # ---------- LEFT: Add resource ----------
                 with col_left:
-                    st.markdown("**Add a resource**")
-                    st.caption("Save links you use a lot (Canvas, Desmos, Quizlet, docs, etc.).")
+                    st.markdown(
+                        """
+                        <div class="es-card" style="margin-bottom: 8px;">
+                            <div class="es-card-title">Save a resource</div>
+                            <p class="es-card-sub">
+                                Keep your most-used school links in one place – Canvas, Desmos, Quizlet,
+                                Google Docs, College Board, and more.
+                            </p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
                     res_title = st.text_input(
                         "Name",
-                        placeholder="Ex: Desmos Graphing Calculator",
+                        placeholder="Ex: Canvas – Emerson HS",
                         key="res_title",
                     )
 
@@ -1372,8 +1486,8 @@ elif section == "📚 School Tools":
                     )
 
                     res_category = st.selectbox(
-                        "Category",
-                        ["Math", "Science", "Spanish", "APs", "Research", "Other"],
+                        "Category (optional)",
+                        ["General", "Math", "Science", "Spanish", "APs", "Research", "Other"],
                         key="res_category",
                     )
 
@@ -1397,9 +1511,19 @@ elif section == "📚 School Tools":
                         else:
                             st.warning("Please enter both a name and a link.")
 
-                # ---------- RIGHT: 3×3 table of tiles ----------
+                # ---------- RIGHT: Grid of tiles ----------
                 with col_right:
-                    st.markdown("**Your saved resources**")
+                    st.markdown(
+                        """
+                        <div class="es-card" style="margin-bottom: 8px;">
+                            <div class="es-card-title">Your saved links</div>
+                            <p class="es-card-sub">
+                                Tap any tile to open it in a new tab. Use the filter to narrow by subject.
+                            </p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
                     if not st.session_state.resources:
                         st.caption("No resources yet. Add a few on the left!")
@@ -1426,274 +1550,360 @@ elif section == "📚 School Tools":
                         if not filtered:
                             st.caption("No resources in this category yet.")
                         else:
-                            # Color themes for tiles (cycled)
-                            color_schemes = [
-                                {  # blue
-                                    "bg": "radial-gradient(circle at top left, rgba(59,130,246,0.35), rgba(30,64,175,0.95))",
-                                    "border": "rgba(191,219,254,0.9)",
-                                },
-                                {  # orange
-                                    "bg": "radial-gradient(circle at top left, rgba(249,115,22,0.35), rgba(124,45,18,0.95))",
-                                    "border": "rgba(253,186,116,0.9)",
-                                },
-                                {  # green
-                                    "bg": "radial-gradient(circle at top left, rgba(34,197,94,0.35), rgba(5,46,22,0.95))",
-                                    "border": "rgba(187,247,208,0.9)",
-                                },
-                                {  # purple
-                                    "bg": "radial-gradient(circle at top left, rgba(168,85,247,0.35), rgba(88,28,135,0.95))",
-                                    "border": "rgba(233,213,255,0.9)",
-                                },
-                                {  # teal
-                                    "bg": "radial-gradient(circle at top left, rgba(45,212,191,0.35), rgba(15,118,110,0.95))",
-                                    "border": "rgba(153,246,228,0.9)",
-                                },
-                            ]
-
-                            # Limit to 9 items → 3 rows × 3 columns
+                            # Limit to 9 items → looks clean, not crowded
                             max_tiles = 9
                             display_list = filtered[:max_tiles]
 
-                            # Loop by rows: each row has up to 3 columns
-                            for row_start in range(0, len(display_list), 3):
-                                row_cols = st.columns(3)
-                                for i in range(3):
-                                    idx = row_start + i
-                                    if idx >= len(display_list):
-                                        break
+                            # Use the CSS grid helper we defined at the top (.es-resource-grid)
+                            tiles_html = '<div class="es-resource-grid" style="margin-top: 6px;">'
 
-                                    r = display_list[idx]
-                                    scheme = color_schemes[idx % len(color_schemes)]
-
-                                    tile_html = f"""
-                                    <a href="{r['url']}" target="_blank" style="text-decoration:none;">
+                            for r in display_list:
+                                tiles_html += f"""
+                                <a href="{r['url']}" target="_blank" style="text-decoration:none;">
+                                    <div style="
+                                        background: var(--bg-card);
+                                        border-radius: 14px;
+                                        padding: 10px 12px;
+                                        border: 1px solid var(--border-subtle);
+                                        box-shadow: 0 10px 22px rgba(15,23,42,0.12);
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: center;
+                                        gap: 4px;
+                                        min-height: 76px;
+                                        transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
+                                    ">
                                         <div style="
-                                            height:110px;
-                                            border-radius:18px;
-                                            padding:10px 14px;
-                                            background:{scheme['bg']};
-                                            border:1px solid {scheme['border']};
-                                            box-shadow:0 14px 30px rgba(15,23,42,0.9);
-                                            cursor:pointer;
-                                            display:flex;
-                                            align-items:center;
-                                            justify-content:center;
-                                            text-align:center;
-                                            transition:transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: var(--text-main);
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                            white-space: nowrap;
                                         ">
-                                            <div style="
-                                                font-size:15px;
-                                                font-weight:700;
-                                                letter-spacing:0.04em;
-                                                color:#e5e7eb;
-                                                text-shadow:0 0 10px rgba(15,23,42,0.9);
-                                            ">
-                                                {r['title']}
-                                            </div>
+                                            {r['title']}
                                         </div>
-                                    </a>
-                                    """
+                                        <div style="
+                                            font-size: 11px;
+                                            color: var(--text-muted);
+                                            text-transform: uppercase;
+                                            letter-spacing: 0.08em;
+                                        ">
+                                            {r['category']}
+                                        </div>
+                                    </div>
+                                </a>
+                                """
 
-                                    with row_cols[i]:
-                                        st.markdown(tile_html, unsafe_allow_html=True)
+                            tiles_html += "</div>"
+
+                            st.markdown(tiles_html, unsafe_allow_html=True)
 
                             # If more than 9 in this category, tell the user
                             if len(filtered) > max_tiles:
-                                st.caption(f"+ {len(filtered) - max_tiles} more saved resources in this category.")
+                                st.caption(
+                                    f"+ {len(filtered) - max_tiles} more saved resources in this category."
+                                )
 
-    # =============================
-    # TAB 3: WHAT-IF GPA CALCULATOR
-    # =============================
-    with tools_tabs[3]:
-        st.subheader("❓ What-If GPA Calculator")
+            # =============================
+            # TAB 3: WHAT-IF GPA CALCULATOR
+            # =============================
+            with tools_tabs[3]:
+                st.subheader("❓ What-If GPA Calculator")
 
-        st.markdown(
-            "See how your **overall weighted GPA** changes if you add new classes with certain grades."
-            "<br><br>"
-            "This uses the same 6.0 scale and weight system as your main GPA calculator.",
-            unsafe_allow_html=True,
-        )
-
-        mode = st.radio(
-            "Choose a mode:",
-            ["Single new class", "Full new semester"],
-            key="whatif_gpa_mode",
-        )
-
-        st.markdown("---")
-
-        # -------- Shared inputs --------
-        current_gpa = st.number_input(
-            "Current weighted GPA (on 6.0 scale)",
-            min_value=0.0,
-            max_value=6.0,
-            value=5.0,
-            step=0.01,
-            key="whatif_current_gpa",
-        )
-
-        completed_semesters = st.number_input(
-            "How many semester classes have you already completed in total?",
-            min_value=0,
-            max_value=200,
-            value=10,
-            step=1,
-            key="whatif_completed_semesters",
-        )
-
-        # If they have 0 completed, treat total points as 0
-        current_total_points = current_gpa * completed_semesters if completed_semesters > 0 else 0.0
-
-        # ---------- MODE 1: Single new class ----------
-        if mode == "Single new class":
-            st.markdown("### 🎯 Single Class Simulation")
-
-            course_name = st.selectbox(
-                "Pick the class you want to simulate:",
-                list(courses.keys()),
-                key="whatif_single_course",
-            )
-
-            # Handle AP World year (different weights)
-            ap_world_year = None
-            if course_name == "GT / AP World History":
-                ap_world_year = st.selectbox(
-                    "Which year of AP World is this?",
-                    [1, 2],
-                    key="whatif_single_apworld_year",
-                )
-                course_weight = courses[course_name][ap_world_year]
-            else:
-                course_weight = courses[course_name]
-
-            predicted_grade = st.number_input(
-                "Predicted semester grade for this class (%)",
-                min_value=0.0,
-                max_value=150.0,
-                value=95.0,
-                step=0.5,
-                key="whatif_single_predicted",
-            )
-
-            if st.button("Calculate new GPA (single class)", key="whatif_single_calc"):
-                # GPA for this one class on 6.0 scale
-                class_gpa = weighted_gpa(predicted_grade, course_weight)
-                class_gpa = round(class_gpa, 3)
-
-                new_total_points = current_total_points + class_gpa
-                new_total_classes = completed_semesters + 1
-
-                new_cum_gpa = new_total_points / new_total_classes if new_total_classes > 0 else 0.0
-                new_cum_gpa = round(new_cum_gpa, 3)
-
-                st.success(
-                    f"That **{predicted_grade:.1f}%** in **{course_name}** "
-                    f"counts as about **{class_gpa:.3f}** on the 6.0 scale."
-                )
-                st.info(
-                    f"Your overall weighted GPA would change from **{current_gpa:.3f}** "
-                    f"to about **{new_cum_gpa:.3f}**."
+                st.markdown(
+                    """
+                    <div class="es-card" style="margin-bottom: 10px;">
+                        <div class="es-card-title">See how new grades will change your GPA</div>
+                        <p class="es-card-sub">
+                            This uses the same 6.0 scale and course weights as your main GPA calculator.
+                            It does <b>not</b> change your saved data – it's just for experimenting.
+                        </p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
                 )
 
-        # ---------- MODE 2: Full new semester ----------
-        else:
-            st.markdown("### 📚 Full New Semester Simulation")
-
-            num_classes = st.slider(
-                "How many classes are you taking this semester?",
-                min_value=1,
-                max_value=8,
-                value=4,
-                step=1,
-                key="whatif_sem_num_classes",
-            )
-
-            st.caption("Fill in each class below with the class name and the semester grade you think you'll get.")
-
-            # Collect class configs
-            class_configs = []
-
-            for i in range(1, num_classes + 1):
-                st.markdown(f"**Class {i}**")
-
-                course_name = st.selectbox(
-                    f"Class {i} name",
-                    list(courses.keys()),
-                    key=f"whatif_sem_course_{i}",
-                )
-
-                ap_world_year = None
-                if course_name == "GT / AP World History":
-                    ap_world_year = st.selectbox(
-                        f"AP World year for Class {i}",
-                        [1, 2],
-                        key=f"whatif_sem_apworld_year_{i}",
-                    )
-                    course_weight = courses[course_name][ap_world_year]
-                else:
-                    course_weight = courses[course_name]
-
-                predicted_grade = st.number_input(
-                    f"Predicted semester grade for Class {i} (%)",
-                    min_value=0.0,
-                    max_value=150.0,
-                    value=93.0,
-                    step=0.5,
-                    key=f"whatif_sem_grade_{i}",
-                )
-
-                class_configs.append(
-                    {
-                        "name": course_name,
-                        "weight": course_weight,
-                        "grade": predicted_grade,
-                        "ap_year": ap_world_year,
-                    }
+                mode = st.radio(
+                    "Choose a mode:",
+                    ["Single new class", "Full new semester"],
+                    key="whatif_gpa_mode",
                 )
 
                 st.markdown("---")
 
-            if st.button("Calculate new GPA for this whole semester", key="whatif_sem_calc"):
-                new_points = []
-                breakdown_lines = []
+                # -------- Shared inputs --------
+                col_gpa, col_sem = st.columns(2)
 
-                for cfg in class_configs:
-                    class_gpa = weighted_gpa(cfg["grade"], cfg["weight"])
-                    class_gpa = round(class_gpa, 3)
-                    new_points.append(class_gpa)
-
-                    breakdown_lines.append(
-                        f"{cfg['name']}: {cfg['grade']:.1f}% "
-                        f"with weight {cfg['weight']} → {class_gpa:.3f} GPA points"
+                with col_gpa:
+                    current_gpa = st.number_input(
+                        "Current weighted GPA (on 6.0 scale)",
+                        min_value=0.0,
+                        max_value=6.0,
+                        value=5.0,
+                        step=0.01,
+                        key="whatif_current_gpa",
                     )
 
-                total_new_points = sum(new_points)
-                total_classes_added = len(new_points)
+                with col_sem:
+                    completed_semesters = st.number_input(
+                        "How many semester classes have you already completed in total?",
+                        min_value=0,
+                        max_value=200,
+                        value=10,
+                        step=1,
+                        key="whatif_completed_semesters",
+                    )
 
-                total_points_all = current_total_points + total_new_points
-                total_classes_all = completed_semesters + total_classes_added
+                # If they have 0 completed, treat total points as 0
+                current_total_points = current_gpa * completed_semesters if completed_semesters > 0 else 0.0
 
-                new_cum_gpa = total_points_all / total_classes_all if total_classes_all > 0 else 0.0
-                new_cum_gpa = round(new_cum_gpa, 3)
+                # ---------- MODE 1: Single new class ----------
+                if mode == "Single new class":
+                    st.markdown("### 🎯 Single Class Simulation")
 
-                st.success(
-                    f"With these predicted grades, this semester would add **{total_new_points:.3f}** "
-                    f"GPA points across **{total_classes_added}** classes."
+                    course_name = st.selectbox(
+                        "Pick the class you want to simulate:",
+                        list(courses.keys()),
+                        key="whatif_single_course",
+                    )
+
+                    # Handle AP World year (different weights)
+                    ap_world_year = None
+                    if course_name == "GT / AP World History":
+                        ap_world_year = st.selectbox(
+                            "Which year of AP World is this?",
+                            [1, 2],
+                            key="whatif_single_apworld_year",
+                        )
+                        course_weight = courses[course_name][ap_world_year]
+                    else:
+                        course_weight = courses[course_name]
+
+                    predicted_grade = st.number_input(
+                        "Predicted semester grade for this class (%)",
+                        min_value=0.0,
+                        max_value=150.0,
+                        value=95.0,
+                        step=0.5,
+                        key="whatif_single_predicted",
+                    )
+
+                    if st.button("Calculate new GPA (single class)", key="whatif_single_calc"):
+                        # GPA for this one class on 6.0 scale
+                        class_gpa = weighted_gpa(predicted_grade, course_weight)
+                        class_gpa = round(class_gpa, 3)
+
+                        new_total_points = current_total_points + class_gpa
+                        new_total_classes = completed_semesters + 1
+
+                        new_cum_gpa = new_total_points / new_total_classes if new_total_classes > 0 else 0.0
+                        new_cum_gpa = round(new_cum_gpa, 3)
+
+                        st.success(
+                            f"That **{predicted_grade:.1f}%** in **{course_name}** "
+                            f"counts as about **{class_gpa:.3f}** on the 6.0 scale."
+                        )
+                        st.info(
+                            f"Your overall weighted GPA would change from **{current_gpa:.3f}** "
+                            f"to about **{new_cum_gpa:.3f}**."
+                        )
+
+                # ---------- MODE 2: Full new semester ----------
+                else:
+                    st.markdown("### 📚 Full New Semester Simulation")
+
+                    num_new_classes = st.number_input(
+                        "How many new classes will you take this semester?",
+                        min_value=1,
+                        max_value=10,
+                        value=4,
+                        step=1,
+                        key="whatif_sem_num_classes",
+                    )
+
+                    new_classes = []
+
+                    for i in range(num_new_classes):
+                        st.markdown(f"**Class {i + 1}**")
+                        c1, c2 = st.columns([2, 1])
+
+                        with c1:
+                            cname = st.selectbox(
+                                f"Course {i + 1}",
+                                list(courses.keys()),
+                                key=f"whatif_sem_course_{i}",
+                            )
+
+                        with c2:
+                            predicted = st.number_input(
+                                f"Predicted grade {i + 1} (%)",
+                                min_value=0.0,
+                                max_value=150.0,
+                                value=93.0,
+                                step=0.5,
+                                key=f"whatif_sem_grade_{i}",
+                            )
+
+                        # Handle AP World year individually if selected
+                        ap_year = None
+                        if cname == "GT / AP World History":
+                            ap_year = st.selectbox(
+                                f"AP World year for class {i + 1}",
+                                [1, 2],
+                                key=f"whatif_sem_apworld_year_{i}",
+                            )
+                            c_weight = courses[cname][ap_year]
+                        else:
+                            c_weight = courses[cname]
+
+                        new_classes.append(
+                            {
+                                "name": cname,
+                                "grade": predicted,
+                                "weight": c_weight,
+                            }
+                        )
+
+                    if st.button("Calculate new GPA (full semester)", key="whatif_sem_calc"):
+                        added_points = 0.0
+                        details_lines = []
+
+                        for cls in new_classes:
+                            gpa_val = weighted_gpa(cls["grade"], cls["weight"])
+                            gpa_val = round(gpa_val, 3)
+                            added_points += gpa_val
+
+                            details_lines.append(
+                                f"• {cls['name']}: {cls['grade']:.1f}% → {gpa_val:.3f} on 6.0 scale"
+                            )
+
+                        new_total_points = current_total_points + added_points
+                        new_total_classes = completed_semesters + len(new_classes)
+
+                        new_cum_gpa = new_total_points / new_total_classes if new_total_classes > 0 else 0.0
+                        new_cum_gpa = round(new_cum_gpa, 3)
+
+                        st.success(
+                            f"With this semester, your overall weighted GPA would go from "
+                            f"**{current_gpa:.3f}** to about **{new_cum_gpa:.3f}**."
+                        )
+
+                        with st.expander("See class-by-class breakdown"):
+                            for line in details_lines:
+                                st.write(line)
+                # ---------- MODE 2: Full new semester ----------
+                else:
+                st.markdown("### 📚 Full New Semester Simulation")
+
+                num_classes = st.slider(
+                    "How many classes are you taking this semester?",
+                    min_value=1,
+                    max_value=8,
+                    value=4,
+                    step=1,
+                    key="whatif_sem_num_classes",
                 )
-                st.info(
-                    f"Your overall weighted GPA would go from **{current_gpa:.3f}** "
-                    f"to about **{new_cum_gpa:.3f}**."
+
+                st.caption(
+                    "Fill in each class below with the class name and the semester grade "
+                    "you think you'll get."
                 )
 
-                st.markdown("#### Class-by-class breakdown")
-                for line in breakdown_lines:
-                    st.text(line)
-elif section == "🧠 Daily & Planning":
+                class_configs = []
+
+                for i in range(1, num_classes + 1):
+                    st.markdown(f"**Class {i}**")
+
+                    col_course, col_grade = st.columns([2, 1])
+
+                    with col_course:
+                        course_name = st.selectbox(
+                            f"Class {i} name",
+                            list(courses.keys()),
+                            key=f"whatif_sem_course_{i}",
+                        )
+
+                    # Weight (handle AP World separately)
+                    ap_world_year = None
+                    if course_name == "GT / AP World History":
+                        ap_world_year = st.selectbox(
+                            f"AP World year for Class {i}",
+                            [1, 2],
+                            key=f"whatif_sem_apworld_year_{i}",
+                        )
+                        course_weight = courses[course_name][ap_world_year]
+                    else:
+                        course_weight = courses[course_name]
+
+                    with col_grade:
+                        predicted_grade = st.number_input(
+                            f"Predicted grade {i} (%)",
+                            min_value=0.0,
+                            max_value=150.0,
+                            value=93.0,
+                            step=0.5,
+                            key=f"whatif_sem_grade_{i}",
+                        )
+
+                    class_configs.append(
+                        {
+                            "name": course_name,
+                            "weight": course_weight,
+                            "grade": predicted_grade,
+                            "ap_year": ap_world_year,
+                        }
+                    )
+
+                    st.markdown("---")
+
+                if st.button("Calculate new GPA for this whole semester", key="whatif_sem_calc"):
+                    new_points = []
+                    breakdown_lines = []
+
+                    for cfg in class_configs:
+                        class_gpa = weighted_gpa(cfg["grade"], cfg["weight"])
+                        class_gpa = round(class_gpa, 3)
+                        new_points.append(class_gpa)
+
+                        breakdown_lines.append(
+                            f"{cfg['name']}: {cfg['grade']:.1f}% "
+                            f"with weight {cfg['weight']} → {class_gpa:.3f} GPA points"
+                        )
+
+                    total_new_points = sum(new_points)
+                    total_classes_added = len(new_points)
+
+                    total_points_all = current_total_points + total_new_points
+                    total_classes_all = completed_semesters + total_classes_added
+
+                    new_cum_gpa = total_points_all / total_classes_all if total_classes_all > 0 else 0.0
+                    new_cum_gpa = round(new_cum_gpa, 3)
+
+                    st.success(
+                        f"With these predicted grades, this semester would add **{total_new_points:.3f}** "
+                        f"GPA points across **{total_classes_added}** classes."
+                    )
+                    st.info(
+                        f"Your overall weighted GPA would go from **{current_gpa:.3f}** "
+                        f"to about **{new_cum_gpa:.3f}**."
+                    )
+
+                    st.markdown("#### Class-by-class breakdown")
+                    for line in breakdown_lines:
+                        st.text(line)
+
+    # =============================
+    # DAILY & PLANNING
+    # =============================
+    elif section == "🧠 Daily & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
 
+    # ---------- TAB 0: DAILY DASHBOARD ----------
     with focus_tabs[0]:
         st.header("🧠 Daily Dashboard")
 
+        # Local styling (plays nice with global theme)
         st.markdown(
             """
             <style>
@@ -1731,6 +1941,7 @@ elif section == "🧠 Daily & Planning":
             """,
             unsafe_allow_html=True
         )
+
         col1, col2 = st.columns([3, 2])
 
         # LEFT: priorities inputs
@@ -1755,13 +1966,13 @@ elif section == "🧠 Daily & Planning":
             st.markdown(
                 """
                 <p class="dash-hint">
-                ✅ Tip: If everything is a priority, nothing is. Keep this list short and realistic.
+                    ✅ Tip: If everything is a priority, nothing is. Keep this list short and realistic.
                 </p>
                 """,
                 unsafe_allow_html=True
             )
 
-        # RIGHT: image
+        # RIGHT: calm focus image
         with col2:
             st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
             st.image(
@@ -1773,15 +1984,16 @@ elif section == "🧠 Daily & Planning":
                 unsafe_allow_html=True
             )
 
+    # ---------- TAB 1: ORGANIZATION HELPER ----------
     with focus_tabs[1]:
         st.header("📅 Organization Helper")
 
-        # Get this user's task list
+        # Per-user task list
         org_tasks = get_user_list("org_tasks")
 
         col_left, col_right = st.columns([2, 3])
 
-        # ---------- LEFT: Add a task ----------
+        # LEFT: Add task
         with col_left:
             st.subheader("➕ Add a task to your planner")
 
@@ -1833,7 +2045,7 @@ elif section == "🧠 Daily & Planning":
                 else:
                     st.warning("Please enter a task / assignment name before adding.")
 
-        # ---------- RIGHT: View tasks ----------
+        # RIGHT: View tasks
         with col_right:
             st.subheader("📅 Tasks for a specific day")
 
@@ -1849,20 +2061,20 @@ elif section == "🧠 Daily & Planning":
                 for t in tasks_for_day:
                     st.markdown(
                         f"""
-                                                        <div style="
-                                padding: 8px 10px;
-                                margin-bottom: 6px;
-                                border-radius: 10px;
-                                background: #ffffff;
-                                border: 1px solid rgba(209,213,219,0.9);
-                                box-shadow: 0 8px 18px rgba(15,23,42,0.05);
-                            ">
-                                <strong>{t['title']}</strong><br>
-                                <span style="font-size: 12px; opacity: 0.9;">
-                                    {t['course']} • {t['type']} • Priority: {t['priority']} • ~{t['est']} min
-                                </span>
-                            </div>
-                            """,
+                                <div style="
+                                    padding: 8px 10px;
+                                    margin-bottom: 6px;
+                                    border-radius: 10px;
+                                    background: #ffffff;
+                                    border: 1px solid rgba(209,213,219,0.9);
+                                    box-shadow: 0 8px 18px rgba(15,23,42,0.05);
+                                ">
+                                    <strong>{t['title']}</strong><br>
+                                    <span style="font-size: 12px; opacity: 0.9;">
+                                        {t['course']} • {t['type']} • Priority: {t['priority']} • ~{t['est']} min
+                                    </span>
+                                </div>
+                                """,
                         unsafe_allow_html=True
                     )
             else:
@@ -1880,36 +2092,21 @@ elif section == "🧠 Daily & Planning":
             else:
                 st.caption("Your planner is empty. Start by adding a task on the left.")
 
-
-# TAB 3: DAILY DASHBOARD
-
-
 # =============================
-# TAB 4: ORGANIZATION HELPER
-# =============================
-# =============================
-# GPA TAB
-# =============================
-
-# =============================
-# QUIZ TAB
-# =============================
-
-# =============================
-# TAB 5: IDEA VAULT
+# PERSONAL GROWTH – IDEA VAULT
 # =============================
 elif section == "🌱 Personal Growth":
     tabs = st.tabs(["💡 Idea Vault"])
 
-    # ------------------ TAB 1: IDEA VAULT ------------------
     with tabs[0]:
         st.subheader("💡 Idea Vault")
 
-        # make sure list exists in session_state
-        idea_list = get_user_list("idea_vault")  # 👈 per-user list
+        # Per-user vault
+        idea_list = get_user_list("idea_vault")
 
         col_left, col_right = st.columns([3, 2])
 
+        # LEFT: capture idea
         with col_left:
             idea_title = st.text_input(
                 "Idea title",
@@ -1952,40 +2149,48 @@ elif section == "🌱 Personal Growth":
                 else:
                     st.warning("Give your idea a short title so future-you knows what it was 🙂")
 
+        # RIGHT: recent ideas
         with col_right:
             st.markdown("### 🗂 Recent Ideas")
 
             if not idea_list:
-                st.caption("No ideas yet. Whenever you get a random thought, drop it here instead of losing it.")
+                st.caption(
+                    "No ideas yet. Whenever you get a random thought, drop it here instead of losing it."
+                )
             else:
                 for idea in reversed(idea_list[-5:]):
                     dots = "•" * idea["importance"]
                     st.markdown(
                         f"""
-                                                        <div style="
-                                padding:8px 10px;
-                                margin-bottom:6px;
-                                border-radius:10px;
-                                background:#ffffff;
-                                border:1px solid rgba(209,213,219,0.9);
-                                box-shadow:0 8px 20px rgba(15,23,42,0.06);
-                            ">
-                                <div style="font-size:13px; font-weight:700;">
-                                    {idea['title']}
+                                <div style="
+                                    padding:8px 10px;
+                                    margin-bottom:6px;
+                                    border-radius:10px;
+                                    background:#ffffff;
+                                    border:1px solid rgba(209,213,219,0.9);
+                                    box-shadow:0 8px 20px rgba(15,23,42,0.06);
+                                ">
+                                    <div style="font-size:13px; font-weight:700;">
+                                        {idea['title']}
+                                    </div>
+                                    <div style="font-size:11px; opacity:0.8; margin:2px 0 4px 0;">
+                                        Tag: <strong>{idea['tag']}</strong> &nbsp;&nbsp;
+                                        Priority: <span>{dots}</span>
+                                    </div>
+                                    <div style="font-size:12px; opacity:0.9;">
+                                        {idea['desc'] if idea['desc'] else "<i>No extra details yet.</i>"}
+                                    </div>
                                 </div>
-                                <div style="font-size:11px; opacity:0.8; margin:2px 0 4px 0;">
-                                    Tag: <strong>{idea['tag']}</strong> &nbsp;&nbsp; Priority: <span>{dots}</span>
-                                </div>
-                                <div style="font-size:12px; opacity:0.9;">
-                                    {idea['desc'] if idea['desc'] else "<i>No extra details yet.</i>"}
-                                </div>
-                            </div>
-                            """,
+                                """,
                         unsafe_allow_html=True,
                     )
 
                 if len(idea_list) > 5:
                     st.caption(f"+ {len(idea_list) - 5} more saved ideas in your vault.")
+
+# =============================
+# TUTORING
+# =============================
 elif section == "🎯 Tutoring":
     st.header("🎯 Tutoring with Arpeet")
 
@@ -1999,7 +2204,6 @@ elif section == "🎯 Tutoring":
     with tabs[0]:
         col_left, col_right = st.columns([3, 2])
 
-        # LEFT: main info
         with col_left:
             st.subheader("Why I’m offering tutoring")
 
@@ -2009,14 +2213,13 @@ elif section == "🎯 Tutoring":
                 to help students stay organized and understand school better.
 
                 Tutoring with me is:
-                - 🧠 **Student-to-student** – I get what assignments and tests actually feel like.
-                - 🧮 **Focused on understanding**, not just memorizing steps.
+                - 🧠 **Student-to-student** – I get what assignments and tests actually feel like.  
+                - 🧮 **Focused on understanding**, not just memorizing steps.  
                 - 🤝 **Chill and low-pressure** – we work through problems together.
                 """
             )
 
             st.markdown("### 📚 Subjects I can help with")
-
             st.markdown(
                 """
                 - **Math:** Algebra 1, Geometry, Algebra 2 basics, AP Precalculus foundations  
@@ -2035,7 +2238,6 @@ elif section == "🎯 Tutoring":
                 """
             )
 
-        # RIGHT: quick “how it works” card
         with col_right:
             st.markdown(
                 """
@@ -2076,7 +2278,6 @@ elif section == "🎯 Tutoring":
             "it just organizes your info so it’s easier to reach out and plan."
         )
 
-        # Basic info
         student_name = st.text_input("Your first name (or initials)", key="tutor_name")
         grade = st.selectbox(
             "Your grade",
@@ -2147,18 +2348,17 @@ elif section == "🎯 Tutoring":
             else:
                 st.warning("Please at least put your name or initials so you remember which one is yours.")
 
-        # Show a mini table of saved entries (only visible on your side)
         if st.session_state.tutoring_requests:
             st.markdown("### 🗂 Saved interest entries (only visible on this device)")
             for i, t in enumerate(st.session_state.tutoring_requests, start=1):
                 st.markdown(
                     f"""
-                    **#{i} – {t['name']} ({t['grade']})**  
-                    • Subject: `{t['subject']}`  
-                    • Availability: `{", ".join(t['availability']) if t['availability'] else "Not specified"}`  
-                    • Contact: `{t['contact_pref']}`  
-                    • Goals: `{t['goals'] or "—"}`
-                    """
+                            **#{i} – {t['name']} ({t['grade']})**  
+                            • Subject: `{t['subject']}`  
+                            • Availability: `{", ".join(t['availability']) if t['availability'] else "Not specified"}`  
+                            • Contact: `{t['contact_pref']}`  
+                            • Goals: `{t['goals'] or "—"}`
+                            """
                 )
 
     # ---------------- TAB 3: FAQ ----------------
@@ -2186,4 +2386,3 @@ elif section == "🎯 Tutoring":
         )
 
 st.markdown('</div>', unsafe_allow_html=True)
-
