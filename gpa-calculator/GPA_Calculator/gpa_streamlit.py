@@ -25,45 +25,56 @@ st.markdown("""
 <style>
 :root {
     --accent: #2563eb;
-    --accent-soft: rgba(37, 99, 235, 0.08);
-    --bg-page: #f3f4f6;
+    --accent-soft: rgba(37,99,235,0.10);
+    --bg-page: #eff6ff;
     --bg-card: #ffffff;
-    --border-subtle: rgba(148, 163, 184, 0.55);
-    --text-main: #111827;
+    --border-subtle: rgba(148,163,184,0.35);
+    --text-main: #0f172a;
+    --text-muted: #6b7280;
 }
 
-/* Page background + main content width */
+/* Page background with soft blue “bubbles” */
 [data-testid="stAppViewContainer"] {
-    background: var(--bg-page);
+    background:
+        radial-gradient(circle at 0% 0%, rgba(191,219,254,0.8), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(129,230,217,0.55), transparent 55%),
+        linear-gradient(to bottom, #eff6ff, #e5e7eb);
 }
 
+/* Main content area (center + more vertical space) */
 [data-testid="block-container"] {
     max-width: 1150px;
-    padding-top: 1.5rem;
-    padding-bottom: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    margin: 0 auto;
 }
 
-/* Sidebar (if you ever show it) */
+/* Sidebar (if shown) */
 [data-testid="stSidebar"] {
-    background: #ffffff;
-    border-right: 1px solid rgba(148, 163, 184, 0.35);
+    background: #f9fafb;
+    border-right: 1px solid rgba(148,163,184,0.3);
 }
 
-/* Tabs – cleaner, lighter look */
+/* Headings */
+h1, h2, h3 {
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+}
+
+/* Tabs – pill style */
 .stTabs [data-baseweb="tab"] {
-    background: #ffffff;
+    background: rgba(255,255,255,0.9);
     border-radius: 999px;
     padding: 8px 18px;
     margin-right: 8px;
-    border: 1px solid rgba(209, 213, 219, 0.9);
-    color: #374151;
+    border: 1px solid rgba(209,213,219,0.9);
+    color: #4b5563;
     font-weight: 600;
     font-size: 13px;
 }
-
 .stTabs [aria-selected="true"] {
     background: var(--accent);
-    color: white !important;
+    color: #ffffff !important;
     border-color: var(--accent);
 }
 
@@ -76,88 +87,57 @@ st.markdown("""
     color: white;
     font-weight: 600;
     font-size: 13px;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 8px 18px rgba(37,99,235,0.25);
 }
-
 .stButton > button:hover {
     filter: brightness(1.03);
 }
 
-/* Generic "card" style for sections */
+/* Generic “card” style */
 .es-card {
     background: var(--bg-card);
     border-radius: 16px;
-    padding: 14px 16px;
+    padding: 16px 18px;
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-    margin-bottom: 10px;
+    box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+    margin-bottom: 14px;
 }
-
 .es-card-title {
     font-size: 15px;
     font-weight: 700;
     color: var(--text-main);
     margin-bottom: 4px;
 }
-
 .es-card-sub {
     font-size: 12px;
-    color: #4b5563;
+    color: var(--text-muted);
 }
 
-/* Text inputs / selects – round + clean */
+/* Optional grid helper if you want to use it later */
+.es-resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+@media (max-width: 900px) {
+    .es-resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 640px) {
+    .es-resource-grid { grid-template-columns: repeat(1, minmax(0,1fr)); }
+}
+
+/* Inputs rounder */
 input, textarea {
     border-radius: 10px !important;
 }
 
+/* Wrapper div you already use */
+.page-wrapper {
+    max-width: 1150px;
+    margin: 0 auto;
+}
 </style>
 """, unsafe_allow_html=True)
-
-
-tutor_bar_html = """
-<a href="?section=tutoring" style="text-decoration:none;">
-    <div style="
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 58px;
-        background: linear-gradient(135deg, rgba(30,64,175,0.98), rgba(124,58,237,0.96));
-        border-top: 1px solid rgba(191,219,254,0.7);
-        box-shadow: 0 -10px 25px rgba(0,0,0,0.75);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        z-index: 999;
-        cursor: pointer;
-    ">
-        <div style="
-            width: 30px;
-            height: 30px;
-            border-radius: 999px;
-            background: radial-gradient(circle at top, #fde68a, #f97316);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:18px;
-        ">
-            📚
-        </div>
-        <div style="text-align:center; color:#e5e7eb;">
-            <div style="font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;">
-                Now Offering 1-on-1 Tutoring
-            </div>
-            <div style="font-size:11px; opacity:0.9;">
-                Tap here to see subjects, grades, and how to get started.
-            </div>
-        </div>
-    </div>
-</a>
-"""
-
-st.markdown(tutor_bar_html, unsafe_allow_html=True)
-
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
     weak = {}
@@ -277,163 +257,7 @@ if "section" in params:
 # =============================
 # STYLES
 # =============================
-st.markdown("""
-<style>
-:root {
-    --es-bg: #020617;          /* page background */
-    --es-bg-soft: #020617;     /* soft card background */
-    --es-card: #020617;        /* cards */
-    --es-border: rgba(148,163,184,0.45);
-    --es-accent: #6366f1;      /* main accent (indigo) */
-    --es-accent-soft: rgba(99,102,241,0.12);
-    --es-text-main: #e5e7eb;
-    --es-text-muted: #9ca3af;
-}
 
-/* Overall page background */
-[data-testid="stAppViewContainer"] {
-    background: radial-gradient(circle at top, #020617, #020617);
-    color: var(--es-text-main);
-}
-
-/* Center main content, add breathing room */
-[data-testid="stAppViewContainer"] [data-testid="block-container"] {
-    padding-top: 1.6rem;
-    padding-bottom: 2.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-/* Sidebar look */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #020617, #020617);
-    border-right: 1px solid rgba(31,41,55,0.9);
-}
-[data-testid="stSidebar"] > div {
-    color: var(--es-text-main);
-}
-
-/* Title row (EduSphere + motto) spacing */
-h1, h2, h3 {
-    letter-spacing: 0.02em;
-}
-h1 {
-    font-size: 2.1rem;
-    margin-bottom: 0.2rem;
-}
-
-/* Tabs: simpler + more space */
-.stTabs [data-baseweb="tab"] {
-    background: rgba(15,23,42,0.85);
-    border-radius: 14px 14px 0 0;
-    padding: 10px 18px;
-    margin-right: 6px;
-    color: var(--es-text-muted);
-    font-weight: 500;
-    border: 1px solid transparent;
-}
-.stTabs [aria-selected="true"] {
-    background: rgba(15,23,42,1);
-    color: var(--es-text-main);
-    border-color: var(--es-border);
-}
-
-/* Buttons */
-.stButton>button {
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--es-accent), #4f46e5);
-    color: white;
-    font-weight: 600;
-    border: 0;
-    padding: 0.35rem 1.1rem;
-    box-shadow: 0 8px 20px rgba(15,23,42,0.7);
-}
-.stButton>button:hover {
-    filter: brightness(1.05);
-    box-shadow: 0 10px 26px rgba(15,23,42,0.85);
-}
-
-/* Generic card style you already use in places */
-.es-card {
-    background: rgba(15,23,42,0.9);
-    border-radius: 16px;
-    padding: 16px 18px;
-    border: 1px solid var(--es-border);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-    margin-bottom: 14px;
-}
-.es-card-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-.es-card-sub {
-    font-size: 12px;
-    color: var(--es-text-muted);
-}
-
-/* Light “section spacing” helper (optional) */
-.es-section {
-    margin-top: 8px;
-    margin-bottom: 18px;
-}
-
-/* Make default text a little softer and spaced */
-p, li {
-    font-size: 13px;
-}
-
-/* Resource tiles: slightly calmer look */
-.es-resource-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-}
-@media (max-width: 900px) {
-    .es-resource-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-@media (max-width: 640px) {
-    .es-resource-grid {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-}
-.es-resource-tile {
-    height: 110px;
-    border-radius: 16px;
-    padding: 10px 14px;
-    background: radial-gradient(circle at top left,
-                rgba(15,23,42,0.9),
-                rgba(15,23,42,1));
-    border: 1px solid var(--es-border);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
-}
-.es-resource-tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 34px rgba(0,0,0,0.95);
-    border-color: rgba(129,140,248,0.9);
-}
-.es-resource-title {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #e5e7eb;
-}
-
-/* Inputs look more modern */
-input, textarea {
-    border-radius: 10px !important;
-}
-
-/* Little extra breathing room between main sections (you can add <div class='es-section'></div> where needed) */
-</style>
-""", unsafe_allow_html=True)
 
 # =============================
 # DATABASE
@@ -1874,11 +1698,11 @@ elif section == "🧠 Daily & Planning":
             """
             <style>
             .dash-card {
-                background: rgba(255, 255, 255, 0.06);
+                background: #ffffff;
                 border-radius: 18px;
                 padding: 18px 20px;
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                backdrop-filter: blur(6px);
+                border: 1px solid rgba(209,213,219,0.9);
+                box-shadow: 0 10px 26px rgba(15,23,42,0.06);
             }
             .dash-title-pill {
                 display: inline-block;
@@ -1887,25 +1711,26 @@ elif section == "🧠 Daily & Planning":
                 font-size: 11px;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                background: linear-gradient(135deg, #4f46e5, #9333ea);
-                color: white;
+                background: rgba(37,99,235,0.08);
+                color: #1d4ed8;
                 margin-bottom: 8px;
             }
             .dash-subtitle {
                 font-size: 18px;
                 font-weight: 700;
                 margin-bottom: 4px;
+                color: #0f172a;
             }
             .dash-hint {
                 font-size: 12px;
                 opacity: 0.8;
                 margin-top: 6px;
+                color: #4b5563;
             }
             </style>
             """,
             unsafe_allow_html=True
         )
-
         col1, col2 = st.columns([3, 2])
 
         # LEFT: priorities inputs
@@ -2024,12 +1849,13 @@ elif section == "🧠 Daily & Planning":
                 for t in tasks_for_day:
                     st.markdown(
                         f"""
-                            <div style="
+                                                        <div style="
                                 padding: 8px 10px;
                                 margin-bottom: 6px;
                                 border-radius: 10px;
-                                background: rgba(15,23,42,0.5);
-                                border: 1px solid rgba(148,163,184,0.6);
+                                background: #ffffff;
+                                border: 1px solid rgba(209,213,219,0.9);
+                                box-shadow: 0 8px 18px rgba(15,23,42,0.05);
                             ">
                                 <strong>{t['title']}</strong><br>
                                 <span style="font-size: 12px; opacity: 0.9;">
@@ -2136,12 +1962,13 @@ elif section == "🌱 Personal Growth":
                     dots = "•" * idea["importance"]
                     st.markdown(
                         f"""
-                            <div style="
+                                                        <div style="
                                 padding:8px 10px;
                                 margin-bottom:6px;
                                 border-radius:10px;
-                                background:rgba(15,23,42,0.7);
-                                border:1px solid rgba(148,163,184,0.8);
+                                background:#ffffff;
+                                border:1px solid rgba(209,213,219,0.9);
+                                box-shadow:0 8px 20px rgba(15,23,42,0.06);
                             ">
                                 <div style="font-size:13px; font-weight:700;">
                                     {idea['title']}
