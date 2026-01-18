@@ -212,27 +212,159 @@ if "section" in params:
 # =============================
 st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #0a1a3c, #2b124f);
-    color: white;
+:root {
+    --es-bg: #020617;          /* page background */
+    --es-bg-soft: #020617;     /* soft card background */
+    --es-card: #020617;        /* cards */
+    --es-border: rgba(148,163,184,0.45);
+    --es-accent: #6366f1;      /* main accent (indigo) */
+    --es-accent-soft: rgba(99,102,241,0.12);
+    --es-text-main: #e5e7eb;
+    --es-text-muted: #9ca3af;
 }
+
+/* Overall page background */
+[data-testid="stAppViewContainer"] {
+    background: radial-gradient(circle at top, #020617, #020617);
+    color: var(--es-text-main);
+}
+
+/* Center main content, add breathing room */
+[data-testid="stAppViewContainer"] [data-testid="block-container"] {
+    padding-top: 1.6rem;
+    padding-bottom: 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Sidebar look */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #020617, #020617);
+    border-right: 1px solid rgba(31,41,55,0.9);
+}
+[data-testid="stSidebar"] > div {
+    color: var(--es-text-main);
+}
+
+/* Title row (EduSphere + motto) spacing */
+h1, h2, h3 {
+    letter-spacing: 0.02em;
+}
+h1 {
+    font-size: 2.1rem;
+    margin-bottom: 0.2rem;
+}
+
+/* Tabs: simpler + more space */
 .stTabs [data-baseweb="tab"] {
-    background: rgba(255,255,255,0.08);
-    border-radius: 25px;
-    padding: 12px 20px;
-    margin-right: 8px;
-    color: white;
-    font-weight: 600;
+    background: rgba(15,23,42,0.85);
+    border-radius: 14px 14px 0 0;
+    padding: 10px 18px;
+    margin-right: 6px;
+    color: var(--es-text-muted);
+    font-weight: 500;
+    border: 1px solid transparent;
 }
 .stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    background: rgba(15,23,42,1);
+    color: var(--es-text-main);
+    border-color: var(--es-border);
 }
+
+/* Buttons */
 .stButton>button {
-    border-radius: 30px;
-    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--es-accent), #4f46e5);
     color: white;
-    font-weight: bold;
+    font-weight: 600;
+    border: 0;
+    padding: 0.35rem 1.1rem;
+    box-shadow: 0 8px 20px rgba(15,23,42,0.7);
 }
+.stButton>button:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 10px 26px rgba(15,23,42,0.85);
+}
+
+/* Generic card style you already use in places */
+.es-card {
+    background: rgba(15,23,42,0.9);
+    border-radius: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--es-border);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+    margin-bottom: 14px;
+}
+.es-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.es-card-sub {
+    font-size: 12px;
+    color: var(--es-text-muted);
+}
+
+/* Light “section spacing” helper (optional) */
+.es-section {
+    margin-top: 8px;
+    margin-bottom: 18px;
+}
+
+/* Make default text a little softer and spaced */
+p, li {
+    font-size: 13px;
+}
+
+/* Resource tiles: slightly calmer look */
+.es-resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+@media (max-width: 900px) {
+    .es-resource-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 640px) {
+    .es-resource-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+.es-resource-tile {
+    height: 110px;
+    border-radius: 16px;
+    padding: 10px 14px;
+    background: radial-gradient(circle at top left,
+                rgba(15,23,42,0.9),
+                rgba(15,23,42,1));
+    border: 1px solid var(--es-border);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
+}
+.es-resource-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.95);
+    border-color: rgba(129,140,248,0.9);
+}
+.es-resource-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #e5e7eb;
+}
+
+/* Inputs look more modern */
+input, textarea {
+    border-radius: 10px !important;
+}
+
+/* Little extra breathing room between main sections (you can add <div class='es-section'></div> where needed) */
 </style>
 """, unsafe_allow_html=True)
 
@@ -1431,9 +1563,9 @@ elif section == "📚 School Tools":
                             max_tiles = 9
                             display_list = filtered[:max_tiles]
 
-                            # Row-by-row, 3 columns per row
+                            # Loop by rows: each row has up to 3 columns
                             for row_start in range(0, len(display_list), 3):
-                                cols = st.columns(3)
+                                row_cols = st.columns(3)
                                 for i in range(3):
                                     idx = row_start + i
                                     if idx >= len(display_list):
@@ -1443,37 +1575,35 @@ elif section == "📚 School Tools":
                                     scheme = color_schemes[idx % len(color_schemes)]
 
                                     tile_html = f"""
-            <a href="{r['url']}" target="_blank" style="text-decoration:none;">
-                <div style="
-                    height:110px;
-                    border-radius:18px;
-                    padding:10px 14px;
-                    background:{scheme['bg']};
-                    border:1px solid {scheme['border']};
-                    box-shadow:0 14px 30px rgba(15,23,42,0.9);
-                    cursor:pointer;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    text-align:center;
-                    transition:transform 0.12s ease-out, box-shadow 0.12s ease-out;
-                "
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 18px 36px rgba(0,0,0,0.95)';"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 14px 30px rgba(15,23,42,0.9)';"
-                >
-                    <div style="
-                        font-size:15px;
-                        font-weight:700;
-                        letter-spacing:0.04em;
-                        color:#e5e7eb;
-                        text-shadow:0 0 10px rgba(15,23,42,0.9);
-                    ">
-                        {r['title']}
-                    </div>
-                </div>
-            </a>
-            """
-                                    with cols[i]:
+                                    <a href="{r['url']}" target="_blank" style="text-decoration:none;">
+                                        <div style="
+                                            height:110px;
+                                            border-radius:18px;
+                                            padding:10px 14px;
+                                            background:{scheme['bg']};
+                                            border:1px solid {scheme['border']};
+                                            box-shadow:0 14px 30px rgba(15,23,42,0.9);
+                                            cursor:pointer;
+                                            display:flex;
+                                            align-items:center;
+                                            justify-content:center;
+                                            text-align:center;
+                                            transition:transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
+                                        ">
+                                            <div style="
+                                                font-size:15px;
+                                                font-weight:700;
+                                                letter-spacing:0.04em;
+                                                color:#e5e7eb;
+                                                text-shadow:0 0 10px rgba(15,23,42,0.9);
+                                            ">
+                                                {r['title']}
+                                            </div>
+                                        </div>
+                                    </a>
+                                    """
+
+                                    with row_cols[i]:
                                         st.markdown(tile_html, unsafe_allow_html=True)
 
                             # If more than 9 in this category, tell the user
