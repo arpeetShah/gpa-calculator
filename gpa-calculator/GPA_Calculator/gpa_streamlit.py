@@ -238,25 +238,6 @@ input, textarea {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-/* Slightly lighter, cleaner look for dropdown boxes */
-.stSelectbox div[data-baseweb="select"] {
-    border-radius: 999px !important;
-    background: rgba(15,23,42,0.92);  /* a bit lighter than pure black */
-    border: 1px solid rgba(148,163,184,0.7);
-    box-shadow: 0 10px 24px rgba(15,23,42,0.7);
-}
-
-/* Text inside the dropdown */
-.stSelectbox div[data-baseweb="select"] span {
-    color: #e5e7eb !important;
-    font-size: 13px;
-    font-weight: 600;
-}
-</style>
-""", unsafe_allow_html=True)
-
 
 # ---------- Analyze Weak Units ----------
 def analyze_weak_units():
