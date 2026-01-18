@@ -21,30 +21,97 @@ def get_user_list(key: str):
 
     return st.session_state[key][user]
 
-st.markdown(
-    """
-    <style>
-    .es-card {
-        background: rgba(15, 23, 42, 0.85);
-        border-radius: 18px;
-        padding: 16px 18px;
-        border: 1px solid rgba(148, 163, 184, 0.7);
-        box-shadow: 0 14px 30px rgba(0,0,0,0.7);
-    }
-    .es-card-title {
-        font-size: 15px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-    .es-card-sub {
-        font-size: 12px;
-        opacity: 0.85;
-        margin-bottom: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+:root {
+    --accent: #2563eb;
+    --accent-soft: rgba(37, 99, 235, 0.08);
+    --bg-page: #f3f4f6;
+    --bg-card: #ffffff;
+    --border-subtle: rgba(148, 163, 184, 0.55);
+    --text-main: #111827;
+}
+
+/* Page background + main content width */
+[data-testid="stAppViewContainer"] {
+    background: var(--bg-page);
+}
+
+[data-testid="block-container"] {
+    max-width: 1150px;
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
+}
+
+/* Sidebar (if you ever show it) */
+[data-testid="stSidebar"] {
+    background: #ffffff;
+    border-right: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+/* Tabs – cleaner, lighter look */
+.stTabs [data-baseweb="tab"] {
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 8px 18px;
+    margin-right: 8px;
+    border: 1px solid rgba(209, 213, 219, 0.9);
+    color: #374151;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.stTabs [aria-selected="true"] {
+    background: var(--accent);
+    color: white !important;
+    border-color: var(--accent);
+}
+
+/* Buttons */
+.stButton > button {
+    border-radius: 999px;
+    padding: 6px 18px;
+    border: 1px solid var(--accent);
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.stButton > button:hover {
+    filter: brightness(1.03);
+}
+
+/* Generic "card" style for sections */
+.es-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    margin-bottom: 10px;
+}
+
+.es-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.es-card-sub {
+    font-size: 12px;
+    color: #4b5563;
+}
+
+/* Text inputs / selects – round + clean */
+input, textarea {
+    border-radius: 10px !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 tutor_bar_html = """
@@ -581,15 +648,15 @@ box_html = f"""
 <div style="
     position: fixed;
     top: 80px;
-    right: 20px;
-    width: 230px;
-    background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(30,64,175,0.9));
+    right: 24px;
+    width: 250px;
+    background: linear-gradient(145deg, #ffffff, #e5edff);
     border-radius: 16px;
-    padding: 10px 12px;
-    border: 1px solid rgba(148, 163, 184, 0.6);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+    padding: 10px 14px;
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    box-shadow: 0 12px 26px rgba(15,23,42,0.15);
     font-size: 12px;
-    color: #e5e7eb;
+    color: #111827;
     z-index: 999;
 ">
     <div style="text-align:center; margin-bottom:6px;">
@@ -597,8 +664,8 @@ box_html = f"""
             display:inline-block;
             padding:4px 10px;
             border-radius:999px;
-            background: radial-gradient(circle at top, #f97316, #ec4899);
-            color:white;
+            background: rgba(37,99,235,0.1);
+            color:#1d4ed8;
             font-size:11px;
             font-weight:800;
             letter-spacing:0.12em;
