@@ -465,10 +465,11 @@ st.markdown(focus_html, unsafe_allow_html=True)
 # TAB 0: WELCOME / HOME
 # =============================
 if section == "🏠 Home & Intro":
+    # Add a little space under the header/title area
     spacer(24)
 
-    # ROW 1: About Me + About the App
-    col_me, col_app = st.columns([3, 3])
+    # ----- ROW 1: About Me + About the App -----
+    col_me, col_app, col_right = st.columns([3, 3, 4])
 
     with col_me:
         st.subheader("👋 About Me")
@@ -525,6 +526,7 @@ if section == "🏠 Home & Intro":
             "- Track your GPA, practice problems, and organize your day.\n"
             "- Your profile keeps things tied to your username."
         )
+
         st.markdown(
             """
             <p style="font-size:12px; opacity:0.8; margin-top:10px;">
@@ -534,21 +536,40 @@ if section == "🏠 Home & Intro":
             unsafe_allow_html=True
         )
 
+    # Big gap before the image row
     spacer(40)
 
-    # ROW 2: Centered image
-    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-    st.image(
-        "https://images.unsplash.com/photo-1584697964328-654cde612e96?auto=format&fit=crop&w=1000&q=80",
-        width=520,
-    )
-    st.markdown(
-        "<p style='font-size:12px; opacity:0.8; margin-top:8px;'>School doesn’t have to feel scattered 📚</p>",
-        unsafe_allow_html=True
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+    # ----- ROW 2: Centered image ----
 
+    # A little space before anything else that comes after Home
     spacer(32)
+
+    # RIGHT: What is EduSphere? + hero image
+    with col_right:
+        st.markdown(
+            """
+            <div class="es-card">
+                <div class="es-card-title">🌀 What is EduSphere?</div>
+                <p class="es-card-sub">
+                    EduSphere is a calm, midnight-themed hub for your school life:
+                </p>
+                <ul style="font-size:13px; margin-top:4px; padding-left:18px;">
+                    <li>📊 Track your <b>GPA</b> with both current and what-if calculators.</li>
+                    <li>📝 Practice <b>AP Precalc</b> and <b>Spanish</b> with built-in quizzes.</li>
+                    <li>📅 Plan your week with a <b>Daily Dashboard</b> and planner.</li>
+                    <li>🌱 Save project ideas and goals in the <b>Idea Vault</b>.</li>
+                    <li>🎯 Learn how you can get <b>1-on-1 tutoring</b> directly from here.</li>
+                </ul>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.image(
+            "https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=900&q=80",
+            use_column_width=True,
+            caption="Late-night study session vibes 🌌",
+        )
 
 elif section == "📚 School Tools":
     st.subheader("📚 School Tools")
