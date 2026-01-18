@@ -539,12 +539,7 @@ if section == "🏠 Home & Intro":
     # Big gap before the image row
     spacer(40)
 
-    # ----- ROW 2: Centered image -----
-    st.markdown(
-        "<p style='font-size:12px; opacity:0.8; margin-top:8px;'>School doesn’t have to feel scattered 📚</p>",
-        unsafe_allow_html=True
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+    # ----- ROW 2: Centered image ----
 
     # A little space before anything else that comes after Home
     spacer(32)
