@@ -469,7 +469,7 @@ if section == "🏠 Home & Intro":
     spacer(24)
 
     # ----- ROW 1: About Me + About the App -----
-    col_me, col_app, col_right = st.columns([3, 3])
+    col_me, col_app, col_right = st.columns([3, 3, 4])
 
     with col_me:
         st.subheader("👋 About Me")
