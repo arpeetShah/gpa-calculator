@@ -36,9 +36,9 @@ st.markdown("""
 /* Page background with soft blue “bubbles” */
 [data-testid="stAppViewContainer"] {
     background:
-        radial-gradient(circle at 0% 0%, rgba(191,219,254,0.8), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(129,230,217,0.55), transparent 55%),
-        linear-gradient(to bottom, #eff6ff, #e5e7eb);
+        radial-gradient(circle at 0% 0%, rgba(30,64,175,0.65), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(8,47,73,0.55), transparent 55%),
+        linear-gradient(to bottom, #cbd5f5, #9ca3af);
 }
 
 /* Main content area (center + more vertical space) */
