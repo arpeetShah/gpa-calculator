@@ -35,205 +35,80 @@ def get_user_list(key: str):
 # =============================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Baloo+2:wght@500;700&display=swap');
-
 :root {
-    --es-bg: #020617;
-    --es-bg-alt: #020617;
-    --es-card: rgba(15,23,42,0.96);
-    --es-border: rgba(148,163,184,0.45);
-    --es-accent: #38bdf8;
-    --es-accent-soft: rgba(56,189,248,0.12);
-    --es-accent-alt: #818cf8;
-    --es-text-main: #e5e7eb;
-    --es-text-muted: #9ca3af;
+    --accent: #2563eb;
+    --accent-soft: rgba(37,99,235,0.10);
+    --bg-page: #020617;
+    --bg-card: #020617;
+    --border-subtle: rgba(148,163,184,0.45);
+    --text-main: #e5e7eb;
+    --text-muted: #9ca3af;
 }
 
-/* PAGE BACKGROUND + CONTENT WIDTH */
+/* Page background with soft blue “bubbles” */
 [data-testid="stAppViewContainer"] {
-    background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
-    color: var(--es-text-main);
+    background:
+        radial-gradient(circle at 0% 0%, rgba(30,64,175,0.75), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(8,47,73,0.7), transparent 55%),
+        linear-gradient(to bottom, #020617, #020617);
 }
 
-[data-testid="stAppViewContainer"] [data-testid="block-container"] {
-    max-width: 1150px;
-    padding-top: 1.8rem;
-    padding-bottom: 3rem;
+/* Main content: wider, more padding so it doesn’t feel stacked */
+[data-testid="block-container"] {
+    max-width: 1180px;              /* a bit wider */
+    padding-top: 3.2rem;            /* more top space */
+    padding-bottom: 5rem;           /* more bottom space */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
     margin: 0 auto;
 }
 
-/* SIDEBAR */
-[data-testid="stSidebar"] {
-    background: #020617;
-    border-right: 1px solid rgba(30,64,175,0.7);
-}
-[data-testid="stSidebar"] * {
-    font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-/* GLOBAL TEXT */
-html, body, [class*="css"] {
-    font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--es-text-main);
-}
-
-/* HEADINGS */
-h1, h2, h3, h4 {
-    font-family: 'Baloo 2', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+/* Headings spacing so sections aren’t glued together */
+h1, h2, h3 {
+    color: var(--text-main);
     letter-spacing: 0.02em;
-}
-h1 {
-    font-size: 2.1rem;
-}
-h2 {
-    font-size: 1.5rem;
+    margin-top: 1.4rem;
+    margin-bottom: 0.7rem;
 }
 
-/* TOP WRAPPER */
-.page-wrapper {
-    max-width: 1100px;
-    margin: 0 auto;
+/* Generic “card” style – a bit more gap between cards */
+.es-card {
+    background: radial-gradient(circle at top left,
+                rgba(15,23,42,0.92),
+                rgba(15,23,42,0.98));
+    border-radius: 18px;
+    padding: 18px 20px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 16px 38px rgba(0,0,0,0.78);
+    margin-bottom: 22px;            /* more space between stacked cards */
 }
 
-/* TOP TITLE ROW (EduSphere + motto) */
-.es-title-row {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-.es-title-main {
-    font-family: 'Baloo 2', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-}
-.es-title-motto {
-    font-size: 13px;
-    font-weight: 500;
-    opacity: 0.9;
-}
-
-/* TABS – SOFT PILLS */
+/* Tabs – keep your previous look */
 .stTabs [data-baseweb="tab"] {
-    background: rgba(15,23,42,0.85);
+    background: rgba(15,23,42,0.95);
     border-radius: 999px;
-    padding: 8px 16px;
+    padding: 8px 18px;
     margin-right: 8px;
-    border: 1px solid transparent;
-    color: var(--es-text-muted);
-    font-weight: 500;
+    border: 1px solid rgba(55,65,81,0.9);
+    color: #9ca3af;
+    font-weight: 600;
     font-size: 13px;
 }
 .stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
-    color: #0b1120 !important;
-    border-color: rgba(56,189,248,0.7);
+    background: var(--accent);
+    color: #ffffff !important;
+    border-color: var(--accent);
 }
 
-/* BUTTONS */
-.stButton > button {
-    border-radius: 999px;
-    padding: 6px 18px;
-    border: 0;
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
-    color: #0b1120;
-    font-weight: 600;
-    font-size: 13px;
-    box-shadow: 0 8px 20px rgba(15,23,42,0.8);
-}
-.stButton > button:hover {
-    filter: brightness(1.05);
-    box-shadow: 0 10px 26px rgba(15,23,42,0.9);
-}
-
-/* GENERIC CARD */
-.es-card {
-    background: var(--es-card);
-    border-radius: 18px;
-    padding: 16px 18px;
-    border: 1px solid var(--es-border);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.75);
-    margin-bottom: 14px;
-}
-.es-card-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
-.es-card-sub {
-    font-size: 12px;
-    color: var(--es-text-muted);
-}
-
-/* RESOURCE GRID (still available) */
-.es-resource-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-}
-@media (max-width: 900px) {
-    .es-resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 640px) {
-    .es-resource-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-}
-.es-resource-tile {
-    height: 110px;
-    border-radius: 16px;
-    padding: 10px 14px;
-    background: radial-gradient(circle at top left,
-        rgba(15,23,42,0.9),
-        rgba(15,23,42,1));
-    border: 1px solid var(--es-border);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
-}
-.es-resource-tile:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 36px rgba(0,0,0,1);
-    border-color: rgba(56,189,248,0.9);
-}
-.es-resource-title {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #e5e7eb;
-}
-
-/* TODAY'S FOCUS BOX – LIGHT CARD */
-.es-focus-box {
-    position: fixed;
-    top: 78px;
-    right: 24px;
-    width: 250px;
-    background: linear-gradient(145deg, #eff6ff, #e0f2fe);
-    border-radius: 18px;
-    padding: 10px 14px;
-    border: 1px solid rgba(148,163,184,0.6);
-    box-shadow: 0 14px 32px rgba(15,23,42,0.3);
-    font-size: 12px;
-    color: #0f172a;
-    z-index: 999;
-}
-.es-focus-pill {
-    display:inline-block;
-    padding:4px 10px;
-    border-radius:999px;
-    background:rgba(56,189,248,0.14);
-    color:#0ea5e9;
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:0.12em;
-    text-transform:uppercase;
-}
-
-/* Inputs rounder */
+/* Inputs and textareas a bit more spaced and rounded */
 input, textarea {
     border-radius: 10px !important;
+}
+
+/* Helper class if you want to wrap big chunks */
+.section-block {
+    margin-top: 1.8rem;
+    margin-bottom: 1.8rem;
 }
 </style>
 """, unsafe_allow_html=True)
