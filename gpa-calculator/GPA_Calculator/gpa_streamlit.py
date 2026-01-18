@@ -540,11 +540,6 @@ if section == "🏠 Home & Intro":
     spacer(40)
 
     # ----- ROW 2: Centered image -----
-    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
-    st.image(
-        "https://images.unsplash.com/photo-1584697964328-654cde612e96?auto=format&fit=crop&w=1000&q=80",
-        width=520,
-    )
     st.markdown(
         "<p style='font-size:12px; opacity:0.8; margin-top:8px;'>School doesn’t have to feel scattered 📚</p>",
         unsafe_allow_html=True
