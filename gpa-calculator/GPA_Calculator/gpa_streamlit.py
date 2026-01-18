@@ -1793,8 +1793,8 @@ elif section == "📚 School Tools":
                             for line in details_lines:
                                 st.write(line)
                 # ---------- MODE 2: Full new semester ----------
-                else:
-                st.markdown("### 📚 Full New Semester Simulation")
+                    else:
+                        st.markdown("### 📚 Full New Semester Simulation")
 
                 num_classes = st.slider(
                     "How many classes are you taking this semester?",
@@ -1896,7 +1896,7 @@ elif section == "📚 School Tools":
     # =============================
     # DAILY & PLANNING
     # =============================
-    elif section == "🧠 Daily & Planning":
+elif section == "🧠 Daily & Planning":
     focus_tabs = st.tabs(["🧠 Daily Dashboard", "📅 Organization Helper"])
 
     # ---------- TAB 0: DAILY DASHBOARD ----------
