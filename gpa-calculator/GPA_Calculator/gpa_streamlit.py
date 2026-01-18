@@ -240,35 +240,19 @@ input, textarea {
 
 st.markdown("""
 <style>
-/* Make selectboxes (especially the main nav) look like obvious clickable boxes */
-.stSelectbox > label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(148,163,184,0.95);
-}
-
-/* The visible box */
+/* Slightly lighter, cleaner look for dropdown boxes */
 .stSelectbox div[data-baseweb="select"] {
     border-radius: 999px !important;
-    border: 2px solid rgba(129,140,248,0.95) !important;
-    background: radial-gradient(circle at top left, #0b1120, #020617);
-    box-shadow: 0 14px 28px rgba(15,23,42,0.85);
-    min-height: 46px;
+    background: rgba(15,23,42,0.92);  /* a bit lighter than pure black */
+    border: 1px solid rgba(148,163,184,0.7);
+    box-shadow: 0 10px 24px rgba(15,23,42,0.7);
 }
 
-/* Selected text inside */
+/* Text inside the dropdown */
 .stSelectbox div[data-baseweb="select"] span {
     color: #e5e7eb !important;
-    font-weight: 600;
     font-size: 13px;
-}
-
-/* Hover state */
-.stSelectbox div[data-baseweb="select"]:hover {
-    border-color: rgba(165,180,252,1) !important;
-    box-shadow: 0 18px 36px rgba(15,23,42,0.95);
+    font-weight: 600;
 }
 </style>
 """, unsafe_allow_html=True)
