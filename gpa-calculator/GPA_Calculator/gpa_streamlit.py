@@ -1908,11 +1908,11 @@ elif section == "🧠 Daily & Planning":
             """
             <style>
             .dash-card {
-                background: #ffffff;
+                background: rgba(15,23,42,0.88);              /* darker, but not full black */
                 border-radius: 18px;
                 padding: 18px 20px;
-                border: 1px solid rgba(209,213,219,0.9);
-                box-shadow: 0 10px 26px rgba(15,23,42,0.06);
+                border: 1px solid rgba(148,163,184,0.75);     /* softer, bluish-gray border */
+                box-shadow: 0 14px 30px rgba(0,0,0,0.65);     /* a bit deeper shadow */
             }
             .dash-title-pill {
                 display: inline-block;
@@ -1921,21 +1921,21 @@ elif section == "🧠 Daily & Planning":
                 font-size: 11px;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
-                background: rgba(37,99,235,0.08);
-                color: #1d4ed8;
+                background: rgba(37,99,235,0.22);
+                color: #bfdbfe;
                 margin-bottom: 8px;
             }
             .dash-subtitle {
                 font-size: 18px;
                 font-weight: 700;
                 margin-bottom: 4px;
-                color: #0f172a;
+                color: #e5e7eb;                               /* lighter text on dark card */
             }
             .dash-hint {
                 font-size: 12px;
-                opacity: 0.8;
+                opacity: 0.85;
                 margin-top: 6px;
-                color: #4b5563;
+                color: #cbd5f5;
             }
             </style>
             """,
