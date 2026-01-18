@@ -2,6 +2,10 @@ import streamlit as st
 import sqlite3
 from datetime import date
 
+def spacer(px: int = 32):
+    """Simple vertical spacer."""
+    st.markdown(f"<div style='height:{px}px;'></div>", unsafe_allow_html=True)
+
 # =============================
 # PAGE CONFIG
 # =============================
@@ -461,59 +465,94 @@ st.markdown(focus_html, unsafe_allow_html=True)
 # TAB 0: WELCOME / HOME
 # =============================
 if section == "🏠 Home & Intro":
-    # Welcome layout – 2 main columns: intro + image
-    col_left, col_right = st.columns([3, 4])
+    # Add a little space under the header/title area
+    spacer(24)
 
-    # LEFT: About Me + Contact in a card
-    with col_left:
+    # ----- ROW 1: About Me + About the App -----
+    col_me, col_app, col_right = st.columns([3, 3])
+
+    with col_me:
+        st.subheader("👋 About Me")
+        st.write(
+            "Hi, I'm **Arpeet Shah**.\n"
+            "- 9th grade student at **Emerson High School**\n"
+            "- I care about staying organized, keeping up with school, and keeping some balance.\n"
+            "- I built EduSphere so students (including me) have one place to plan and track school."
+        )
+
+        st.markdown("**📇 Contact**")
         st.markdown(
             """
-            <div class="es-card">
-                <div class="es-card-title">👋 About Me</div>
-                <p class="es-card-sub" style="margin-bottom: 8px;">
-                    Hi, I'm <b>Arpeet Shah</b> — a 9th grade student at <b>Emerson High School</b>.
-                    I care about staying organized, keeping up with school, and keeping some balance.
-                    EduSphere is my all-in-one place to plan, track GPA, and keep school under control.
-                </p>
-                <div style="margin-top:10px; font-size:13px; font-weight:600; margin-bottom:6px;">
-                    📇 Contact
+            <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+                <div style="
+                    padding:7px 12px;
+                    border-radius:999px;
+                    background:linear-gradient(135deg,#111827,#1f2937);
+                    font-size:13px;
+                    color:#f9fafb;
+                    border:1px solid rgba(148,163,184,0.9);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
+                    display:flex;
+                    align-items:center;
+                    gap:6px;
+                ">
+                    <span style="font-size:15px;">📱</span>
+                    <span><strong>Phone:</strong> 469-996-1729</span>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:6px;">
-                    <div style="
-                        padding:7px 12px;
-                        border-radius:999px;
-                        background:linear-gradient(135deg,#0f172a,#020617);
-                        font-size:13px;
-                        color:#f9fafb;
-                        border:1px solid rgba(148,163,184,0.95);
-                        box-shadow:0 4px 12px rgba(0,0,0,0.7);
-                        display:flex;
-                        align-items:center;
-                        gap:6px;
-                    ">
-                        <span style="font-size:15px;">📱</span>
-                        <span><strong>Phone:</strong> 469-996-1729</span>
-                    </div>
-                    <div style="
-                        padding:7px 12px;
-                        border-radius:999px;
-                        background:linear-gradient(135deg,#022c22,#064e3b);
-                        font-size:13px;
-                        color:#f9fafb;
-                        border:1px solid rgba(45,212,191,0.9);
-                        box-shadow:0 4px 12px rgba(0,0,0,0.7);
-                        display:flex;
-                        align-items:center;
-                        gap:6px;
-                    ">
-                        <span style="font-size:15px;">✉️</span>
-                        <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
-                    </div>
+                <div style="
+                    padding:7px 12px;
+                    border-radius:999px;
+                    background:linear-gradient(135deg,#022c22,#064e3b);
+                    font-size:13px;
+                    color:#f9fafb;
+                    border:1px solid rgba(167,243,208,0.9);
+                    box-shadow:0 4px 10px rgba(0,0,0,0.55);
+                    display:flex;
+                    align-items:center;
+                    gap:6px;
+                ">
+                    <span style="font-size:15px;">✉️</span>
+                    <span><strong>Email:</strong> arpeet.shah.168@k12.friscoisd.org</span>
                 </div>
             </div>
             """,
             unsafe_allow_html=True
         )
+
+    with col_app:
+        st.subheader("🌀 What is EduSphere?")
+        st.write(
+            "- A calm, all-in-one place for school.\n"
+            "- Track your GPA, practice problems, and organize your day.\n"
+            "- Your profile keeps things tied to your username."
+        )
+
+        st.markdown(
+            """
+            <p style="font-size:12px; opacity:0.8; margin-top:10px;">
+            Think of this as your mini school HQ – GPA, practice, planning, and ideas in one place.
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # Big gap before the image row
+    spacer(40)
+
+    # ----- ROW 2: Centered image -----
+    st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
+    st.image(
+        "https://images.unsplash.com/photo-1584697964328-654cde612e96?auto=format&fit=crop&w=1000&q=80",
+        width=520,
+    )
+    st.markdown(
+        "<p style='font-size:12px; opacity:0.8; margin-top:8px;'>School doesn’t have to feel scattered 📚</p>",
+        unsafe_allow_html=True
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # A little space before anything else that comes after Home
+    spacer(32)
 
     # RIGHT: What is EduSphere? + hero image
     with col_right:
@@ -543,6 +582,15 @@ if section == "🏠 Home & Intro":
         )
 
 elif section == "📚 School Tools":
+    st.subheader("📚 School Tools")
+    spacer(16)  # space between title and tabs
+
+    tools_tabs = st.tabs([
+        "📊 GPA",
+        "📝 Quiz & Practice",
+        "🔗 Resource Hub",
+        "🔮 What-If GPA"
+    ])
     # Section header card
     st.markdown(
         """
@@ -558,13 +606,6 @@ elif section == "📚 School Tools":
         """,
         unsafe_allow_html=True,
     )
-
-    tools_tabs = st.tabs([
-        "📊 GPA",
-        "📝 Quiz & Practice",
-        "🔗 Resource Hub",
-        "🔮 What-If GPA"
-    ])
 
     # =============================
     # TAB 0: GPA CALCULATOR
