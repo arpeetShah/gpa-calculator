@@ -360,7 +360,7 @@ if not st.session_state.logged_in:
     with col_user:
         username = st.text_input(
             "Username",
-            placeholder="Ex: arpeet09 or math_wizard",
+            placeholder="Ex: math_wizard",
             key="login_username"
         )
 
