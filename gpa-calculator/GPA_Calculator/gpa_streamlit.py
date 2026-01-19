@@ -309,9 +309,28 @@ if not st.session_state.logged_in:
 
     st.markdown(
         """
-        <div class="es-title-row">
-            <div class="es-title-main">🎓 EduSphere</div>
-            <div class="es-title-motto">Organize today. Own tomorrow.</div>
+        <div style="
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 16px;
+        ">
+            <div style="
+                font-size: 30px;
+                font-weight: 700;
+                letter-spacing: 0.03em;
+            ">
+                🎓 EduSphere
+            </div>
+            <div style="
+                font-size: 13px;
+                font-weight: 500;
+                opacity: 0.85;
+                white-space: nowrap;
+            ">
+                Organize today. Own tomorrow.
+            </div>
         </div>
         """,
         unsafe_allow_html=True
